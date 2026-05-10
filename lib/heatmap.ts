@@ -3,7 +3,7 @@ import { attempts, srsState } from "./schema";
 import { sql, lte, gte } from "drizzle-orm";
 
 const DAY_MS = 86_400_000;
-export const HEATMAP_DAYS = 84; // 12 weeks
+export const HEATMAP_DAYS = 120; // ~17 weeks (~4 months)
 const NEW_TARGET = 2;
 const REVIEW_TARGET = 3;
 
