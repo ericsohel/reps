@@ -55,12 +55,12 @@ export default function LogPage() {
             <Field label="Time spent (min)" hint="Total time including reading.">
               <input name="elapsedMinutes" type="number" step="0.5" min="0" required placeholder="25" />
             </Field>
-            <Field label="Hints used" hint="Be honest — this doesn't affect the interval much.">
+            <Field label="Hints used" hint="Which hint did you go to last? Editorial = auto-Lapse rating.">
               <select name="hintsUsed" defaultValue="0">
-                <option value="0">None</option>
-                <option value="1">Pattern hint only</option>
-                <option value="2">Algorithm sketch</option>
-                <option value="3">Read editorial</option>
+                <option value="0">None — solved unaided</option>
+                <option value="1">Hint 1 — Orient (attention redirect)</option>
+                <option value="2">Hint 2 — Pattern (name + data structure)</option>
+                <option value="3">Hint 3 — Sketch (full algorithm outline)</option>
               </select>
             </Field>
           </div>
