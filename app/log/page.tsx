@@ -22,27 +22,29 @@ export default function LogPage() {
     <main className="space-y-8">
       <header>
         <h1 className="text-3xl font-semibold tracking-tight">New problem</h1>
-        <p className="text-sm text-zinc-500 mt-1.5">Log the attempt and capture a trigger card.</p>
+        <p className="text-sm text-zinc-500 mt-1.5">
+          Log after you finish — including contest problems and editorial read-throughs.
+        </p>
       </header>
 
       <form action={action} className="space-y-8">
         <Section>
-          <Field label="Title" full>
+          <Field label="Title" hint="The problem name. Contest problems work too.">
             <input name="title" required placeholder="e.g. Longest Substring Without Repeating Characters" autoFocus />
           </Field>
 
-          <Field label="LeetCode URL (optional)" full>
+          <Field label="LeetCode URL" hint="Optional — lets you open it directly from the review page.">
             <input name="url" type="url" placeholder="https://leetcode.com/problems/..." />
           </Field>
 
           <div className="grid grid-cols-2 gap-4">
-            <Field label="Pattern">
+            <Field label="Pattern" hint="Pick the dominant pattern.">
               <select name="pattern" required defaultValue="">
                 <option value="" disabled>Select…</option>
                 {PATTERNS.map((p) => <option key={p} value={p}>{p}</option>)}
               </select>
             </Field>
-            <Field label="Difficulty">
+            <Field label="Difficulty" hint="LC's rating, not your feeling.">
               <select name="lcDifficulty" required defaultValue="Medium">
                 <option>Easy</option><option>Medium</option><option>Hard</option>
               </select>
@@ -50,38 +52,55 @@ export default function LogPage() {
           </div>
 
           <div className="grid grid-cols-2 gap-4">
-            <Field label="Time spent (min)">
+            <Field label="Time spent (min)" hint="Total time including reading.">
               <input name="elapsedMinutes" type="number" step="0.5" min="0" required placeholder="25" />
             </Field>
-            <Field label="Hints used">
+            <Field label="Hints used" hint="Be honest — this doesn't affect the interval much.">
               <select name="hintsUsed" defaultValue="0">
                 <option value="0">None</option>
-                <option value="1">Pattern hint</option>
+                <option value="1">Pattern hint only</option>
                 <option value="2">Algorithm sketch</option>
                 <option value="3">Read editorial</option>
               </select>
             </Field>
           </div>
 
-          <Field label="How did it go?" full>
+          <Field
+            label="Rating"
+            hint="Lapse = needed to see the solution. Easy = solved fast with no friction."
+          >
             <select name="rating" required defaultValue="3">
-              <option value="1">Saw the solution (lapse)</option>
-              <option value="2">Struggled but solved</option>
+              <option value="1">Lapse — had to read the solution</option>
+              <option value="2">Hard — solved but struggled significantly</option>
               <option value="3">Good — solved cleanly</option>
               <option value="4">Easy — fast and confident</option>
             </select>
           </Field>
         </Section>
 
-        <Section title="Trigger card" subtitle="The actual flashcard. Keep each line terse — one sentence.">
-          <Field label="Recognition" full>
-            <textarea name="recognition" rows={2} placeholder="What feature of the problem signals this pattern?" />
+        <div className="divider" />
+
+        <Section
+          title="Trigger card"
+          subtitle="Fill this after you re-derive the solution with the editorial closed. One sentence each."
+        >
+          <Field
+            label="Recognition"
+            hint="What in the problem statement signals this pattern? e.g. 'find subarray with constraint → sliding window'"
+          >
+            <textarea name="recognition" rows={2} placeholder="e.g. Next greater element → monotonic stack" />
           </Field>
-          <Field label="Key insight" full>
-            <textarea name="insight" rows={2} placeholder="The one non-obvious idea." />
+          <Field
+            label="Key insight"
+            hint="The one non-obvious idea that makes the solution work."
+          >
+            <textarea name="insight" rows={2} placeholder="e.g. Expand right, contract left when the invariant breaks" />
           </Field>
-          <Field label="Failure mode" full>
-            <textarea name="failureMode" rows={2} placeholder="Where you got stuck or what you'd forget." />
+          <Field
+            label="Failure mode"
+            hint="What tripped you up, or what you'd likely forget under pressure."
+          >
+            <textarea name="failureMode" rows={2} placeholder="e.g. Forgot to reset the window when left > right" />
           </Field>
         </Section>
 
@@ -105,11 +124,12 @@ function Section({ title, subtitle, children }: { title?: string; subtitle?: str
   );
 }
 
-function Field({ label, full, children }: { label: string; full?: boolean; children: React.ReactNode }) {
+function Field({ label, hint, children }: { label: string; hint?: string; children: React.ReactNode }) {
   return (
-    <div className={full ? "" : ""}>
+    <div>
       <label>{label}</label>
       {children}
+      {hint && <p className="text-[11px] text-zinc-600 mt-1.5">{hint}</p>}
     </div>
   );
 }

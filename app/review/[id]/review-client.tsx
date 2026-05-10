@@ -68,9 +68,11 @@ export default function ReviewClient({ problem, state }: Props) {
       <div className="card p-5 flex items-center justify-between">
         <div>
           <p className="text-sm text-zinc-300">Cold re-solve</p>
-          <p className="text-xs text-zinc-500 mt-0.5">No peeking at notes or your old code.</p>
+          <p className="text-xs text-zinc-500 mt-0.5 max-w-xs">
+            Re-derive the approach from scratch, then code it. Reveal the trigger card only after you attempt — not before.
+          </p>
         </div>
-        <p className="mono text-3xl font-semibold text-zinc-100 tabular-nums">
+        <p className="mono text-3xl font-semibold text-zinc-100 tabular-nums shrink-0 ml-4">
           {elapsed.toFixed(1)}<span className="text-base text-zinc-500 ml-1">min</span>
         </p>
       </div>
@@ -111,7 +113,10 @@ export default function ReviewClient({ problem, state }: Props) {
       )}
 
       <div className="space-y-2 pt-2">
-        <p className="text-[11px] uppercase tracking-[0.08em] font-medium text-zinc-500 px-1">Rate this attempt</p>
+        <div className="flex items-baseline justify-between px-1">
+          <p className="text-[11px] uppercase tracking-[0.08em] font-medium text-zinc-500">Rate this attempt</p>
+          <p className="text-[11px] text-zinc-600">Based on the cold re-solve, not whether you remembered writing it.</p>
+        </div>
         <div className="grid grid-cols-4 gap-2">
           <RateButton grade={1} label="Lapse" hint="Saw solution" disabled={submitting} onClick={rate} />
           <RateButton grade={2} label="Hard" hint="Struggled" disabled={submitting} onClick={rate} />
