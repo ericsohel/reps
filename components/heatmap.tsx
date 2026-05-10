@@ -4,9 +4,9 @@ const DAY_NAMES = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 const LABELED_DAYS = new Set([1, 3, 5]); // Mon, Wed, Fri
 const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 
-const CELL = 11;       // px
-const GAP = 3;         // px between cells/columns
-const MONTH_GAP = 8;   // px extra space before a new-month column
+const CELL = 10;       // px
+const GAP = 2;         // px between cells/columns
+const MONTH_GAP = 6;   // px extra space before a new-month column
 
 export function Heatmap({ data }: { data: HeatmapData }) {
   // Pad the front so the leftmost column starts on a Sunday.
@@ -112,9 +112,10 @@ export function Heatmap({ data }: { data: HeatmapData }) {
 }
 
 function Cell({ cell }: { cell: DayCell }) {
+  // Fire palette: bright orange for full days, dim ember for partial, dark for none.
   const cls =
-    cell.intensity === 2 ? "bg-emerald-500/85 hover:bg-emerald-400"
-    : cell.intensity === 1 ? "bg-emerald-900/60 hover:bg-emerald-800"
+    cell.intensity === 2 ? "bg-orange-500 hover:bg-orange-400 shadow-[0_0_4px_rgba(249,115,22,0.45)]"
+    : cell.intensity === 1 ? "bg-orange-900/55 hover:bg-orange-800"
     : "bg-zinc-800/60 hover:bg-zinc-700";
   const tip = `${cell.date} · ${cell.newCount} new · ${cell.reviewCount} reviews`;
   return <div className={`w-full h-full rounded-[2px] ${cls} transition-colors`} title={tip} />;
@@ -135,11 +136,11 @@ function Stat({ label, value, unit, large }: { label: string; value: string; uni
 function Legend() {
   return (
     <div className="flex items-center gap-1.5 text-[10px] text-zinc-500">
-      <span>less</span>
-      <div className="w-[11px] h-[11px] rounded-[2px] bg-zinc-800/60" />
-      <div className="w-[11px] h-[11px] rounded-[2px] bg-emerald-900/60" />
-      <div className="w-[11px] h-[11px] rounded-[2px] bg-emerald-500/85" />
-      <span>more</span>
+      <span>cold</span>
+      <div className="w-[10px] h-[10px] rounded-[2px] bg-zinc-800/60" />
+      <div className="w-[10px] h-[10px] rounded-[2px] bg-orange-900/55" />
+      <div className="w-[10px] h-[10px] rounded-[2px] bg-orange-500" />
+      <span>fire</span>
     </div>
   );
 }
