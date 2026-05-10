@@ -1,0 +1,21 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: dark;
+}
+
+body {
+  @apply bg-zinc-950 text-zinc-100 font-sans antialiased;
+}
+
+a { @apply underline decoration-zinc-600 hover:decoration-zinc-300; }
+input, select, textarea {
+  @apply bg-zinc-900 border border-zinc-800 rounded px-3 py-2 text-zinc-100 outline-none focus:border-zinc-500 w-full;
+}
+label { @apply text-xs uppercase tracking-wide text-zinc-400 block mb-1; }
+button { @apply rounded px-3 py-2 font-medium transition-colors; }
+.btn-primary { @apply bg-zinc-100 text-zinc-900 hover:bg-white; }
+.btn-secondary { @apply bg-zinc-800 text-zinc-100 hover:bg-zinc-700; }
+.btn-danger { @apply bg-red-900/40 text-red-200 hover:bg-red-900/60; }
