@@ -1,21 +1,22 @@
 import { db } from "./db";
 import { attempts, srsState } from "./schema";
-import { sql, lte, gte } from "drizzle-orm";
+import { sql, lte } from "drizzle-orm";
 
 const DAY_MS = 86_400_000;
-export const HEATMAP_DAYS = 365; // full year (~53 weeks)
 const NEW_TARGET = 2;
 const REVIEW_TARGET = 3;
 
 export interface DayCell {
-  date: string;          // YYYY-MM-DD in user's local timezone (server-side approximation: UTC)
+  date: string;          // YYYY-MM-DD (UTC)
   newCount: number;
   reviewCount: number;
-  intensity: 0 | 1 | 2;  // 0 empty, 1 partial activity, 2 target met
+  intensity: 0 | 1 | 2;  // 0 empty, 1 partial, 2 target met
+  isFuture: boolean;
 }
 
 export interface HeatmapData {
   cells: DayCell[];
+  year: number;
   totalDays: number;
   activeDays: number;
   greenDays: number;
@@ -33,8 +34,11 @@ function isoDate(ts: number): string {
 
 export async function getHeatmapData(): Promise<HeatmapData> {
   const now = Date.now();
-  const startOfToday = new Date(isoDate(now) + "T00:00:00Z").getTime();
-  const windowStart = startOfToday - (HEATMAP_DAYS - 1) * DAY_MS;
+  const year = new Date(now).getUTCFullYear();
+  const windowStart = new Date(`${year}-01-01T00:00:00Z`).getTime();
+  const windowEnd = new Date(`${year + 1}-01-01T00:00:00Z`).getTime();
+  const totalDays = Math.round((windowEnd - windowStart) / DAY_MS); // 365 or 366
+  const todayKey = isoDate(now);
 
   const rows = await db
     .select({
@@ -43,7 +47,9 @@ export async function getHeatmapData(): Promise<HeatmapData> {
       count: sql<number>`count(*)`,
     })
     .from(attempts)
-    .where(gte(attempts.attemptedAt, new Date(windowStart)))
+    .where(
+      sql`${attempts.attemptedAt} >= ${windowStart} AND ${attempts.attemptedAt} < ${windowEnd}`,
+    )
     .groupBy(sql`strftime('%Y-%m-%d', ${attempts.attemptedAt} / 1000, 'unixepoch')`, attempts.isReview);
 
   const byDate = new Map<string, { newCount: number; reviewCount: number }>();
@@ -54,9 +60,8 @@ export async function getHeatmapData(): Promise<HeatmapData> {
     byDate.set(r.date, cur);
   }
 
-  // For TODAY: compute target as min(REVIEW_TARGET, reviews_due_count) since
-  // historical "available reviews" data is not retained.
-  const todayKey = isoDate(now);
+  // Today's review target = min(REVIEW_TARGET, currently due) since we don't
+  // retain historical "available reviews" data.
   const [{ dueCount }] = await db
     .select({ dueCount: sql<number>`count(*)` })
     .from(srsState)
@@ -64,11 +69,14 @@ export async function getHeatmapData(): Promise<HeatmapData> {
   const todayReviewTarget = Math.min(REVIEW_TARGET, Number(dueCount));
 
   const cells: DayCell[] = [];
-  for (let i = 0; i < HEATMAP_DAYS; i++) {
+  let todayIdx = -1;
+  for (let i = 0; i < totalDays; i++) {
     const ts = windowStart + i * DAY_MS;
     const date = isoDate(ts);
     const counts = byDate.get(date) ?? { newCount: 0, reviewCount: 0 };
     const isToday = date === todayKey;
+    if (isToday) todayIdx = i;
+    const isFuture = ts > now && !isToday;
     const reviewTarget = isToday ? todayReviewTarget : REVIEW_TARGET;
     const totalActivity = counts.newCount + counts.reviewCount;
 
@@ -78,26 +86,28 @@ export async function getHeatmapData(): Promise<HeatmapData> {
     } else if (totalActivity > 0) {
       intensity = 1;
     }
-    cells.push({ date, newCount: counts.newCount, reviewCount: counts.reviewCount, intensity });
+    cells.push({ date, newCount: counts.newCount, reviewCount: counts.reviewCount, intensity, isFuture });
   }
 
-  const greenDays = cells.filter((c) => c.intensity === 2).length;
-  const activeDays = cells.filter((c) => c.intensity > 0).length;
+  // If todayIdx wasn't found (e.g. running outside the year), use last past index.
+  const lastPastIdx = todayIdx >= 0 ? todayIdx : cells.length - 1;
+  const pastCells = cells.slice(0, lastPastIdx + 1);
 
-  // Current streak: walk backward from today
+  const greenDays = pastCells.filter((c) => c.intensity === 2).length;
+  const activeDays = pastCells.filter((c) => c.intensity > 0).length;
+
+  // Current streak: walk backward from today (incomplete today does NOT break streak).
   let currentStreak = 0;
-  for (let i = cells.length - 1; i >= 0; i--) {
+  for (let i = lastPastIdx; i >= 0; i--) {
     if (cells[i].intensity === 2) currentStreak++;
-    else if (cells[i].date === todayKey) {
-      // today incomplete doesn't break streak yet — only count if green
-      continue;
-    } else break;
+    else if (i === lastPastIdx) continue;
+    else break;
   }
 
-  // Longest streak in window
+  // Longest streak considers only past days.
   let longestStreak = 0;
   let run = 0;
-  for (const c of cells) {
+  for (const c of pastCells) {
     if (c.intensity === 2) {
       run++;
       longestStreak = Math.max(longestStreak, run);
@@ -108,7 +118,8 @@ export async function getHeatmapData(): Promise<HeatmapData> {
 
   return {
     cells,
-    totalDays: HEATMAP_DAYS,
+    year,
+    totalDays,
     activeDays,
     greenDays,
     currentStreak,

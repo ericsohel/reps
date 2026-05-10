@@ -42,7 +42,8 @@ export function Heatmap({ data }: { data: HeatmapData }) {
         <div className="flex items-baseline gap-6">
           <Stat label="Current streak" value={`${data.currentStreak}`} unit={data.currentStreak === 1 ? "day" : "days"} large />
           <Stat label="Longest"        value={`${data.longestStreak}d`} />
-          <Stat label="Green / Active" value={`${data.greenDays} / ${data.activeDays}`} />
+          <Stat label={`Lit / Active`} value={`${data.greenDays} / ${data.activeDays}`} />
+          <Stat label="Year"           value={`${data.year}`} />
         </div>
         <Legend />
       </div>
@@ -113,11 +114,17 @@ export function Heatmap({ data }: { data: HeatmapData }) {
 
 function Cell({ cell }: { cell: DayCell }) {
   // Fire palette: bright orange for full days, dim ember for partial, dark for none.
-  const cls =
-    cell.intensity === 2 ? "bg-orange-500 hover:bg-orange-400 shadow-[0_0_4px_rgba(249,115,22,0.45)]"
-    : cell.intensity === 1 ? "bg-orange-900/55 hover:bg-orange-800"
+  // Future days render fainter so the year visibly fills as it progresses.
+  const cls = cell.isFuture
+    ? "bg-zinc-900/50"
+    : cell.intensity === 2
+    ? "bg-orange-500 hover:bg-orange-400 shadow-[0_0_4px_rgba(249,115,22,0.45)]"
+    : cell.intensity === 1
+    ? "bg-orange-900/55 hover:bg-orange-800"
     : "bg-zinc-800/60 hover:bg-zinc-700";
-  const tip = `${cell.date} · ${cell.newCount} new · ${cell.reviewCount} reviews`;
+  const tip = cell.isFuture
+    ? `${cell.date} · upcoming`
+    : `${cell.date} · ${cell.newCount} new · ${cell.reviewCount} reviews`;
   return <div className={`w-full h-full rounded-[2px] ${cls} transition-colors`} title={tip} />;
 }
 
