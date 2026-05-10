@@ -29,6 +29,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             </Link>
             <NavLink href="/">Today</NavLink>
             <NavLink href="/star">STAR</NavLink>
+            <NavLink href="/companies">Companies</NavLink>
             <NavLink href="/leaks">Leaks</NavLink>
             <NavLink href="/process">Process</NavLink>
             <a

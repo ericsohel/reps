@@ -3,7 +3,7 @@
 // instance so subsequent requests are free.
 
 import { db } from "./db";
-import { problems, attempts, srsState, patternState, stars, starSrs } from "./schema";
+import { problems, attempts, srsState, patternState, stars, starSrs, companies } from "./schema";
 import { sql } from "drizzle-orm";
 
 let healthy = false;
@@ -18,6 +18,7 @@ export async function ensureSchemaHealthy() {
       db.select({ n: sql<number>`count(*)` }).from(patternState).limit(1),
       db.select({ n: sql<number>`count(*)` }).from(stars).limit(1),
       db.select({ n: sql<number>`count(*)` }).from(starSrs).limit(1),
+      db.select({ n: sql<number>`count(*)` }).from(companies).limit(1),
     ]);
     healthy = true;
   } catch (err) {

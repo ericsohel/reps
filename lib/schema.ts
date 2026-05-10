@@ -71,3 +71,19 @@ export const starSrs = sqliteTable("star_srs", {
 
 export type Star = typeof stars.$inferSelect;
 export type StarSrs = typeof starSrs.$inferSelect;
+
+// Internship application tracker.
+export const companies = sqliteTable("companies", {
+  id: integer("id").primaryKey({ autoIncrement: true }),
+  name: text("name").notNull().unique(),
+  tier: text("tier", { enum: ["SSS", "SS", "SS-", "S", "A+", "A", "B+", "Custom"] }).notNull(),
+  status: text("status", {
+    enum: ["not_applied", "applied", "oa", "interview", "offer", "accepted", "rejected"],
+  }).notNull().default("not_applied"),
+  notes: text("notes"),
+  appliedAt: integer("applied_at", { mode: "timestamp_ms" }),
+  updatedAt: integer("updated_at", { mode: "timestamp_ms" }).notNull().default(sql`(unixepoch() * 1000)`),
+  isCustom: integer("is_custom", { mode: "boolean" }).notNull().default(false),
+});
+
+export type Company = typeof companies.$inferSelect;
