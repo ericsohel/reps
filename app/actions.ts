@@ -113,6 +113,12 @@ export async function recordReview(
   redirect("/");
 }
 
+export async function deleteProblem(problemId: number) {
+  await db.delete(problems).where(eq(problems.id, problemId));
+  revalidatePath("/");
+  redirect("/");
+}
+
 export async function snoozeReview(problemId: number, days: number) {
   await db.update(srsState).set({
     dueAt: new Date(Date.now() + days * DAY_MS),

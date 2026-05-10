@@ -38,7 +38,11 @@ export default async function Home() {
               : `${ordered.length} due · interleaved by pattern`}
           </p>
         </div>
-        <Link href="/log" className="btn-primary no-underline">
+        <Link
+          href="/log"
+          className="no-underline inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-zinc-900 border border-zinc-800 text-zinc-100 text-sm font-medium hover:bg-zinc-800 hover:border-zinc-700 transition-colors"
+        >
+          <span className="text-zinc-500 text-base leading-none">+</span>
           New problem
         </Link>
       </header>

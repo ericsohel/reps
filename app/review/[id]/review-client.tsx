@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { recordReview, snoozeReview, updateTriggerCard } from "@/app/actions";
+import { recordReview, snoozeReview, updateTriggerCard, deleteProblem } from "@/app/actions";
 
 interface Props {
   problem: {
@@ -41,6 +41,12 @@ export default function ReviewClient({ problem, state }: Props) {
     setSubmitting(true);
     await snoozeReview(problem.id, days);
     window.location.href = "/";
+  }
+
+  async function remove() {
+    if (!confirm(`Delete "${problem.title}"? This cannot be undone.`)) return;
+    setSubmitting(true);
+    await deleteProblem(problem.id);
   }
 
   return (
@@ -119,6 +125,13 @@ export default function ReviewClient({ problem, state }: Props) {
         <button disabled={submitting} onClick={() => snooze(1)} className="btn-ghost text-xs px-2.5 py-1">1d</button>
         <button disabled={submitting} onClick={() => snooze(3)} className="btn-ghost text-xs px-2.5 py-1">3d</button>
         <button disabled={submitting} onClick={() => snooze(7)} className="btn-ghost text-xs px-2.5 py-1">1w</button>
+        <button
+          disabled={submitting}
+          onClick={remove}
+          className="btn-danger text-xs px-2.5 py-1 ml-auto"
+        >
+          delete
+        </button>
       </div>
     </main>
   );
