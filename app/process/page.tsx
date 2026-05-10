@@ -241,8 +241,8 @@ export default function ProcessPage() {
         <div className="card divide-y divide-zinc-800/80 text-sm">
           {[
             { grade: "Lapse", color: "text-rose-400",    desc: "You read the editorial before solving it yourself." },
-            { grade: "Hard",  color: "text-amber-400",   desc: "Solved it, but needed significant hints or struggled badly." },
-            { grade: "Good",  color: "text-zinc-200",    desc: "Solved it cleanly within expected time." },
+            { grade: "Hints", color: "text-amber-400",   desc: "Used hints to solve, or struggled significantly without them." },
+            { grade: "Good",  color: "text-zinc-200",    desc: "Solved it cleanly within expected time, no hints." },
             { grade: "Easy",  color: "text-emerald-400", desc: "Fast and confident. You'd solve this in a contest without hesitation." },
           ].map(({ grade, color, desc }) => (
             <div key={grade} className="flex items-start gap-4 px-4 py-3">

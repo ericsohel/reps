@@ -57,33 +57,41 @@ export function SolveCounters({ initial }: Props) {
     });
   }
 
+  const total = optimistic.easy + optimistic.medium + optimistic.hard;
+
   return (
-    <div className="grid grid-cols-3 gap-3">
-      {ITEMS.map((it) => (
-        <div
-          key={it.key}
-          className={`relative rounded-lg border ${it.tone.ring} ${it.tone.glow} transition-all`}
-        >
-          <button
-            onClick={() => bump(it.key, 1)}
-            className="w-full p-5 text-center group"
-            title="Click to add one"
+    <div className="space-y-2">
+      <div className="grid grid-cols-3 gap-3">
+        {ITEMS.map((it) => (
+          <div
+            key={it.key}
+            className={`relative rounded-lg border ${it.tone.ring} ${it.tone.glow} transition-all`}
           >
-            <div className={`mono text-4xl font-semibold tabular-nums ${it.tone.text} group-hover:scale-105 transition-transform inline-block`}>
-              {optimistic[it.key]}
-            </div>
-            <div className="text-xs uppercase tracking-widest text-zinc-500 mt-1.5">{it.label}</div>
-          </button>
-          <button
-            onClick={() => bump(it.key, -1)}
-            disabled={optimistic[it.key] === 0}
-            className={`absolute top-2 right-2 w-6 h-6 rounded-md text-sm flex items-center justify-center disabled:opacity-20 disabled:cursor-not-allowed ${it.tone.minus}`}
-            title="Subtract one"
-          >
-            −
-          </button>
-        </div>
-      ))}
+            <button
+              onClick={() => bump(it.key, 1)}
+              className="w-full p-5 text-center group"
+              title="Click to add one"
+            >
+              <div className={`mono text-4xl font-semibold tabular-nums ${it.tone.text} group-hover:scale-105 transition-transform inline-block`}>
+                {optimistic[it.key]}
+              </div>
+              <div className="text-xs uppercase tracking-widest text-zinc-500 mt-1.5">{it.label}</div>
+            </button>
+            <button
+              onClick={() => bump(it.key, -1)}
+              disabled={optimistic[it.key] === 0}
+              className={`absolute top-2 right-2 w-6 h-6 rounded-md text-sm flex items-center justify-center disabled:opacity-20 disabled:cursor-not-allowed ${it.tone.minus}`}
+              title="Subtract one"
+            >
+              −
+            </button>
+          </div>
+        ))}
+      </div>
+      <div className="px-4 py-2.5 rounded-lg border border-zinc-800/80 bg-zinc-900/30 flex items-center justify-between">
+        <span className="text-xs text-zinc-500 uppercase tracking-widest">Total solved</span>
+        <span className="mono text-xl font-semibold text-zinc-100 tabular-nums">{total}</span>
+      </div>
     </div>
   );
 }

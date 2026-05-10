@@ -51,28 +51,18 @@ export default function LogPage() {
             </Field>
           </div>
 
-          <div className="grid grid-cols-2 gap-4">
-            <Field label="Time spent (min)" hint="Total time including reading.">
-              <input name="elapsedMinutes" type="number" step="0.5" min="0" required placeholder="25" />
-            </Field>
-            <Field label="Hints used" hint="Which hint did you go to last? Editorial = auto-Lapse rating.">
-              <select name="hintsUsed" defaultValue="0">
-                <option value="0">None — solved unaided</option>
-                <option value="1">Hint 1 — Orient (attention redirect)</option>
-                <option value="2">Hint 2 — Pattern (name + data structure)</option>
-                <option value="3">Hint 3 — Sketch (full algorithm outline)</option>
-              </select>
-            </Field>
-          </div>
+          <Field label="Time spent (min)" hint="Total time including reading.">
+            <input name="elapsedMinutes" type="number" step="0.5" min="0" required placeholder="25" />
+          </Field>
 
           <Field
             label="Rating"
-            hint="Lapse = needed to see the solution. Easy = solved fast with no friction."
+            hint="Pick the option that matches how the attempt actually went."
           >
             <select name="rating" required defaultValue="3">
-              <option value="1">Lapse — had to read the solution</option>
-              <option value="2">Hard — solved but struggled significantly</option>
-              <option value="3">Good — solved cleanly</option>
+              <option value="1">Lapse — read the editorial</option>
+              <option value="2">Hints — used hints / struggled significantly</option>
+              <option value="3">Good — solved cleanly without hints</option>
               <option value="4">Easy — fast and confident</option>
             </select>
           </Field>

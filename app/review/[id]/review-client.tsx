@@ -119,7 +119,7 @@ export default function ReviewClient({ problem, state }: Props) {
         </div>
         <div className="grid grid-cols-4 gap-2">
           <RateButton grade={1} label="Lapse" hint="Saw solution" disabled={submitting} onClick={rate} />
-          <RateButton grade={2} label="Hard" hint="Struggled" disabled={submitting} onClick={rate} />
+          <RateButton grade={2} label="Hints" hint="Used hints" disabled={submitting} onClick={rate} />
           <RateButton grade={3} label="Good" hint="Solved" disabled={submitting} onClick={rate} />
           <RateButton grade={4} label="Easy" hint="Fast" disabled={submitting} onClick={rate} />
         </div>
