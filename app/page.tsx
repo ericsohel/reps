@@ -4,26 +4,32 @@ import { eq, lte } from "drizzle-orm";
 import Link from "next/link";
 import { interleaveByPattern } from "@/lib/queue";
 import { ensureSchemaHealthy } from "@/lib/health";
+import { getHeatmapData } from "@/lib/heatmap";
+import { Heatmap } from "@/components/heatmap";
 
 export const dynamic = "force-dynamic";
 
 export default async function Home() {
   await ensureSchemaHealthy();
   const now = new Date();
-  const due = await db
-    .select({
-      id: problems.id,
-      title: problems.title,
-      pattern: problems.pattern,
-      lcDifficulty: problems.lcDifficulty,
-      url: problems.url,
-      dueAt: srsState.dueAt,
-      stability: srsState.stability,
-      reps: srsState.reps,
-    })
-    .from(srsState)
-    .innerJoin(problems, eq(problems.id, srsState.problemId))
-    .where(lte(srsState.dueAt, now));
+
+  const [due, heatmap] = await Promise.all([
+    db
+      .select({
+        id: problems.id,
+        title: problems.title,
+        pattern: problems.pattern,
+        lcDifficulty: problems.lcDifficulty,
+        url: problems.url,
+        dueAt: srsState.dueAt,
+        stability: srsState.stability,
+        reps: srsState.reps,
+      })
+      .from(srsState)
+      .innerJoin(problems, eq(problems.id, srsState.problemId))
+      .where(lte(srsState.dueAt, now)),
+    getHeatmapData(),
+  ]);
 
   const ordered = interleaveByPattern(
     due.map((d) => ({ ...d, dueAt: d.dueAt.getTime() })),
@@ -48,6 +54,8 @@ export default async function Home() {
           New problem
         </Link>
       </header>
+
+      <Heatmap data={heatmap} />
 
       {ordered.length === 0 ? (
         <div className="card p-12 text-center">
