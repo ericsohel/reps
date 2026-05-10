@@ -1,7 +1,9 @@
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 
-export default function LoginPage({ searchParams }: { searchParams: Promise<{ error?: string }> }) {
+export default async function LoginPage({ searchParams }: { searchParams: Promise<{ error?: string }> }) {
+  const sp = await searchParams;
+
   async function login(formData: FormData) {
     "use server";
     const passphrase = String(formData.get("passphrase") ?? "");
@@ -15,12 +17,18 @@ export default function LoginPage({ searchParams }: { searchParams: Promise<{ er
   }
 
   return (
-    <main className="space-y-4 max-w-sm">
-      <h1 className="text-2xl font-bold">Sign in</h1>
-      <form action={login} className="space-y-3">
-        <input name="passphrase" type="password" placeholder="passphrase" autoFocus />
-        <button className="btn-primary w-full">Enter</button>
-      </form>
+    <main className="min-h-[60vh] flex items-center">
+      <div className="w-full max-w-sm mx-auto space-y-6">
+        <div>
+          <h1 className="text-2xl font-semibold tracking-tight">reps</h1>
+          <p className="text-sm text-zinc-500 mt-1">Enter your passphrase to continue.</p>
+        </div>
+        <form action={login} className="space-y-3">
+          <input name="passphrase" type="password" placeholder="passphrase" autoFocus />
+          {sp.error && <p className="text-xs text-rose-400">Incorrect passphrase.</p>}
+          <button className="btn-primary w-full py-2.5">Continue</button>
+        </form>
+      </div>
     </main>
   );
 }

@@ -45,34 +45,47 @@ export default function ReviewClient({ problem, state }: Props) {
 
   return (
     <main className="space-y-6">
-      <header className="space-y-1">
-        <p className="text-xs uppercase tracking-wide text-zinc-500">{problem.pattern} · {problem.lcDifficulty}</p>
-        <h1 className="text-2xl font-bold">{problem.title}</h1>
+      <header className="space-y-3">
+        <div className="flex items-center gap-2 text-xs text-zinc-500">
+          <DifficultyBadge d={problem.lcDifficulty} />
+          <span>·</span>
+          <span>{problem.pattern}</span>
+        </div>
+        <h1 className="text-2xl font-semibold tracking-tight text-zinc-50">{problem.title}</h1>
         {problem.url && (
-          <a href={problem.url} target="_blank" rel="noreferrer" className="text-sm">Open on LeetCode →</a>
+          <a href={problem.url} target="_blank" rel="noreferrer" className="text-sm inline-flex items-center gap-1.5">
+            Open on LeetCode <span className="text-xs">↗</span>
+          </a>
         )}
       </header>
 
-      <div className="rounded border border-zinc-800 p-4">
-        <div className="flex items-baseline justify-between">
-          <p className="text-sm text-zinc-400">Cold re-solve. Don&apos;t look at the trigger card or your old code.</p>
-          <p className="font-mono text-2xl">{elapsed.toFixed(1)} min</p>
+      <div className="card p-5 flex items-center justify-between">
+        <div>
+          <p className="text-sm text-zinc-300">Cold re-solve</p>
+          <p className="text-xs text-zinc-500 mt-0.5">No peeking at notes or your old code.</p>
         </div>
-        <p className="text-xs text-zinc-500 mt-2">
-          Rep #{state.reps + 1} · S = {state.stability.toFixed(1)}d · D = {state.difficulty.toFixed(1)} · {state.lapses} lapses
+        <p className="mono text-3xl font-semibold text-zinc-100 tabular-nums">
+          {elapsed.toFixed(1)}<span className="text-base text-zinc-500 ml-1">min</span>
         </p>
+      </div>
+
+      <div className="flex gap-4 text-[11px] text-zinc-500 mono px-1">
+        <Stat label="rep" value={`#${state.reps + 1}`} />
+        <Stat label="stability" value={`${state.stability.toFixed(1)}d`} />
+        <Stat label="difficulty" value={state.difficulty.toFixed(1)} />
+        <Stat label="lapses" value={state.lapses.toString()} />
       </div>
 
       {!revealCard ? (
         <button onClick={() => setRevealCard(true)} className="btn-secondary w-full">
-          Reveal trigger card (only after attempt)
+          Reveal trigger card
         </button>
       ) : (
-        <div className="rounded border border-zinc-800 p-4 space-y-3">
+        <div className="card p-5 space-y-4">
           <div className="flex items-center justify-between">
-            <p className="text-xs uppercase tracking-wide text-zinc-400">Trigger card</p>
-            <button onClick={() => setEditingCard((e) => !e)} className="text-xs text-zinc-400 hover:text-zinc-100 underline">
-              {editingCard ? "stop editing" : "edit"}
+            <p className="text-[11px] uppercase tracking-[0.08em] font-medium text-zinc-500">Trigger card</p>
+            <button onClick={() => setEditingCard((e) => !e)} className="text-xs text-zinc-500 hover:text-zinc-200 px-2 py-1">
+              {editingCard ? "done" : "edit"}
             </button>
           </div>
           {editingCard ? (
@@ -82,28 +95,72 @@ export default function ReviewClient({ problem, state }: Props) {
               <div><label>Failure mode</label><textarea rows={2} value={card.failureMode} onChange={(e) => setCard({ ...card, failureMode: e.target.value })} /></div>
             </div>
           ) : (
-            <dl className="space-y-2 text-sm">
-              <div><dt className="text-zinc-500 text-xs">Recognition</dt><dd>{card.recognition || <em className="text-zinc-600">none</em>}</dd></div>
-              <div><dt className="text-zinc-500 text-xs">Insight</dt><dd>{card.insight || <em className="text-zinc-600">none</em>}</dd></div>
-              <div><dt className="text-zinc-500 text-xs">Failure mode</dt><dd>{card.failureMode || <em className="text-zinc-600">none</em>}</dd></div>
+            <dl className="space-y-3 text-sm">
+              <CardRow label="Recognition" value={card.recognition} />
+              <CardRow label="Insight" value={card.insight} />
+              <CardRow label="Failure mode" value={card.failureMode} />
             </dl>
           )}
         </div>
       )}
 
-      <div className="grid grid-cols-4 gap-2">
-        <button disabled={submitting} onClick={() => rate(1)} className="btn-danger">Saw solution</button>
-        <button disabled={submitting} onClick={() => rate(2)} className="btn-secondary">Struggled</button>
-        <button disabled={submitting} onClick={() => rate(3)} className="btn-secondary">Good</button>
-        <button disabled={submitting} onClick={() => rate(4)} className="btn-primary">Easy</button>
+      <div className="space-y-2 pt-2">
+        <p className="text-[11px] uppercase tracking-[0.08em] font-medium text-zinc-500 px-1">Rate this attempt</p>
+        <div className="grid grid-cols-4 gap-2">
+          <RateButton grade={1} label="Lapse" hint="Saw solution" disabled={submitting} onClick={rate} />
+          <RateButton grade={2} label="Hard" hint="Struggled" disabled={submitting} onClick={rate} />
+          <RateButton grade={3} label="Good" hint="Solved" disabled={submitting} onClick={rate} />
+          <RateButton grade={4} label="Easy" hint="Fast" disabled={submitting} onClick={rate} />
+        </div>
       </div>
 
-      <div className="flex items-center gap-2 text-xs">
-        <span className="text-zinc-500">snooze:</span>
-        <button disabled={submitting} onClick={() => snooze(1)} className="btn-secondary text-xs">1d</button>
-        <button disabled={submitting} onClick={() => snooze(3)} className="btn-secondary text-xs">3d</button>
-        <button disabled={submitting} onClick={() => snooze(7)} className="btn-secondary text-xs">7d</button>
+      <div className="flex items-center gap-2 text-xs pt-2">
+        <span className="text-zinc-600 mr-1">snooze</span>
+        <button disabled={submitting} onClick={() => snooze(1)} className="btn-ghost text-xs px-2.5 py-1">1d</button>
+        <button disabled={submitting} onClick={() => snooze(3)} className="btn-ghost text-xs px-2.5 py-1">3d</button>
+        <button disabled={submitting} onClick={() => snooze(7)} className="btn-ghost text-xs px-2.5 py-1">1w</button>
       </div>
     </main>
+  );
+}
+
+function Stat({ label, value }: { label: string; value: string }) {
+  return (
+    <span>
+      <span className="text-zinc-600">{label}</span> <span className="text-zinc-300">{value}</span>
+    </span>
+  );
+}
+
+function CardRow({ label, value }: { label: string; value: string }) {
+  return (
+    <div>
+      <dt className="text-zinc-500 text-[11px] uppercase tracking-[0.08em] font-medium mb-1">{label}</dt>
+      <dd className="text-zinc-200 leading-relaxed">{value || <em className="text-zinc-600 not-italic">— empty —</em>}</dd>
+    </div>
+  );
+}
+
+function DifficultyBadge({ d }: { d: "Easy" | "Medium" | "Hard" }) {
+  const color =
+    d === "Easy" ? "text-emerald-400"
+    : d === "Medium" ? "text-amber-400"
+    : "text-rose-400";
+  return <span className={`${color} font-medium`}>{d}</span>;
+}
+
+function RateButton({ grade, label, hint, disabled, onClick }: {
+  grade: 1 | 2 | 3 | 4; label: string; hint: string;
+  disabled: boolean; onClick: (g: 1 | 2 | 3 | 4) => void;
+}) {
+  return (
+    <button
+      onClick={() => onClick(grade)}
+      disabled={disabled}
+      className={`btn-rate btn-rate-${grade}`}
+    >
+      <span className="font-semibold text-sm">{label}</span>
+      <span className="text-[10px] text-zinc-500">{hint}</span>
+    </button>
   );
 }
