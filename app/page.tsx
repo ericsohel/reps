@@ -3,10 +3,12 @@ import { problems, srsState } from "@/lib/schema";
 import { eq, lte } from "drizzle-orm";
 import Link from "next/link";
 import { interleaveByPattern } from "@/lib/queue";
+import { ensureSchemaHealthy } from "@/lib/health";
 
 export const dynamic = "force-dynamic";
 
 export default async function Home() {
+  await ensureSchemaHealthy();
   const now = new Date();
   const due = await db
     .select({
