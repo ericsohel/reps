@@ -87,3 +87,12 @@ export const companies = sqliteTable("companies", {
 });
 
 export type Company = typeof companies.$inferSelect;
+
+// Standalone counters for self-reported solve totals (Easy/Medium/Hard).
+// Not tied to any other table; pure tally.
+export const counters = sqliteTable("counters", {
+  key: text("key").primaryKey(),
+  count: integer("count").notNull().default(0),
+});
+
+export type Counter = typeof counters.$inferSelect;
