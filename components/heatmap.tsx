@@ -1,6 +1,7 @@
 import type { HeatmapData, DayCell } from "@/lib/heatmap";
 
-const DAY_LABELS = ["Mon", "Wed", "Fri"]; // sparse labels
+const DAY_NAMES = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+const LABELED_DAYS = new Set([1, 3, 5]); // Mon, Wed, Fri
 
 export function Heatmap({ data }: { data: HeatmapData }) {
   // Lay out as columns of weeks. Pad the front so the leftmost column starts on a Sunday.
@@ -42,8 +43,10 @@ export function Heatmap({ data }: { data: HeatmapData }) {
 
       <div className="flex gap-1 overflow-x-auto pb-1">
         <div className="flex flex-col gap-[3px] pr-1.5 pt-[14px] text-[9px] text-zinc-600 mono">
-          {DAY_LABELS.map((d) => (
-            <div key={d} style={{ height: "10px" }} className="flex items-center">{d}</div>
+          {Array.from({ length: 7 }).map((_, i) => (
+            <div key={i} style={{ height: "10px" }} className="flex items-center">
+              {LABELED_DAYS.has(i) ? DAY_NAMES[i] : ""}
+            </div>
           ))}
         </div>
         <div className="flex gap-[3px]">
