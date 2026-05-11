@@ -123,7 +123,73 @@ export default function CompaniesClient({ tierGroups, pipeline, closed, activeCo
           )}
         </section>
       )}
+
+      <Resources />
     </main>
+  );
+}
+
+const RESOURCES = [
+  {
+    group: "Internships",
+    links: [
+      { label: "GitHub · Summer 2026",    sub: "SimplifyJobs",    href: "https://github.com/SimplifyJobs/Summer2026-Internships" },
+      { label: "Discord · Internship feed", sub: "CS Career Hub",  href: "https://discord.com/channels/519640186167099402/1269342448057057301" },
+      { label: "LinkedIn Jobs",            sub: "SWE Intern",      href: "https://www.linkedin.com/jobs/search-results/?currentJobId=4332425058&keywords=software%20engineer%20intern&origin=SEMANTIC_SEARCH_LANDING_PAGE" },
+    ],
+  },
+  {
+    group: "New Grad",
+    links: [
+      { label: "GitHub · New Grad 2026",  sub: "SimplifyJobs",    href: "https://github.com/SimplifyJobs/New-Grad-Positions#-software-engineering-new-grad-roles" },
+      { label: "Discord · New Grad feed", sub: "CS Career Hub",   href: "https://discord.com/channels/519640186167099402/1276389560129028096" },
+    ],
+  },
+  {
+    group: "Follow",
+    links: [
+      { label: "zero2sudo",               sub: "Instagram",        href: "https://www.instagram.com/zero2sudo/" },
+    ],
+  },
+] as const;
+
+const PLATFORM_ICON: Record<string, string> = {
+  GitHub: "⑂",
+  Discord: "◈",
+  LinkedIn: "in",
+  Instagram: "◎",
+};
+
+function Resources() {
+  return (
+    <section className="space-y-3">
+      <h2 className="text-xs font-semibold text-zinc-500 uppercase tracking-widest">Resources</h2>
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+        {RESOURCES.map((group) => (
+          <div key={group.group} className="card p-3 space-y-1.5">
+            <p className="text-[10px] uppercase tracking-widest font-semibold text-zinc-500 px-1 pb-0.5">{group.group}</p>
+            {group.links.map((link) => (
+              <a
+                key={link.href}
+                href={link.href}
+                target="_blank"
+                rel="noreferrer"
+                className="no-underline flex items-center gap-3 px-2.5 py-2 rounded-md border border-transparent hover:border-zinc-700 hover:bg-zinc-800/50 transition-all group"
+              >
+                <span className="text-[11px] mono text-zinc-600 group-hover:text-zinc-400 w-5 text-center">
+                  {PLATFORM_ICON[link.sub] ?? "↗"}
+                </span>
+                <div className="min-w-0">
+                  <p className="text-xs text-zinc-200 font-medium truncate">{link.label}</p>
+                  <p className="text-[10px] text-zinc-600">{link.sub}</p>
+                </div>
+                <span className="ml-auto text-zinc-700 group-hover:text-zinc-400 text-xs">↗</span>
+              </a>
+            ))}
+          </div>
+        ))}
+      </div>
+    </section>
   );
 }
 
