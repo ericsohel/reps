@@ -143,6 +143,7 @@ const RESOURCES = [
     links: [
       { label: "GitHub · New Grad 2026",  sub: "SimplifyJobs",    href: "https://github.com/SimplifyJobs/New-Grad-Positions#-software-engineering-new-grad-roles" },
       { label: "Discord · New Grad feed", sub: "CS Career Hub",   href: "https://discord.com/channels/519640186167099402/1276389560129028096" },
+      { label: "LinkedIn Jobs",            sub: "SWE New Grad",    href: "https://www.linkedin.com/jobs/search-results/?currentJobId=4411728704&keywords=software%20engineer%20new%20grad&origin=SEMANTIC_SEARCH_LANDING_PAGE" },
     ],
   },
   {
