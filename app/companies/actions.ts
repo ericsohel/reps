@@ -1,10 +1,21 @@
 "use server";
 
 import { db } from "@/lib/db";
-import { companies } from "@/lib/schema";
-import { NEXT_STATUS, SEED_COMPANIES, type Status, type Tier } from "@/lib/companies-seed";
+import { companies, applications } from "@/lib/schema";
+import { SEED_COMPANIES, type Tier } from "@/lib/companies-seed";
 import { eq, sql } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
+
+type AppStatus = "applied" | "oa" | "interview" | "offer" | "accepted" | "rejected";
+const FORWARD: Record<AppStatus, AppStatus> = {
+  applied: "oa",
+  oa: "interview",
+  interview: "offer",
+  offer: "accepted",
+  accepted: "accepted",
+  rejected: "rejected",
+};
+const ORDER: AppStatus[] = ["applied", "oa", "interview", "offer", "accepted"];
 
 export async function ensureSeeded() {
   const [{ count }] = await db.select({ count: sql<number>`count(*)` }).from(companies);
@@ -14,48 +25,7 @@ export async function ensureSeeded() {
   );
 }
 
-export async function advanceCompany(id: number) {
-  const [c] = await db.select().from(companies).where(eq(companies.id, id));
-  if (!c) throw new Error("not found");
-  const next = NEXT_STATUS[c.status];
-  await db.update(companies).set({
-    status: next,
-    appliedAt: c.status === "not_applied" ? new Date() : c.appliedAt,
-    updatedAt: new Date(),
-  }).where(eq(companies.id, id));
-  revalidatePath("/companies");
-}
-
-export async function regressCompany(id: number) {
-  const [c] = await db.select().from(companies).where(eq(companies.id, id));
-  if (!c) throw new Error("not found");
-  const order: Status[] = ["not_applied", "applied", "oa", "interview", "offer", "accepted"];
-  const idx = order.indexOf(c.status);
-  const prev = idx > 0 ? order[idx - 1] : "not_applied";
-  await db.update(companies).set({
-    status: prev,
-    updatedAt: new Date(),
-  }).where(eq(companies.id, id));
-  revalidatePath("/companies");
-}
-
-export async function rejectCompany(id: number) {
-  await db.update(companies).set({
-    status: "rejected",
-    updatedAt: new Date(),
-  }).where(eq(companies.id, id));
-  revalidatePath("/companies");
-}
-
-export async function reopenCompany(id: number) {
-  // Move a rejected/accepted company back to not_applied to retry next cycle.
-  await db.update(companies).set({
-    status: "not_applied",
-    appliedAt: null,
-    updatedAt: new Date(),
-  }).where(eq(companies.id, id));
-  revalidatePath("/companies");
-}
+// Catalog operations -----------------------------------------------------------
 
 export async function addCompany(name: string, tier: Tier) {
   const trimmed = name.trim();
@@ -68,7 +38,81 @@ export async function addCompany(name: string, tier: Tier) {
   revalidatePath("/companies");
 }
 
-export async function deleteCompany(id: number) {
-  await db.delete(companies).where(eq(companies.id, id));
+export async function deleteCompany(companyId: number) {
+  // Cascade deletes applications via FK.
+  await db.delete(companies).where(eq(companies.id, companyId));
+  revalidatePath("/companies");
+}
+
+// Application operations -------------------------------------------------------
+
+export async function createApplication(companyId: number, role?: string, url?: string) {
+  const now = new Date();
+  await db.insert(applications).values({
+    companyId,
+    role: role?.trim() || null,
+    url: url?.trim() || null,
+    status: "applied",
+    appliedAt: now,
+    updatedAt: now,
+  });
+  revalidatePath("/companies");
+}
+
+export async function advanceApplication(appId: number) {
+  const [app] = await db.select().from(applications).where(eq(applications.id, appId));
+  if (!app) throw new Error("application not found");
+  const next = FORWARD[app.status as AppStatus];
+  if (next === app.status) return; // no change for terminal states
+  await db.update(applications).set({
+    status: next,
+    updatedAt: new Date(),
+  }).where(eq(applications.id, appId));
+  revalidatePath("/companies");
+}
+
+export async function regressApplication(appId: number) {
+  const [app] = await db.select().from(applications).where(eq(applications.id, appId));
+  if (!app) throw new Error("application not found");
+  // Closed states regress to applied (reopen).
+  if (app.status === "rejected") {
+    await db.update(applications).set({ status: "applied", updatedAt: new Date() }).where(eq(applications.id, appId));
+  } else {
+    const idx = ORDER.indexOf(app.status as AppStatus);
+    const prev = idx > 0 ? ORDER[idx - 1] : "applied";
+    await db.update(applications).set({ status: prev, updatedAt: new Date() }).where(eq(applications.id, appId));
+  }
+  revalidatePath("/companies");
+}
+
+export async function rejectApplication(appId: number) {
+  await db.update(applications).set({
+    status: "rejected",
+    updatedAt: new Date(),
+  }).where(eq(applications.id, appId));
+  revalidatePath("/companies");
+}
+
+export async function reopenApplication(appId: number) {
+  await db.update(applications).set({
+    status: "applied",
+    updatedAt: new Date(),
+  }).where(eq(applications.id, appId));
+  revalidatePath("/companies");
+}
+
+export async function deleteApplication(appId: number) {
+  await db.delete(applications).where(eq(applications.id, appId));
+  revalidatePath("/companies");
+}
+
+export async function updateApplication(
+  appId: number,
+  fields: { role?: string | null; url?: string | null },
+) {
+  const updates: Partial<{ role: string | null; url: string | null }> = {};
+  if (fields.role !== undefined) updates.role = fields.role?.trim() || null;
+  if (fields.url !== undefined) updates.url = fields.url?.trim() || null;
+  await db.update(applications).set(updates).where(eq(applications.id, appId));
   revalidatePath("/companies");
 }

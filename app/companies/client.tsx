@@ -1,25 +1,53 @@
 "use client";
 
 import { useState, useTransition } from "react";
-import { advanceCompany, regressCompany, rejectCompany, reopenCompany, addCompany, deleteCompany } from "./actions";
+import {
+  createApplication,
+  advanceApplication,
+  regressApplication,
+  rejectApplication,
+  reopenApplication,
+  deleteApplication,
+  updateApplication,
+  addCompany,
+  deleteCompany,
+} from "./actions";
 import { TIERS, type Tier, type Status } from "@/lib/companies-seed";
 
 interface CompanyItem {
   id: number;
   name: string;
   tier: Tier;
-  status: Status;
   isCustom: boolean;
-  appliedAt: number | null;
+  activeApplicationCount: number;
+  hasAnyApplication: boolean;
+}
+
+interface AppItem {
+  id: number;
+  companyId: number;
+  companyName: string;
+  tier: Tier;
+  role: string;
+  url: string;
+  status: Status;
+  appliedAt: number;
   updatedAt: number;
 }
 
 interface Props {
   tierGroups: { tier: Tier; items: CompanyItem[] }[];
-  pipeline: { status: Status; label: string; items: CompanyItem[] }[];
-  closed: CompanyItem[];
+  pipeline: { status: Status; label: string; items: AppItem[] }[];
+  closed: AppItem[];
   activeCount: number;
   tierColors: Record<Tier, { text: string; bg: string; border: string }>;
+}
+
+const DAY_MS = 86_400_000;
+const STALE_DAYS = 14;
+
+function daysSince(ts: number) {
+  return Math.floor((Date.now() - ts) / DAY_MS);
 }
 
 export default function CompaniesClient({ tierGroups, pipeline, closed, activeCount, tierColors }: Props) {
@@ -33,8 +61,8 @@ export default function CompaniesClient({ tierGroups, pipeline, closed, activeCo
           <h1 className="text-3xl font-semibold tracking-tight">Internships</h1>
           <p className="text-sm text-zinc-500 mt-1.5">
             {activeCount === 0
-              ? "Click a target to mark it Applied. Click again to advance through OA → Interview → Offer."
-              : `${activeCount} active in pipeline.`}
+              ? "Click a target to add an application. You can apply to multiple roles per company."
+              : `${activeCount} active application${activeCount === 1 ? "" : "s"}.`}
           </p>
         </div>
         <button onClick={() => setAdding(true)} className="px-4 py-2 rounded-lg bg-zinc-900 border border-zinc-800 text-zinc-100 text-sm font-medium hover:bg-zinc-800 hover:border-zinc-700 transition-colors">
@@ -42,7 +70,7 @@ export default function CompaniesClient({ tierGroups, pipeline, closed, activeCo
         </button>
       </header>
 
-      {adding && <AddForm onClose={() => setAdding(false)} />}
+      {adding && <AddCompanyForm onClose={() => setAdding(false)} />}
 
       {/* Pipeline */}
       {activeCount > 0 && (
@@ -78,8 +106,8 @@ export default function CompaniesClient({ tierGroups, pipeline, closed, activeCo
           </button>
           {showClosed && (
             <div className="flex flex-wrap gap-2">
-              {closed.map((c) => (
-                <ClosedChip key={c.id} item={c} />
+              {closed.map((a) => (
+                <ClosedChip key={a.id} app={a} />
               ))}
             </div>
           )}
@@ -90,23 +118,93 @@ export default function CompaniesClient({ tierGroups, pipeline, closed, activeCo
 }
 
 function TierRow({ tier, items, colors }: { tier: Tier; items: CompanyItem[]; colors: { text: string; bg: string; border: string } }) {
-  // Subtle left-bar accent in tier color, integrated row.
   return (
-    <div className={`flex items-stretch rounded-lg border border-zinc-800/80 bg-zinc-900/20 overflow-hidden`}>
+    <div className="flex items-stretch rounded-lg border border-zinc-800/80 bg-zinc-900/20 overflow-hidden">
       <div className={`flex items-center justify-center px-3 ${colors.bg} ${colors.text} border-r border-zinc-800/80 min-w-[56px]`}>
         <span className="text-sm mono font-bold tracking-wider">{tier}</span>
       </div>
       <div className="min-w-0 flex-1 px-3 py-3">
         {items.length === 0 ? (
-          <p className="text-xs text-zinc-600 italic pt-0.5">— all moved to pipeline —</p>
+          <p className="text-xs text-zinc-600 italic pt-0.5">— empty —</p>
         ) : (
           <div className="flex flex-wrap gap-1.5">
             {items.map((c) => (
-              <CompanyChip key={c.id} item={c} variant="tier" />
+              <CompanyChip key={c.id} company={c} />
             ))}
           </div>
         )}
       </div>
+    </div>
+  );
+}
+
+function CompanyChip({ company }: { company: CompanyItem }) {
+  const [open, setOpen] = useState(false);
+  const [pending, start] = useTransition();
+  const [role, setRole] = useState("");
+  const [url, setUrl] = useState("");
+
+  function submit() {
+    start(async () => {
+      await createApplication(company.id, role, url);
+      setRole("");
+      setUrl("");
+      setOpen(false);
+    });
+  }
+
+  return (
+    <div className="relative inline-block">
+      <button
+        onClick={() => setOpen((o) => !o)}
+        disabled={pending}
+        className={`group inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md border bg-zinc-950/50 text-[12px] text-zinc-200 transition-all ${
+          open ? "border-zinc-600 bg-zinc-800" : "border-zinc-800 hover:bg-zinc-800 hover:border-zinc-600"
+        } ${pending ? "opacity-50" : ""}`}
+        title="Click to add an application"
+      >
+        <span>{company.name}</span>
+        {company.activeApplicationCount > 0 && (
+          <span className="text-[10px] mono px-1 rounded bg-amber-900/40 text-amber-300">
+            {company.activeApplicationCount}
+          </span>
+        )}
+        {company.isCustom && (
+          <span
+            onClick={(e) => { e.stopPropagation(); start(() => deleteCompany(company.id)); }}
+            className="ml-0.5 text-zinc-600 hover:text-rose-400 cursor-pointer text-xs"
+            title="Delete company"
+          >
+            ×
+          </span>
+        )}
+      </button>
+      {open && (
+        <div className="absolute left-0 top-full mt-1.5 z-20 rounded-lg border border-zinc-700 bg-zinc-900 shadow-xl p-2.5 space-y-2 w-64">
+          <div className="text-[10px] uppercase tracking-widest text-zinc-500 px-0.5">New application · {company.name}</div>
+          <input
+            autoFocus
+            placeholder="Role (optional)"
+            value={role}
+            onChange={(e) => setRole(e.target.value)}
+            onKeyDown={(e) => { if (e.key === "Enter") submit(); if (e.key === "Escape") setOpen(false); }}
+            className="text-xs"
+          />
+          <input
+            placeholder="URL (optional)"
+            value={url}
+            onChange={(e) => setUrl(e.target.value)}
+            onKeyDown={(e) => { if (e.key === "Enter") submit(); if (e.key === "Escape") setOpen(false); }}
+            className="text-xs"
+          />
+          <div className="flex gap-2">
+            <button onClick={submit} disabled={pending} className="btn-primary text-xs flex-1 py-1.5">
+              {pending ? "..." : "Add application"}
+            </button>
+            <button onClick={() => setOpen(false)} className="btn-ghost text-xs px-3">cancel</button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
@@ -119,7 +217,7 @@ function PipelineColumn({
 }: {
   status: Status;
   label: string;
-  items: CompanyItem[];
+  items: AppItem[];
   tierColors: Record<Tier, { text: string; bg: string; border: string }>;
 }) {
   const accent =
@@ -141,87 +239,119 @@ function PipelineColumn({
         {items.length === 0 ? (
           <p className="text-[11px] text-zinc-700 italic px-1 py-0.5">empty</p>
         ) : (
-          items.map((c) => (
-            <CompanyChip key={c.id} item={c} variant="pipeline" tierColors={tierColors} />
-          ))
+          items.map((a) => <ApplicationCard key={a.id} app={a} tierColors={tierColors} />)
         )}
       </div>
     </div>
   );
 }
 
-function CompanyChip({
-  item,
-  variant,
+function ApplicationCard({
+  app,
   tierColors,
 }: {
-  item: CompanyItem;
-  variant: "tier" | "pipeline";
-  tierColors?: Record<Tier, { text: string; bg: string; border: string }>;
+  app: AppItem;
+  tierColors: Record<Tier, { text: string; bg: string; border: string }>;
 }) {
   const [pending, start] = useTransition();
   const [menuOpen, setMenuOpen] = useState(false);
+  const [editing, setEditing] = useState(false);
+  const [role, setRole] = useState(app.role);
+  const [url, setUrl] = useState(app.url);
 
-  function onClick() {
-    setMenuOpen(false);
-    start(() => advanceCompany(item.id));
+  const tierColor = tierColors[app.tier];
+  const dotClass = tierColor.text.replace("text-", "bg-");
+  const daysInStage = daysSince(app.updatedAt);
+  const daysSinceApplied = daysSince(app.appliedAt);
+  const isStale = daysInStage >= STALE_DAYS;
+
+  function advance() {
+    if (menuOpen || editing) return;
+    start(() => advanceApplication(app.id));
   }
 
-  if (variant === "tier") {
-    return (
-      <button
-        onClick={onClick}
-        disabled={pending}
-        className={`group inline-flex items-center px-2.5 py-1 rounded-md border border-zinc-800 bg-zinc-950/50 hover:bg-zinc-800 hover:border-zinc-600 text-[12px] text-zinc-200 transition-all ${pending ? "opacity-50" : ""}`}
-        title="Click to mark Applied"
-      >
-        <span>{item.name}</span>
-        {item.isCustom && (
-          <span
-            onClick={(e) => { e.stopPropagation(); start(() => deleteCompany(item.id)); }}
-            className="ml-1.5 text-zinc-600 hover:text-rose-400 cursor-pointer text-xs"
-          >
-            ×
-          </span>
-        )}
-      </button>
-    );
+  function saveEdits() {
+    start(async () => {
+      await updateApplication(app.id, { role, url });
+      setEditing(false);
+    });
   }
 
-  // pipeline variant
-  const tierColor = tierColors?.[item.tier];
   return (
-    <div className="relative">
+    <div
+      className={`rounded-md border ${
+        isStale ? "border-amber-900/50 shadow-[0_0_0_1px_rgba(180,83,9,0.15)]" : "border-zinc-800"
+      } bg-zinc-950/40 hover:bg-zinc-900 hover:border-zinc-600 transition-all ${pending ? "opacity-50" : ""}`}
+    >
       <button
-        onClick={onClick}
-        disabled={pending}
-        className={`w-full text-left px-2.5 py-1.5 rounded-md border border-zinc-800 bg-zinc-950/40 hover:bg-zinc-900 hover:border-zinc-600 text-xs text-zinc-100 transition-all flex items-center gap-2 ${pending ? "opacity-50" : ""}`}
-        title="Click to advance"
+        onClick={advance}
+        disabled={pending || editing}
+        className="w-full text-left p-2 disabled:cursor-default"
+        title={editing ? "" : "Click to advance"}
       >
-        {tierColor && (
-          <span className={`inline-block w-1.5 h-1.5 rounded-full ${tierColor.text.replace("text-", "bg-")} shrink-0`} />
-        )}
-        <span className="truncate flex-1">{item.name}</span>
-        <span
-          onClick={(e) => { e.stopPropagation(); setMenuOpen((m) => !m); }}
-          className="text-zinc-600 hover:text-zinc-300 cursor-pointer text-base leading-none px-0.5 shrink-0"
-        >
-          ⋯
-        </span>
+        <div className="flex items-start gap-2">
+          <span className={`inline-block w-1.5 h-1.5 rounded-full ${dotClass} mt-1.5 shrink-0`} />
+          <div className="min-w-0 flex-1">
+            <div className="flex items-center gap-1.5 min-w-0">
+              <span className="text-xs text-zinc-100 font-medium truncate">{app.companyName}</span>
+              {app.url && (
+                <a
+                  href={app.url}
+                  target="_blank"
+                  rel="noreferrer"
+                  onClick={(e) => e.stopPropagation()}
+                  className="text-zinc-600 hover:text-zinc-300 text-[10px] no-underline shrink-0"
+                  title={app.url}
+                >
+                  ↗
+                </a>
+              )}
+            </div>
+            {app.role && (
+              <div className="text-[11px] text-zinc-400 truncate mt-0.5">{app.role}</div>
+            )}
+            <div className="text-[10px] text-zinc-600 mono mt-1">
+              applied {daysSinceApplied}d · {daysInStage}d here
+            </div>
+          </div>
+          <span
+            onClick={(e) => { e.stopPropagation(); setMenuOpen((m) => !m); }}
+            className="text-zinc-600 hover:text-zinc-300 cursor-pointer text-base leading-none px-0.5 shrink-0"
+          >
+            ⋯
+          </span>
+        </div>
       </button>
+
+      {editing && (
+        <div className="px-2 pb-2 space-y-1.5">
+          <input
+            placeholder="Role"
+            value={role}
+            onChange={(e) => setRole(e.target.value)}
+            onKeyDown={(e) => { if (e.key === "Enter") saveEdits(); if (e.key === "Escape") setEditing(false); }}
+            className="text-xs"
+          />
+          <input
+            placeholder="URL"
+            value={url}
+            onChange={(e) => setUrl(e.target.value)}
+            onKeyDown={(e) => { if (e.key === "Enter") saveEdits(); if (e.key === "Escape") setEditing(false); }}
+            className="text-xs"
+          />
+          <div className="flex gap-1.5">
+            <button onClick={saveEdits} disabled={pending} className="btn-primary text-xs flex-1 py-1">save</button>
+            <button onClick={() => setEditing(false)} className="btn-ghost text-xs px-2">cancel</button>
+          </div>
+        </div>
+      )}
+
       {menuOpen && (
-        <div className="absolute right-0 top-full mt-1 z-10 rounded-md border border-zinc-700 bg-zinc-900 shadow-xl text-xs min-w-[140px] overflow-hidden">
-          <MenuItem onClick={() => { setMenuOpen(false); start(() => regressCompany(item.id)); }}>
-            ← Step back
-          </MenuItem>
-          <MenuItem onClick={() => { setMenuOpen(false); start(() => rejectCompany(item.id)); }} danger>
-            ✗ Mark rejected
-          </MenuItem>
-          {item.isCustom && (
-            <MenuItem onClick={() => { setMenuOpen(false); start(() => deleteCompany(item.id)); }} danger>
-              Delete
-            </MenuItem>
-          )}
+        <div className="absolute right-2 top-full mt-1 z-10 rounded-md border border-zinc-700 bg-zinc-900 shadow-xl text-xs min-w-[140px] overflow-hidden">
+          <MenuItem onClick={() => { setMenuOpen(false); setEditing(true); }}>Edit details</MenuItem>
+          <MenuItem onClick={() => { setMenuOpen(false); start(() => regressApplication(app.id)); }}>← Step back</MenuItem>
+          <MenuItem onClick={() => { setMenuOpen(false); start(() => rejectApplication(app.id)); }} danger>✗ Mark rejected</MenuItem>
+          <MenuItem onClick={() => { setMenuOpen(false); start(() => deleteApplication(app.id)); }} danger>Delete application</MenuItem>
         </div>
       )}
     </div>
@@ -239,9 +369,10 @@ function MenuItem({ children, onClick, danger }: { children: React.ReactNode; on
   );
 }
 
-function ClosedChip({ item }: { item: CompanyItem }) {
+function ClosedChip({ app }: { app: AppItem }) {
   const [pending, start] = useTransition();
-  const isAccepted = item.status === "accepted";
+  const isAccepted = app.status === "accepted";
+  const label = app.role ? `${app.companyName} — ${app.role}` : app.companyName;
   return (
     <span
       className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs border ${
@@ -250,9 +381,9 @@ function ClosedChip({ item }: { item: CompanyItem }) {
           : "border-zinc-800 bg-zinc-900/30 text-zinc-500 line-through"
       }`}
     >
-      {item.name}
+      {label}
       <button
-        onClick={() => start(() => reopenCompany(item.id))}
+        onClick={() => start(() => reopenApplication(app.id))}
         disabled={pending}
         className="text-zinc-600 hover:text-zinc-300 text-[10px] no-underline"
         title="Reopen"
@@ -263,7 +394,7 @@ function ClosedChip({ item }: { item: CompanyItem }) {
   );
 }
 
-function AddForm({ onClose }: { onClose: () => void }) {
+function AddCompanyForm({ onClose }: { onClose: () => void }) {
   const [name, setName] = useState("");
   const [tier, setTier] = useState<Tier>("S");
   const [pending, start] = useTransition();
@@ -271,13 +402,13 @@ function AddForm({ onClose }: { onClose: () => void }) {
   return (
     <div className="card p-4 space-y-3">
       <div className="flex items-center justify-between">
-        <p className="text-xs font-semibold text-zinc-300 uppercase tracking-widest">Add company</p>
+        <p className="text-xs font-semibold text-zinc-300 uppercase tracking-widest">Add company to catalog</p>
         <button onClick={onClose} className="text-xs text-zinc-500 hover:text-zinc-200">cancel</button>
       </div>
       <div className="flex gap-2">
         <input
           autoFocus
-          placeholder="Gemini, Cohere, Mistral, ..."
+          placeholder="Company name (e.g. Cohere)"
           value={name}
           onChange={(e) => setName(e.target.value)}
           className="flex-1"
@@ -298,6 +429,7 @@ function AddForm({ onClose }: { onClose: () => void }) {
           Add
         </button>
       </div>
+      <p className="text-[11px] text-zinc-600">This adds the company to your tier list. Click it later to create an application.</p>
     </div>
   );
 }

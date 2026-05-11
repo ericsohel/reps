@@ -88,6 +88,24 @@ export const companies = sqliteTable("companies", {
 
 export type Company = typeof companies.$inferSelect;
 
+// Each application = one role at one company. A company can have multiple
+// applications. Replaces the (status, appliedAt, updatedAt) fields previously
+// stored directly on `companies` — those columns are kept for backwards-compat
+// migration but are no longer read or written by the app.
+export const applications = sqliteTable("applications", {
+  id: integer("id").primaryKey({ autoIncrement: true }),
+  companyId: integer("company_id").notNull().references(() => companies.id, { onDelete: "cascade" }),
+  role: text("role"),
+  url: text("url"),
+  status: text("status", {
+    enum: ["applied", "oa", "interview", "offer", "accepted", "rejected"],
+  }).notNull().default("applied"),
+  appliedAt: integer("applied_at", { mode: "timestamp_ms" }).notNull().default(sql`(unixepoch() * 1000)`),
+  updatedAt: integer("updated_at", { mode: "timestamp_ms" }).notNull().default(sql`(unixepoch() * 1000)`),
+});
+
+export type Application = typeof applications.$inferSelect;
+
 // Standalone counters for self-reported solve totals (Easy/Medium/Hard).
 // Not tied to any other table; pure tally.
 export const counters = sqliteTable("counters", {

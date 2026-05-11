@@ -1,63 +1,90 @@
 import { db } from "@/lib/db";
-import { companies } from "@/lib/schema";
+import { companies, applications } from "@/lib/schema";
 import { ensureSeeded } from "./actions";
 import { TIERS, TIER_COLORS, PIPELINE_STATUSES, STATUS_LABEL, type Tier, type Status } from "@/lib/companies-seed";
+import { eq } from "drizzle-orm";
 import CompaniesClient from "./client";
 
 export const dynamic = "force-dynamic";
 
 export default async function CompaniesPage() {
   await ensureSeeded();
-  const all = await db.select().from(companies);
 
-  // Group by tier (only not_applied for tier display) and by status (for pipeline).
-  const byTier = new Map<Tier, typeof all>();
+  const [allCompanies, allApps] = await Promise.all([
+    db.select().from(companies),
+    db.select().from(applications),
+  ]);
+
+  // Map companies → list of their applications.
+  const appsByCompany = new Map<number, typeof allApps>();
+  for (const c of allCompanies) appsByCompany.set(c.id, []);
+  for (const a of allApps) appsByCompany.get(a.companyId)?.push(a);
+
+  // Pipeline = applications with active status. Sorted most recent first.
+  const pipelineApps = allApps
+    .filter((a) => PIPELINE_STATUSES.includes(a.status as Status))
+    .sort((a, b) => b.updatedAt.getTime() - a.updatedAt.getTime());
+
+  // Closed = accepted/rejected.
+  const closedApps = allApps
+    .filter((a) => a.status === "accepted" || a.status === "rejected")
+    .sort((a, b) => b.updatedAt.getTime() - a.updatedAt.getTime());
+
+  // Group pipeline by status.
+  const byStatus = new Map<Status, typeof pipelineApps>();
+  for (const s of PIPELINE_STATUSES) byStatus.set(s, []);
+  for (const a of pipelineApps) byStatus.get(a.status as Status)?.push(a);
+
+  // Tier list shows every company in catalog, with active-application count badge.
+  const byTier = new Map<Tier, typeof allCompanies>();
   for (const t of TIERS) byTier.set(t, []);
-  for (const c of all) {
-    if (c.status === "not_applied") byTier.get(c.tier as Tier)?.push(c);
-  }
+  for (const c of allCompanies) byTier.get(c.tier as Tier)?.push(c);
   for (const arr of byTier.values()) arr.sort((a, b) => a.name.localeCompare(b.name));
 
-  const byStatus = new Map<Status, typeof all>();
-  for (const s of PIPELINE_STATUSES) byStatus.set(s, []);
-  for (const c of all) {
-    if (PIPELINE_STATUSES.includes(c.status as Status)) {
-      byStatus.get(c.status as Status)?.push(c);
-    }
-  }
-  for (const arr of byStatus.values()) arr.sort((a, b) => (b.updatedAt?.getTime() ?? 0) - (a.updatedAt?.getTime() ?? 0));
+  const companyById = new Map(allCompanies.map((c) => [c.id, c]));
 
-  const closed = all.filter((c) => c.status === "accepted" || c.status === "rejected")
-    .sort((a, b) => (b.updatedAt?.getTime() ?? 0) - (a.updatedAt?.getTime() ?? 0));
+  const serializeApp = (a: typeof allApps[number]) => {
+    const company = companyById.get(a.companyId);
+    return {
+      id: a.id,
+      companyId: a.companyId,
+      companyName: company?.name ?? "?",
+      tier: (company?.tier ?? "Custom") as Tier,
+      role: a.role ?? "",
+      url: a.url ?? "",
+      status: a.status as Status,
+      appliedAt: a.appliedAt.getTime(),
+      updatedAt: a.updatedAt.getTime(),
+    };
+  };
 
-  const activeCount = PIPELINE_STATUSES.reduce((sum, s) => sum + (byStatus.get(s)?.length ?? 0), 0);
+  const serializeCompany = (c: typeof allCompanies[number]) => {
+    const apps = appsByCompany.get(c.id) ?? [];
+    const active = apps.filter((a) => PIPELINE_STATUSES.includes(a.status as Status));
+    return {
+      id: c.id,
+      name: c.name,
+      tier: c.tier as Tier,
+      isCustom: c.isCustom,
+      activeApplicationCount: active.length,
+      hasAnyApplication: apps.length > 0,
+    };
+  };
 
   return (
     <CompaniesClient
       tierGroups={TIERS.map((t) => ({
         tier: t,
-        items: (byTier.get(t) ?? []).map(serialize),
+        items: (byTier.get(t) ?? []).map(serializeCompany),
       }))}
       pipeline={PIPELINE_STATUSES.map((s) => ({
         status: s,
         label: STATUS_LABEL[s],
-        items: (byStatus.get(s) ?? []).map(serialize),
+        items: (byStatus.get(s) ?? []).map(serializeApp),
       }))}
-      closed={closed.map(serialize)}
-      activeCount={activeCount}
+      closed={closedApps.map(serializeApp)}
+      activeCount={pipelineApps.length}
       tierColors={TIER_COLORS}
     />
   );
-}
-
-function serialize(c: typeof companies.$inferSelect) {
-  return {
-    id: c.id,
-    name: c.name,
-    tier: c.tier as Tier,
-    status: c.status as Status,
-    isCustom: c.isCustom,
-    appliedAt: c.appliedAt?.getTime() ?? null,
-    updatedAt: c.updatedAt.getTime(),
-  };
 }
