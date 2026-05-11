@@ -1,28 +1,28 @@
 import { db } from "./db";
 import { attempts, srsState } from "./schema";
 import { sql, lte } from "drizzle-orm";
+import { cookies } from "next/headers";
 
 const DAY_MS = 86_400_000;
 const NEW_TARGET = 2;
 const REVIEW_TARGET = 3;
 
-// Window: May 1 → Dec 31 of the current year.
 const START_MONTH = 4;  // May (0-indexed)
 const END_MONTH = 11;   // December (inclusive)
 
 export interface DayCell {
-  date: string;          // YYYY-MM-DD (UTC)
+  date: string;          // YYYY-MM-DD in user's local timezone
   newCount: number;
   reviewCount: number;
-  intensity: 0 | 1 | 2;  // 0 empty, 1 partial, 2 target met
+  intensity: 0 | 1 | 2;
   isFuture: boolean;
 }
 
 export interface MonthBlock {
   year: number;
-  month: number;       // 0-indexed
-  label: string;       // 'May', 'Jun', ...
-  weeks: (DayCell | null)[][];  // [weekIdx][dow] — null = day not in month
+  month: number;
+  label: string;
+  weeks: (DayCell | null)[][];
 }
 
 export interface HeatmapData {
@@ -37,25 +37,47 @@ export interface HeatmapData {
 
 const MONTH_NAMES = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 
-function isoDate(ts: number): string {
-  const d = new Date(ts);
-  const y = d.getUTCFullYear();
-  const m = String(d.getUTCMonth() + 1).padStart(2, "0");
-  const day = String(d.getUTCDate()).padStart(2, "0");
-  return `${y}-${m}-${day}`;
+// Format a UTC timestamp as YYYY-MM-DD using a given timezone offset.
+// `offsetMinutes` follows JS getTimezoneOffset() convention: minutes WEST of UTC
+// (e.g. EDT = 240, JST = -540).
+function isoDateInTz(ts: number, offsetMinutes: number): string {
+  const shifted = new Date(ts - offsetMinutes * 60_000);
+  const y = shifted.getUTCFullYear();
+  const m = String(shifted.getUTCMonth() + 1).padStart(2, "0");
+  const d = String(shifted.getUTCDate()).padStart(2, "0");
+  return `${y}-${m}-${d}`;
+}
+
+async function readTzOffsetMinutes(): Promise<number> {
+  const c = await cookies();
+  const v = c.get("tz_offset_minutes")?.value;
+  if (!v) return 0;
+  const n = parseInt(v, 10);
+  return Number.isFinite(n) ? n : 0;
 }
 
 export async function getHeatmapData(): Promise<HeatmapData> {
+  const tzOffsetMinutes = await readTzOffsetMinutes();
+  const tzOffsetSec = tzOffsetMinutes * 60;
+  const tzOffsetMs = tzOffsetMinutes * 60_000;
+
   const now = Date.now();
-  const year = new Date(now).getUTCFullYear();
-  const windowStart = Date.UTC(year, START_MONTH, 1);
-  const windowEnd = Date.UTC(year, END_MONTH + 1, 1); // exclusive (start of next month)
+  // "Local" year derived from the user's timezone, not server UTC.
+  const localNow = new Date(now - tzOffsetMs);
+  const year = localNow.getUTCFullYear();
+
+  // Window: May 1 LOCAL 00:00 → start of (Dec 31 + 1) LOCAL 00:00.
+  // Date.UTC(year, m, d) returns UTC timestamp for that wall-clock date in UTC,
+  // so we add tzOffsetMs to shift to the equivalent LOCAL midnight in UTC.
+  const windowStart = Date.UTC(year, START_MONTH, 1) + tzOffsetMs;
+  const windowEnd = Date.UTC(year, END_MONTH + 1, 1) + tzOffsetMs;
   const totalDays = Math.round((windowEnd - windowStart) / DAY_MS);
-  const todayKey = isoDate(now);
+  const todayKey = isoDateInTz(now, tzOffsetMinutes);
 
   const rows = await db
     .select({
-      date: sql<string>`strftime('%Y-%m-%d', ${attempts.attemptedAt} / 1000, 'unixepoch')`,
+      // Group attempts by LOCAL date by subtracting the offset before strftime.
+      date: sql<string>`strftime('%Y-%m-%d', (${attempts.attemptedAt} / 1000) - ${tzOffsetSec}, 'unixepoch')`,
       isReview: attempts.isReview,
       count: sql<number>`count(*)`,
     })
@@ -63,7 +85,10 @@ export async function getHeatmapData(): Promise<HeatmapData> {
     .where(
       sql`${attempts.attemptedAt} >= ${windowStart} AND ${attempts.attemptedAt} < ${windowEnd}`,
     )
-    .groupBy(sql`strftime('%Y-%m-%d', ${attempts.attemptedAt} / 1000, 'unixepoch')`, attempts.isReview);
+    .groupBy(
+      sql`strftime('%Y-%m-%d', (${attempts.attemptedAt} / 1000) - ${tzOffsetSec}, 'unixepoch')`,
+      attempts.isReview,
+    );
 
   const byDate = new Map<string, { newCount: number; reviewCount: number }>();
   for (const r of rows) {
@@ -79,12 +104,12 @@ export async function getHeatmapData(): Promise<HeatmapData> {
     .where(lte(srsState.dueAt, new Date(now)));
   const todayReviewTarget = Math.min(REVIEW_TARGET, Number(dueCount));
 
-  function buildCell(date: Date): DayCell {
-    const ts = date.getTime();
-    const dateKey = isoDate(ts);
+  function buildCell(year: number, month: number, day: number): DayCell {
+    const dateKey = `${year}-${String(month + 1).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
     const counts = byDate.get(dateKey) ?? { newCount: 0, reviewCount: 0 };
     const isToday = dateKey === todayKey;
-    const isFuture = ts > now && !isToday;
+    const localMidnightUtc = Date.UTC(year, month, day) + tzOffsetMs;
+    const isFuture = localMidnightUtc > now && !isToday;
     const reviewTarget = isToday ? todayReviewTarget : REVIEW_TARGET;
     const totalActivity = counts.newCount + counts.reviewCount;
     let intensity: 0 | 1 | 2 = 0;
@@ -93,27 +118,22 @@ export async function getHeatmapData(): Promise<HeatmapData> {
     return { date: dateKey, newCount: counts.newCount, reviewCount: counts.reviewCount, intensity, isFuture };
   }
 
-  // Build month blocks. Each month is a proper Sun–Sat calendar with the
-  // right number of weeks. Days not in the month (leading/trailing padding)
-  // are stored as null.
   const months: MonthBlock[] = [];
   for (let m = START_MONTH; m <= END_MONTH; m++) {
-    const firstDay = new Date(Date.UTC(year, m, 1));
-    const startDow = firstDay.getUTCDay(); // 0=Sun..6=Sat
+    // Day-of-week of the 1st is the same in every timezone for the same wall date.
+    const startDow = new Date(Date.UTC(year, m, 1)).getUTCDay();
     const daysInMonth = new Date(Date.UTC(year, m + 1, 0)).getUTCDate();
     const numWeeks = Math.ceil((startDow + daysInMonth) / 7);
 
-    // weeks[weekIdx][dow]
     const weeks: (DayCell | null)[][] = Array.from({ length: numWeeks }, () => Array(7).fill(null));
     for (let day = 1; day <= daysInMonth; day++) {
       const dow = (startDow + day - 1) % 7;
       const week = Math.floor((startDow + day - 1) / 7);
-      weeks[week][dow] = buildCell(new Date(Date.UTC(year, m, day)));
+      weeks[week][dow] = buildCell(year, m, day);
     }
     months.push({ year, month: m, label: MONTH_NAMES[m], weeks });
   }
 
-  // Flatten past cells for streak/stats (keeps streak logic simple).
   const flat: DayCell[] = [];
   for (const mb of months) {
     for (const w of mb.weeks) for (const c of w) if (c) flat.push(c);

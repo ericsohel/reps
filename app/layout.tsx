@@ -1,6 +1,7 @@
 import "./globals.css";
 import Link from "next/link";
 import { Inter, JetBrains_Mono } from "next/font/google";
+import { SetTimezone } from "@/components/set-tz";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -22,6 +23,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en" className={`${inter.variable} ${mono.variable}`}>
       <body style={{ fontFamily: "var(--font-sans), system-ui, sans-serif" }}>
+        <SetTimezone />
         <div className="max-w-2xl mx-auto px-6 py-10">
           <nav className="flex items-center gap-1 mb-12 text-sm">
             <Link href="/" className="font-semibold text-zinc-100 no-underline mr-4 tracking-tight">
