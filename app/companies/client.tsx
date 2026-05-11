@@ -50,6 +50,16 @@ function daysSince(ts: number) {
   return Math.floor((Date.now() - ts) / DAY_MS);
 }
 
+function formatTiming(appliedDays: number, stageDays: number) {
+  const applied =
+    appliedDays === 0 ? "applied today"
+    : appliedDays === 1 ? "applied yesterday"
+    : `applied ${appliedDays}d ago`;
+  // Same value means status never changed; don't repeat the number.
+  if (stageDays >= appliedDays) return applied;
+  return `${applied} · ${stageDays}d here`;
+}
+
 export default function CompaniesClient({ tierGroups, pipeline, closed, activeCount, tierColors }: Props) {
   const [adding, setAdding] = useState(false);
   const [showClosed, setShowClosed] = useState(false);
@@ -141,26 +151,13 @@ function TierRow({ tier, items, colors }: { tier: Tier; items: CompanyItem[]; co
 function CompanyChip({ company }: { company: CompanyItem }) {
   const [open, setOpen] = useState(false);
   const [pending, start] = useTransition();
-  const [role, setRole] = useState("");
-  const [url, setUrl] = useState("");
-
-  function submit() {
-    start(async () => {
-      await createApplication(company.id, role, url);
-      setRole("");
-      setUrl("");
-      setOpen(false);
-    });
-  }
 
   return (
-    <div className="relative inline-block">
+    <>
       <button
-        onClick={() => setOpen((o) => !o)}
+        onClick={() => setOpen(true)}
         disabled={pending}
-        className={`group inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md border bg-zinc-950/50 text-[12px] text-zinc-200 transition-all ${
-          open ? "border-zinc-600 bg-zinc-800" : "border-zinc-800 hover:bg-zinc-800 hover:border-zinc-600"
-        } ${pending ? "opacity-50" : ""}`}
+        className={`group inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md border bg-zinc-950/50 text-[12px] text-zinc-200 transition-all border-zinc-800 hover:bg-zinc-800 hover:border-zinc-600 ${pending ? "opacity-50" : ""}`}
         title="Click to add an application"
       >
         <span>{company.name}</span>
@@ -180,31 +177,68 @@ function CompanyChip({ company }: { company: CompanyItem }) {
         )}
       </button>
       {open && (
-        <div className="absolute left-0 top-full mt-1.5 z-20 rounded-lg border border-zinc-700 bg-zinc-900 shadow-xl p-2.5 space-y-2 w-64">
-          <div className="text-[10px] uppercase tracking-widest text-zinc-500 px-0.5">New application · {company.name}</div>
-          <input
-            autoFocus
-            placeholder="Role (optional)"
-            value={role}
-            onChange={(e) => setRole(e.target.value)}
-            onKeyDown={(e) => { if (e.key === "Enter") submit(); if (e.key === "Escape") setOpen(false); }}
-            className="text-xs"
-          />
-          <input
-            placeholder="URL (optional)"
-            value={url}
-            onChange={(e) => setUrl(e.target.value)}
-            onKeyDown={(e) => { if (e.key === "Enter") submit(); if (e.key === "Escape") setOpen(false); }}
-            className="text-xs"
-          />
-          <div className="flex gap-2">
-            <button onClick={submit} disabled={pending} className="btn-primary text-xs flex-1 py-1.5">
-              {pending ? "..." : "Add application"}
-            </button>
-            <button onClick={() => setOpen(false)} className="btn-ghost text-xs px-3">cancel</button>
+        <NewApplicationModal company={company} onClose={() => setOpen(false)} />
+      )}
+    </>
+  );
+}
+
+function NewApplicationModal({ company, onClose }: { company: CompanyItem; onClose: () => void }) {
+  const [role, setRole] = useState("");
+  const [url, setUrl] = useState("");
+  const [pending, start] = useTransition();
+
+  function submit() {
+    start(async () => {
+      await createApplication(company.id, role, url);
+      onClose();
+    });
+  }
+
+  return (
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center px-4 bg-black/60 backdrop-blur-sm"
+      onClick={onClose}
+      onKeyDown={(e) => { if (e.key === "Escape") onClose(); }}
+    >
+      <div
+        className="w-full max-w-sm rounded-lg border border-zinc-700 bg-zinc-900 shadow-2xl p-5 space-y-4"
+        onClick={(e) => e.stopPropagation()}
+      >
+        <div>
+          <p className="text-[10px] uppercase tracking-widest text-zinc-500">New application</p>
+          <h3 className="text-base font-semibold text-zinc-100 mt-0.5">{company.name}</h3>
+        </div>
+        <div className="space-y-3">
+          <div>
+            <label>Role (optional)</label>
+            <input
+              autoFocus
+              placeholder="SWE Intern, ML Research, ..."
+              value={role}
+              onChange={(e) => setRole(e.target.value)}
+              onKeyDown={(e) => { if (e.key === "Enter") submit(); if (e.key === "Escape") onClose(); }}
+              className="text-sm"
+            />
+          </div>
+          <div>
+            <label>URL (optional)</label>
+            <input
+              placeholder="https://..."
+              value={url}
+              onChange={(e) => setUrl(e.target.value)}
+              onKeyDown={(e) => { if (e.key === "Enter") submit(); if (e.key === "Escape") onClose(); }}
+              className="text-sm"
+            />
           </div>
         </div>
-      )}
+        <div className="flex gap-2 pt-1">
+          <button onClick={submit} disabled={pending} className="btn-primary flex-1">
+            {pending ? "Adding…" : "Add application"}
+          </button>
+          <button onClick={onClose} className="btn-ghost px-4">cancel</button>
+        </div>
+      </div>
     </div>
   );
 }
@@ -279,7 +313,7 @@ function ApplicationCard({
 
   return (
     <div
-      className={`rounded-md border ${
+      className={`relative rounded-md border ${
         isStale ? "border-amber-900/50 shadow-[0_0_0_1px_rgba(180,83,9,0.15)]" : "border-zinc-800"
       } bg-zinc-950/40 hover:bg-zinc-900 hover:border-zinc-600 transition-all ${pending ? "opacity-50" : ""}`}
     >
@@ -311,7 +345,7 @@ function ApplicationCard({
               <div className="text-[11px] text-zinc-400 truncate mt-0.5">{app.role}</div>
             )}
             <div className="text-[10px] text-zinc-600 mono mt-1">
-              applied {daysSinceApplied}d · {daysInStage}d here
+              {formatTiming(daysSinceApplied, daysInStage)}
             </div>
           </div>
           <span
