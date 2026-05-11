@@ -17,7 +17,7 @@ export interface LogProblemInput {
   pattern: string;
   lcDifficulty: "Easy" | "Medium" | "Hard";
   elapsedMinutes: number;
-  hintsUsed: number;
+  hintsUsed?: number;
   rating: Grade;
   recognition?: string;
   insight?: string;
@@ -32,7 +32,7 @@ function validateLogInput(input: LogProblemInput) {
     throw new Error("invalid elapsedMinutes (must be 0–600)");
   }
   if (!VALID_GRADES.has(input.rating)) throw new Error("invalid rating");
-  if (![0, 1, 2, 3].includes(input.hintsUsed)) throw new Error("invalid hintsUsed");
+  if (![0, 1, 2, 3].includes(input.hintsUsed ?? 0)) throw new Error("invalid hintsUsed");
 }
 
 export async function logNewProblem(input: LogProblemInput) {
@@ -52,7 +52,7 @@ export async function logNewProblem(input: LogProblemInput) {
   await db.insert(attempts).values({
     problemId: problem.id,
     elapsedMinutes: input.elapsedMinutes,
-    hintsUsed: input.hintsUsed,
+    hintsUsed: input.hintsUsed ?? 0,
     rating: input.rating,
     isReview: false,
   });

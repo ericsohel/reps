@@ -31,22 +31,37 @@ export default function ReviewClient({ problem, state }: Props) {
 
   async function rate(grade: 1 | 2 | 3 | 4) {
     setSubmitting(true);
-    if (editingCard) {
-      await updateTriggerCard(problem.id, card.recognition, card.insight, card.failureMode);
+    try {
+      if (editingCard) {
+        await updateTriggerCard(problem.id, card.recognition, card.insight, card.failureMode);
+      }
+      await recordReview(problem.id, grade, Math.max(0.1, elapsed));
+    } catch (e) {
+      console.error(e);
+      setSubmitting(false);
     }
-    await recordReview(problem.id, grade, Math.max(0.1, elapsed));
   }
 
   async function snooze(days: number) {
     setSubmitting(true);
-    await snoozeReview(problem.id, days);
-    window.location.href = "/";
+    try {
+      await snoozeReview(problem.id, days);
+      window.location.href = "/";
+    } catch (e) {
+      console.error(e);
+      setSubmitting(false);
+    }
   }
 
   async function remove() {
     if (!confirm(`Delete "${problem.title}"? This cannot be undone.`)) return;
     setSubmitting(true);
-    await deleteProblem(problem.id);
+    try {
+      await deleteProblem(problem.id);
+    } catch (e) {
+      console.error(e);
+      setSubmitting(false);
+    }
   }
 
   return (

@@ -38,29 +38,47 @@ export default function StarReviewClient({ star, state }: Props) {
 
   async function rate(grade: 1 | 2 | 3 | 4) {
     setSubmitting(true);
-    if (editing) {
-      await updateStar(star.id, draft);
+    try {
+      if (editing) await updateStar(star.id, draft);
+      await recordStarReview(star.id, grade, Math.max(0.1, elapsed));
+    } catch (e) {
+      console.error(e);
+      setSubmitting(false);
     }
-    await recordStarReview(star.id, grade, Math.max(0.1, elapsed));
   }
 
   async function snooze(days: number) {
     setSubmitting(true);
-    await snoozeStar(star.id, days);
-    window.location.href = "/star";
+    try {
+      await snoozeStar(star.id, days);
+      window.location.href = "/star";
+    } catch (e) {
+      console.error(e);
+      setSubmitting(false);
+    }
   }
 
   async function remove() {
     if (!confirm(`Delete this story? This cannot be undone.`)) return;
     setSubmitting(true);
-    await deleteStar(star.id);
+    try {
+      await deleteStar(star.id);
+    } catch (e) {
+      console.error(e);
+      setSubmitting(false);
+    }
   }
 
   async function saveEdits() {
     setSubmitting(true);
-    await updateStar(star.id, draft);
-    setEditing(false);
-    setSubmitting(false);
+    try {
+      await updateStar(star.id, draft);
+      setEditing(false);
+    } catch (e) {
+      console.error(e);
+    } finally {
+      setSubmitting(false);
+    }
   }
 
   return (

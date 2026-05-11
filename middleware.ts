@@ -6,7 +6,8 @@ export function middleware(req: NextRequest) {
     return NextResponse.next();
   }
   const auth = req.cookies.get("auth")?.value;
-  if (auth !== process.env.APP_PASSPHRASE) {
+  const expected = process.env.APP_PASSPHRASE;
+  if (!expected || auth !== expected) {
     const url = req.nextUrl.clone();
     url.pathname = "/login";
     return NextResponse.redirect(url);
