@@ -175,10 +175,11 @@ function Resources() {
     } catch {}
   }, []);
 
-  function markVisited(href: string) {
+  function toggleVisited(href: string) {
     setVisited((prev) => {
       const next = new Set(prev);
-      next.add(href);
+      if (next.has(href)) next.delete(href);
+      else next.add(href);
       const today = new Date().toISOString().slice(0, 10);
       try {
         localStorage.setItem("resources_visited", JSON.stringify({ date: today, links: [...next] }));
@@ -197,27 +198,39 @@ function Resources() {
             {group.links.map((link) => {
               const done = visited.has(link.href);
               return (
-                <a
+                <div
                   key={link.href}
-                  href={link.href}
-                  target="_blank"
-                  rel="noreferrer"
-                  onClick={() => markVisited(link.href)}
-                  className={`no-underline flex items-center gap-3 px-2.5 py-2 rounded-md border transition-all group ${
+                  className={`flex items-center gap-3 px-2.5 py-2 rounded-md border transition-all group ${
                     done
-                      ? "border-emerald-900/40 bg-emerald-950/20 hover:bg-emerald-950/30"
+                      ? "border-emerald-900/40 bg-emerald-950/20"
                       : "border-transparent hover:border-zinc-700 hover:bg-zinc-800/50"
                   }`}
                 >
-                  <span className={`text-[11px] mono w-5 text-center ${done ? "text-emerald-500" : "text-zinc-600 group-hover:text-zinc-400"}`}>
+                  <span className={`text-[11px] mono w-5 text-center shrink-0 ${done ? "text-emerald-500" : "text-zinc-600 group-hover:text-zinc-400"}`}>
                     {done ? "✓" : (PLATFORM_ICON[link.sub] ?? "↗")}
                   </span>
-                  <div className="min-w-0">
+                  <a
+                    href={link.href}
+                    target="_blank"
+                    rel="noreferrer"
+                    onClick={() => toggleVisited(link.href)}
+                    className="no-underline min-w-0 flex-1"
+                  >
                     <p className={`text-xs font-medium truncate ${done ? "text-emerald-300" : "text-zinc-200"}`}>{link.label}</p>
                     <p className={`text-[10px] ${done ? "text-emerald-700" : "text-zinc-600"}`}>{link.sub}</p>
-                  </div>
-                  <span className={`ml-auto text-xs ${done ? "text-emerald-700" : "text-zinc-700 group-hover:text-zinc-400"}`}>↗</span>
-                </a>
+                  </a>
+                  {done ? (
+                    <button
+                      onClick={() => toggleVisited(link.href)}
+                      className="text-emerald-800 hover:text-zinc-400 text-[10px] ml-auto px-1 shrink-0"
+                      title="Mark unvisited"
+                    >
+                      ✕
+                    </button>
+                  ) : (
+                    <span className="ml-auto text-zinc-700 group-hover:text-zinc-400 text-xs">↗</span>
+                  )}
+                </div>
               );
             })}
           </div>
