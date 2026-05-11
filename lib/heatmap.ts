@@ -110,13 +110,15 @@ export async function getHeatmapData(): Promise<HeatmapData> {
     const isToday = dateKey === todayKey;
     const localMidnightUtc = Date.UTC(year, month, day) + tzOffsetMs;
     const isFuture = localMidnightUtc > now && !isToday;
-    // For today: use the live due count as the review target.
-    // For past days: if zero reviews were done, assume nothing was due (early
-    // in the queue lifecycle) and only require the new-problem target.
-    // If some reviews were done, hold the full REVIEW_TARGET bar.
+    // Review target logic — consistent for all days:
+    //   Today:      min(3, reviews currently due)  — exact live count
+    //   Past days:  min(3, reviews actually done)  — if you did N reviews,
+    //               those N were available; we never require more than you had
+    // This means 0 reviews done = 0 target = reviews can never kill your streak
+    // on a day where nothing was due.
     const reviewTarget = isToday
       ? todayReviewTarget
-      : counts.reviewCount === 0 ? 0 : REVIEW_TARGET;
+      : Math.min(REVIEW_TARGET, counts.reviewCount);
     const totalActivity = counts.newCount + counts.reviewCount;
     let intensity: 0 | 1 | 2 = 0;
     if (counts.newCount >= NEW_TARGET && counts.reviewCount >= reviewTarget) intensity = 2;
