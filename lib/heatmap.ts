@@ -110,7 +110,13 @@ export async function getHeatmapData(): Promise<HeatmapData> {
     const isToday = dateKey === todayKey;
     const localMidnightUtc = Date.UTC(year, month, day) + tzOffsetMs;
     const isFuture = localMidnightUtc > now && !isToday;
-    const reviewTarget = isToday ? todayReviewTarget : REVIEW_TARGET;
+    // For today: use the live due count as the review target.
+    // For past days: if zero reviews were done, assume nothing was due (early
+    // in the queue lifecycle) and only require the new-problem target.
+    // If some reviews were done, hold the full REVIEW_TARGET bar.
+    const reviewTarget = isToday
+      ? todayReviewTarget
+      : counts.reviewCount === 0 ? 0 : REVIEW_TARGET;
     const totalActivity = counts.newCount + counts.reviewCount;
     let intensity: 0 | 1 | 2 = 0;
     if (counts.newCount >= NEW_TARGET && counts.reviewCount >= reviewTarget) intensity = 2;
