@@ -162,6 +162,31 @@ const PLATFORM_ICON: Record<string, string> = {
 };
 
 function Resources() {
+  const [visited, setVisited] = useState<Set<string>>(new Set());
+
+  useEffect(() => {
+    const today = new Date().toISOString().slice(0, 10);
+    try {
+      const raw = localStorage.getItem("resources_visited");
+      if (raw) {
+        const { date, links } = JSON.parse(raw) as { date: string; links: string[] };
+        if (date === today) setVisited(new Set(links));
+      }
+    } catch {}
+  }, []);
+
+  function markVisited(href: string) {
+    setVisited((prev) => {
+      const next = new Set(prev);
+      next.add(href);
+      const today = new Date().toISOString().slice(0, 10);
+      try {
+        localStorage.setItem("resources_visited", JSON.stringify({ date: today, links: [...next] }));
+      } catch {}
+      return next;
+    });
+  }
+
   return (
     <section className="space-y-3">
       <h2 className="text-xs font-semibold text-zinc-500 uppercase tracking-widest">Resources</h2>
@@ -169,24 +194,32 @@ function Resources() {
         {RESOURCES.map((group) => (
           <div key={group.group} className="card p-3 space-y-1.5">
             <p className="text-[10px] uppercase tracking-widest font-semibold text-zinc-500 px-1 pb-0.5">{group.group}</p>
-            {group.links.map((link) => (
-              <a
-                key={link.href}
-                href={link.href}
-                target="_blank"
-                rel="noreferrer"
-                className="no-underline flex items-center gap-3 px-2.5 py-2 rounded-md border border-transparent hover:border-zinc-700 hover:bg-zinc-800/50 transition-all group"
-              >
-                <span className="text-[11px] mono text-zinc-600 group-hover:text-zinc-400 w-5 text-center">
-                  {PLATFORM_ICON[link.sub] ?? "↗"}
-                </span>
-                <div className="min-w-0">
-                  <p className="text-xs text-zinc-200 font-medium truncate">{link.label}</p>
-                  <p className="text-[10px] text-zinc-600">{link.sub}</p>
-                </div>
-                <span className="ml-auto text-zinc-700 group-hover:text-zinc-400 text-xs">↗</span>
-              </a>
-            ))}
+            {group.links.map((link) => {
+              const done = visited.has(link.href);
+              return (
+                <a
+                  key={link.href}
+                  href={link.href}
+                  target="_blank"
+                  rel="noreferrer"
+                  onClick={() => markVisited(link.href)}
+                  className={`no-underline flex items-center gap-3 px-2.5 py-2 rounded-md border transition-all group ${
+                    done
+                      ? "border-emerald-900/40 bg-emerald-950/20 hover:bg-emerald-950/30"
+                      : "border-transparent hover:border-zinc-700 hover:bg-zinc-800/50"
+                  }`}
+                >
+                  <span className={`text-[11px] mono w-5 text-center ${done ? "text-emerald-500" : "text-zinc-600 group-hover:text-zinc-400"}`}>
+                    {done ? "✓" : (PLATFORM_ICON[link.sub] ?? "↗")}
+                  </span>
+                  <div className="min-w-0">
+                    <p className={`text-xs font-medium truncate ${done ? "text-emerald-300" : "text-zinc-200"}`}>{link.label}</p>
+                    <p className={`text-[10px] ${done ? "text-emerald-700" : "text-zinc-600"}`}>{link.sub}</p>
+                  </div>
+                  <span className={`ml-auto text-xs ${done ? "text-emerald-700" : "text-zinc-700 group-hover:text-zinc-400"}`}>↗</span>
+                </a>
+              );
+            })}
           </div>
         ))}
       </div>
