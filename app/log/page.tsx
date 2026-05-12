@@ -1,5 +1,6 @@
 import { logNewProblem } from "../actions";
 import { PATTERNS } from "@/lib/patterns";
+import { SubmitButton } from "@/components/submit-button";
 
 export default function LogPage() {
   async function action(formData: FormData) {
@@ -94,7 +95,7 @@ export default function LogPage() {
           </Field>
         </Section>
 
-        <button type="submit" className="btn-primary w-full py-3">Save attempt</button>
+        <SubmitButton>Save attempt</SubmitButton>
       </form>
     </main>
   );

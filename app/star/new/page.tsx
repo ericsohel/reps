@@ -1,4 +1,5 @@
 import { createStar } from "../actions";
+import { SubmitButton } from "@/components/submit-button";
 
 export default function NewStarPage() {
   async function action(formData: FormData) {
@@ -47,7 +48,7 @@ export default function NewStarPage() {
           <textarea name="result" rows={2} />
         </Field>
 
-        <button type="submit" className="btn-primary w-full py-3">Save story</button>
+        <SubmitButton>Save story</SubmitButton>
       </form>
     </main>
   );
