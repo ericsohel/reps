@@ -424,12 +424,14 @@ export default function RoadmapPage() {
                 </div>
                 <div className="text-[11px] text-zinc-600 mt-0.5">{SECTION_NAMES[n.section]}</div>
                 {isRecommended && recommendation && (
-                  <div className="text-[10px] font-bold text-amber-400 uppercase tracking-wider mt-1 flex items-center gap-1.5">
-                    <span className="text-amber-300">★</span>
-                    <span>Recommended</span>
-                    <span className="text-amber-500/60 font-medium normal-case tracking-normal">
-                      · {recommendation.reasons.join(" · ")}
-                    </span>
+                  <div className="mt-1">
+                    <div className="text-[10px] font-bold text-amber-400 uppercase tracking-wider flex items-center gap-1">
+                      <span>★</span>
+                      <span>Recommended</span>
+                    </div>
+                    <div className="text-[9px] text-amber-600/80 mt-0.5 truncate">
+                      {recommendation.reasons.join(" · ")}
+                    </div>
                   </div>
                 )}
                 {isNext && !isRecommended && (
