@@ -22,6 +22,8 @@ const MODULE_PAGES: Record<string, string> = {
   "heap":            "/roadmap/heap",
   "greedy":          "/roadmap/greedy",
   "intervals":       "/roadmap/intervals",
+  "graph-traversal": "/roadmap/graph-traversal",
+  "topo-sort":       "/roadmap/topo-sort",
 };
 
 const COLORS: Record<string, string> = {

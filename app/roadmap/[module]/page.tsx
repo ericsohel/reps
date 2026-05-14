@@ -26,6 +26,8 @@ const MODULE_META = {
   "heap":            { file: "15-heap.md",                num: 15, title: "Heap / Priority Queue" },
   "greedy":          { file: "16-greedy.md",             num: 16, title: "Greedy" },
   "intervals":       { file: "17-intervals.md",          num: 17, title: "Intervals & Sweep Line" },
+  "graph-traversal": { file: "18-graph-traversal.md",    num: 18, title: "Graph Traversal" },
+  "topo-sort":       { file: "19-topological-sort.md",   num: 19, title: "Topological Sort" },
 } as const;
 
 type ModuleKey = keyof typeof MODULE_META;

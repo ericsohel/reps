@@ -18,4 +18,6 @@ export const PROBLEM_COUNTS: Record<string, number> = {
   "heap":            8,
   "greedy":          8,
   "intervals":       6,
+  "graph-traversal": 8,
+  "topo-sort":       6,
 };
