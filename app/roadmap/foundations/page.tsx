@@ -2,6 +2,83 @@ import Link from "next/link";
 
 export const metadata = { title: "Foundations — DSA Roadmap" };
 
+// ── Syntax highlighter ────────────────────────────────────────────────────────
+
+type TT = "keyword" | "builtin" | "string" | "comment" | "number" | "decorator" | "text";
+interface Token { type: TT; value: string }
+
+const KW = new Set([
+  "import","from","def","return","for","in","if","else","elif","while","pass",
+  "class","and","or","not","is","None","True","False","lambda","with","as",
+  "yield","raise","try","except","finally","break","continue","global","assert",
+]);
+const BUILTINS = new Set([
+  "print","int","list","dict","set","range","len","max","min","sorted",
+  "enumerate","zip","map","filter","str","type","isinstance","tuple","bool",
+  "float","abs","sum","any","all","reversed",
+]);
+
+function tokenize(src: string): Token[] {
+  const out: Token[] = [];
+  let i = 0;
+  while (i < src.length) {
+    const ch = src[i];
+    if (ch === '"' || ch === "'") {
+      const q = ch;
+      if (src.startsWith(q.repeat(3), i)) {
+        const end = src.indexOf(q.repeat(3), i + 3);
+        const slice = end === -1 ? src.slice(i) : src.slice(i, end + 3);
+        out.push({ type: "string", value: slice });
+        i = end === -1 ? src.length : end + 3;
+      } else {
+        let j = i + 1;
+        while (j < src.length && src[j] !== q && src[j] !== "\n") {
+          if (src[j] === "\\") j++;
+          j++;
+        }
+        out.push({ type: "string", value: src.slice(i, j + 1) });
+        i = j + 1;
+      }
+    } else if (ch === "#") {
+      const end = src.indexOf("\n", i);
+      out.push({ type: "comment", value: end === -1 ? src.slice(i) : src.slice(i, end) });
+      i = end === -1 ? src.length : end;
+    } else if (ch === "@") {
+      let j = i + 1;
+      while (j < src.length && /[\w.]/.test(src[j])) j++;
+      out.push({ type: "decorator", value: src.slice(i, j) });
+      i = j;
+    } else if (/\d/.test(ch) && (i === 0 || !/\w/.test(src[i - 1]))) {
+      let j = i;
+      while (j < src.length && /[\d_]/.test(src[j])) j++;
+      out.push({ type: "number", value: src.slice(i, j) });
+      i = j;
+    } else if (/[a-zA-Z_]/.test(ch)) {
+      let j = i;
+      while (j < src.length && /\w/.test(src[j])) j++;
+      const word = src.slice(i, j);
+      out.push({ type: KW.has(word) ? "keyword" : BUILTINS.has(word) ? "builtin" : "text", value: word });
+      i = j;
+    } else {
+      const last = out[out.length - 1];
+      if (last?.type === "text") last.value += ch;
+      else out.push({ type: "text", value: ch });
+      i++;
+    }
+  }
+  return out;
+}
+
+const TOKEN_CLASS: Record<TT, string> = {
+  keyword:   "text-violet-400",
+  builtin:   "text-sky-400",
+  string:    "text-amber-300",
+  comment:   "text-zinc-500",
+  number:    "text-orange-300",
+  decorator: "text-emerald-400",
+  text:      "text-zinc-300",
+};
+
 function H2({ children }: { children: React.ReactNode }) {
   return (
     <h2 className="text-lg font-semibold text-zinc-100 mt-8 mb-3 tracking-tight">
@@ -36,17 +113,25 @@ function Reading({ children }: { children: React.ReactNode }) {
   );
 }
 
-function Code({ children }: { children: React.ReactNode }) {
+function Code({ children }: { children: string }) {
+  const tokens = tokenize(children);
   return (
-    <pre className="mt-3 overflow-x-auto rounded-lg border border-zinc-800 bg-zinc-900/60 px-4 py-3 text-[13px] leading-relaxed text-zinc-300 font-mono">
-      {children}
-    </pre>
+    <div className="mt-3 relative">
+      <span className="absolute top-3 right-3.5 text-[10px] font-mono font-semibold text-zinc-600 uppercase tracking-wider select-none">
+        py
+      </span>
+      <pre className="overflow-x-auto rounded-lg border border-zinc-700/60 bg-[#0c0c0e] px-5 py-4 text-[13px] leading-[1.7] font-mono">
+        {tokens.map((t, i) => (
+          <span key={i} className={TOKEN_CLASS[t.type]}>{t.value}</span>
+        ))}
+      </pre>
+    </div>
   );
 }
 
 function InlineCode({ children }: { children: React.ReactNode }) {
   return (
-    <code className="px-1.5 py-0.5 rounded bg-zinc-800/80 text-zinc-300 text-[12px] font-mono">
+    <code className="px-1.5 py-0.5 rounded-md border border-zinc-700/50 bg-zinc-900 text-zinc-200 text-[12px] font-mono">
       {children}
     </code>
   );
