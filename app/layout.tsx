@@ -34,6 +34,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             <NavLink href="/companies">Companies</NavLink>
             <NavLink href="/leaks">Leaks</NavLink>
             <NavLink href="/process">Process</NavLink>
+            <NavLink href="/roadmap">Roadmap</NavLink>
             <a
               href="/api/export"
               className="ml-auto text-xs text-zinc-600 hover:text-zinc-400 no-underline"
