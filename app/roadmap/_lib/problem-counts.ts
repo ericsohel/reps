@@ -1,7 +1,7 @@
-// Step 5 problem counts per module (Foundations is 8 checklist items).
+// Step 5 problem counts per module. Foundations is omitted — it is a
+// skill checklist, not a problem set, so no progress badge is shown.
 // Update when a module's problem list changes.
 export const PROBLEM_COUNTS: Record<string, number> = {
-  "foundations":     8,
   "arrays-hashing":  7,
   "prefix-sums":     8,
   "two-pointers":    6,
