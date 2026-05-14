@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
+import { PROBLEM_COUNTS } from "./_lib/problem-counts";
 
 const MODULE_PAGES: Record<string, string> = {
   "foundations":     "/roadmap/foundations",
@@ -363,14 +364,30 @@ export default function RoadmapPage() {
                     {unlocks === 1 ? "module" : "modules"}
                   </div>
                 )}
-                {state !== "locked" && (problemsSolved[n.id]?.length ?? 0) > 0 && (
-                  <div className="text-[10px] mt-0.5">
-                    <span className={(problemsSolved[n.id]?.length ?? 0) >= REQUIRED_PROBLEMS ? "text-emerald-400 font-semibold" : "text-zinc-500"}>
-                      {problemsSolved[n.id]?.length ?? 0} / {REQUIRED_PROBLEMS}
-                    </span>
-                    <span className="text-zinc-600"> problems solved</span>
-                  </div>
-                )}
+                {state !== "locked" && PROBLEM_COUNTS[n.id] && (() => {
+                  const solved = problemsSolved[n.id]?.length ?? 0;
+                  const total = PROBLEM_COUNTS[n.id];
+                  const pct = Math.min(100, (solved / total) * 100);
+                  const hitThreshold = solved >= Math.min(REQUIRED_PROBLEMS, total);
+                  const allDone = solved === total;
+                  return (
+                    <div className="mt-1.5 flex items-center gap-2">
+                      <span className="text-[10px] tabular-nums leading-none">
+                        <span className={allDone ? "text-emerald-400 font-semibold" : hitThreshold ? "text-emerald-500" : "text-zinc-300"}>
+                          {solved}
+                        </span>
+                        <span className="text-zinc-600"> / {total}</span>
+                        <span className="text-zinc-700"> solved</span>
+                      </span>
+                      <div className="flex-1 max-w-[72px] h-1 bg-zinc-800/70 rounded-full overflow-hidden">
+                        <div
+                          className={`h-full transition-all ${allDone ? "bg-emerald-500" : hitThreshold ? "bg-emerald-500/70" : "bg-zinc-500/50"}`}
+                          style={{ width: `${pct}%` }}
+                        />
+                      </div>
+                    </div>
+                  );
+                })()}
               </div>
 
               <div className="flex items-center gap-2 flex-shrink-0">
