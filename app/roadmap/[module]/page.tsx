@@ -23,6 +23,8 @@ const MODULE_META = {
   "trees":           { file: "13-trees.md",               num: 13, title: "Trees" },
   "tries":           { file: "14-tries.md",               num: 14, title: "Tries" },
   "heap":            { file: "15-heap.md",                num: 15, title: "Heap / Priority Queue" },
+  "greedy":          { file: "16-greedy.md",             num: 16, title: "Greedy" },
+  "intervals":       { file: "17-intervals.md",          num: 17, title: "Intervals & Sweep Line" },
 } as const;
 
 type ModuleKey = keyof typeof MODULE_META;

@@ -19,6 +19,8 @@ const MODULE_PAGES: Record<string, string> = {
   "trees":           "/roadmap/trees",
   "tries":           "/roadmap/tries",
   "heap":            "/roadmap/heap",
+  "greedy":          "/roadmap/greedy",
+  "intervals":       "/roadmap/intervals",
 };
 
 const COLORS: Record<string, string> = {
