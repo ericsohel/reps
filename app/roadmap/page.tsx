@@ -241,6 +241,89 @@ export default function RoadmapPage() {
   const nextId = visibleNodes.find(n => nodeState(n.id) === "available")?.id;
   const doneCount = visibleNodes.filter(n => isModuleDone(n.id)).length;
 
+  // ── Recommendation engine ───────────────────────────────────────────────────
+  // Score each available module on multiple axes; the highest score is the
+  // "highest yield" pick. Weights are tuned to favour downstream impact, but
+  // also reward momentum and contextual fit so the recommendation feels smart
+  // rather than just "biggest subtree wins".
+  const recommendation: { id: string; reasons: string[] } | null = (() => {
+    const candidates = visibleNodes.filter(n => nodeState(n.id) === "available");
+    if (candidates.length === 0) return null;
+
+    const completedNodes = NODES.filter(n => isModuleDone(n.id));
+    const completedOrders = completedNodes
+      .map(n => ORDER[n.id] || 99)
+      .sort((a, b) => a - b);
+    // "current learning position" — one module past your median completed order
+    const currentPos = completedOrders.length > 0
+      ? completedOrders[Math.floor(completedOrders.length / 2)] + 1
+      : 1;
+
+    const maxUnlocks = Math.max(1, ...candidates.map(n => computeUnlocks(n.id)));
+    const maxProblems = Math.max(1, ...Object.values(PROBLEM_COUNTS));
+
+    type Scored = {
+      id: string;
+      score: number;
+      contributions: { label: string; value: number }[];
+    };
+
+    const scored: Scored[] = candidates.map(n => {
+      const unlocks = computeUnlocks(n.id);
+      const order = ORDER[n.id] || 99;
+
+      const sectionPeers = NODES.filter(x => x.section === n.section && inTrack(x));
+      const sectionDone = sectionPeers.filter(x => isModuleDone(x.id)).length;
+      const sectionStarted = sectionDone > 0;
+      const sectionCoherence = sectionPeers.length > 0 ? sectionDone / sectionPeers.length : 0;
+
+      const trackMatch = currentTrack !== "all" && n.track === currentTrack ? 1 : 0;
+      const trackNeutral = currentTrack === "all" || n.track === "both" ? 0.5 : 0;
+      const trackScore = Math.max(trackMatch, trackNeutral);
+
+      // proximity: ideal is one step past current position; drops off either way
+      const distance = Math.abs(order - currentPos);
+      const proximity = Math.max(0, 1 - distance / 6);
+
+      const problemCount = PROBLEM_COUNTS[n.id] || 0;
+      const solvedCount = problemsSolved[n.id]?.length || 0;
+      const problemDensity = problemCount / maxProblems;
+
+      const alreadyStarted = solvedCount > 0 && solvedCount < REQUIRED_PROBLEMS;
+      const aboveThreshold = solvedCount >= REQUIRED_PROBLEMS;
+
+      // Foundation/utility modules unlock disproportionately; weighted heavily.
+      const downstreamScore = unlocks / maxUnlocks;
+
+      const contributions = [
+        { label: "downstream impact",   value: 0.35 * downstreamScore },
+        { label: "section coherence",   value: 0.20 * sectionCoherence },
+        { label: "curriculum proximity",value: 0.15 * proximity },
+        { label: "track alignment",     value: 0.10 * trackScore },
+        { label: "problem density",     value: 0.10 * problemDensity },
+        { label: "already started",     value: alreadyStarted ? 0.15 : 0 },
+        { label: "threshold reached",   value: aboveThreshold ? -0.10 : 0 },
+        { label: "section momentum",    value: sectionStarted && sectionCoherence < 1 ? 0.05 : 0 },
+      ];
+      const score = contributions.reduce((s, c) => s + c.value, 0);
+      return { id: n.id, score, contributions };
+    });
+
+    scored.sort((a, b) => b.score - a.score);
+    const top = scored[0];
+
+    // Build human-readable reasons from the top 2 contributing factors
+    // (excluding penalties and trivial values).
+    const meaningful = top.contributions
+      .filter(c => c.value > 0.04)
+      .sort((a, b) => b.value - a.value)
+      .slice(0, 2)
+      .map(c => c.label);
+
+    return { id: top.id, reasons: meaningful.length > 0 ? meaningful : ["next available"] };
+  })();
+  const recommendedId = recommendation?.id;
+
   if (!hydrated) return null;
 
   return (
@@ -297,6 +380,7 @@ export default function RoadmapPage() {
             .filter(p => !isModuleDone(p))
             .map(p => NODES.find(x => x.id === p)?.label);
           const isNext = n.id === nextId;
+          const isRecommended = n.id === recommendedId;
           const unlocks = computeUnlocks(n.id);
 
           return (
@@ -304,8 +388,10 @@ export default function RoadmapPage() {
               key={n.id}
               onClick={() => state !== "locked" && toggle(n.id)}
               className={[
-                "flex items-center gap-3 px-3 py-2.5 rounded-lg border transition-all",
-                state === "locked"
+                "relative flex items-center gap-3 px-3 py-2.5 rounded-lg border transition-all",
+                isRecommended
+                  ? "cursor-pointer border-amber-500/60 bg-gradient-to-br from-amber-950/30 via-zinc-900/40 to-zinc-900/30 shadow-[0_0_24px_rgba(251,191,36,0.18),inset_0_0_0_1px_rgba(251,191,36,0.12)] ring-1 ring-amber-500/30 hover:shadow-[0_0_32px_rgba(251,191,36,0.28),inset_0_0_0_1px_rgba(251,191,36,0.2)]"
+                  : state === "locked"
                   ? "opacity-50 cursor-default border-zinc-800/40 bg-zinc-900/10"
                   : state === "completed"
                   ? "cursor-pointer border-emerald-900/50 bg-emerald-950/20 hover:bg-emerald-950/30"
@@ -316,12 +402,12 @@ export default function RoadmapPage() {
             >
               <div
                 className="text-base font-extrabold min-w-[28px] text-center tabular-nums"
-                style={{ color: state === "locked" ? "#52525b" : sectionColor }}
+                style={{ color: state === "locked" ? "#52525b" : isRecommended ? "#fbbf24" : sectionColor }}
               >
                 {num}
               </div>
 
-              <div className="w-px h-7 bg-zinc-800 flex-shrink-0" />
+              <div className={`w-px h-7 flex-shrink-0 ${isRecommended ? "bg-amber-700/40" : "bg-zinc-800"}`} />
 
               <div className="flex-1 min-w-0">
                 <div
@@ -337,7 +423,16 @@ export default function RoadmapPage() {
                   {n.label}
                 </div>
                 <div className="text-[11px] text-zinc-600 mt-0.5">{SECTION_NAMES[n.section]}</div>
-                {isNext && (
+                {isRecommended && recommendation && (
+                  <div className="text-[10px] font-bold text-amber-400 uppercase tracking-wider mt-1 flex items-center gap-1.5">
+                    <span className="text-amber-300">★</span>
+                    <span>Recommended</span>
+                    <span className="text-amber-500/60 font-medium normal-case tracking-normal">
+                      · {recommendation.reasons.join(" · ")}
+                    </span>
+                  </div>
+                )}
+                {isNext && !isRecommended && (
                   <div className="text-[10px] font-bold text-emerald-400 uppercase tracking-wider mt-0.5">
                     up next
                   </div>
