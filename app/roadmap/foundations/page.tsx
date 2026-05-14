@@ -138,7 +138,7 @@ function InlineCode({ children }: { children: React.ReactNode }) {
 }
 
 function Divider() {
-  return <div className="divider my-6" />;
+  return <div className="divider my-10" />;
 }
 
 function Table({ headers, rows }: { headers: string[]; rows: string[][] }) {
