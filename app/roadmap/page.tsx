@@ -394,7 +394,7 @@ export default function RoadmapPage() {
                 isRecommended
                   ? "cursor-pointer border-amber-500/60 bg-gradient-to-br from-amber-950/30 via-zinc-900/40 to-zinc-900/30 shadow-[0_0_24px_rgba(251,191,36,0.18),inset_0_0_0_1px_rgba(251,191,36,0.12)] ring-1 ring-amber-500/30 hover:shadow-[0_0_32px_rgba(251,191,36,0.28),inset_0_0_0_1px_rgba(251,191,36,0.2)]"
                   : state === "locked"
-                  ? "opacity-50 cursor-default border-zinc-800/40 bg-zinc-900/10"
+                  ? "cursor-default border-zinc-800/30 bg-zinc-900/10"
                   : state === "completed"
                   ? "cursor-pointer border-emerald-900/50 bg-emerald-950/20 hover:bg-emerald-950/30"
                   : isNext
@@ -404,12 +404,12 @@ export default function RoadmapPage() {
             >
               <div
                 className="text-base font-extrabold min-w-[28px] text-center tabular-nums"
-                style={{ color: state === "locked" ? "#52525b" : isRecommended ? "#fbbf24" : sectionColor }}
+                style={{ color: state === "locked" ? "#3f3f46" : isRecommended ? "#fbbf24" : sectionColor }}
               >
                 {num}
               </div>
 
-              <div className={`w-px h-7 flex-shrink-0 ${isRecommended ? "bg-amber-700/40" : "bg-zinc-800"}`} />
+              <div className={`w-px h-7 flex-shrink-0 ${isRecommended ? "bg-amber-700/40" : state === "locked" ? "bg-zinc-800/40" : "bg-zinc-800"}`} />
 
               <div className="flex-1 min-w-0">
                 <div
@@ -418,13 +418,13 @@ export default function RoadmapPage() {
                     state === "completed"
                       ? "text-emerald-400"
                       : state === "locked"
-                      ? "text-zinc-600"
+                      ? "text-zinc-700"
                       : "text-zinc-100",
                   ].join(" ")}
                 >
                   {n.label}
                 </div>
-                <div className="text-[11px] text-zinc-600 mt-0.5">{SECTION_NAMES[n.section]}</div>
+                <div className={`text-[11px] mt-0.5 ${state === "locked" ? "text-zinc-700" : "text-zinc-600"}`}>{SECTION_NAMES[n.section]}</div>
                 {isRecommended && recommendation && (
                   <div className="mt-1">
                     <div className="text-[10px] font-bold text-amber-400 uppercase tracking-wider flex items-center gap-1">
@@ -494,7 +494,7 @@ export default function RoadmapPage() {
                   <Link
                     href={MODULE_PAGES[n.id]}
                     onClick={e => e.stopPropagation()}
-                    className="no-underline text-[11px] text-zinc-600 hover:text-emerald-400 transition-colors px-1.5 py-0.5 rounded border border-zinc-800 hover:border-emerald-900/50 bg-zinc-900/40"
+                    className="no-underline text-[11px] text-zinc-500 hover:text-emerald-400 transition-colors px-1.5 py-0.5 rounded border border-zinc-700/60 hover:border-emerald-900/50 bg-zinc-900/60"
                     title="View module"
                   >
                     Notes
