@@ -1,6 +1,11 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import Link from "next/link";
+
+const MODULE_PAGES: Record<string, string> = {
+  "foundations": "/roadmap/foundations",
+};
 
 const COLORS: Record<string, string> = {
   "0":  "#6741d9",
@@ -326,16 +331,28 @@ export default function RoadmapPage() {
                 )}
               </div>
 
-              <div className="flex-shrink-0 w-5 text-center text-sm">
-                {state === "completed" ? (
-                  <span className="text-emerald-400">✓</span>
-                ) : state === "locked" ? (
-                  <span className="text-zinc-700 text-xs">🔒</span>
-                ) : isNext ? (
-                  <span className="text-emerald-400">→</span>
-                ) : (
-                  <span className="text-zinc-600">○</span>
+              <div className="flex items-center gap-2 flex-shrink-0">
+                {MODULE_PAGES[n.id] && (
+                  <Link
+                    href={MODULE_PAGES[n.id]}
+                    onClick={e => e.stopPropagation()}
+                    className="no-underline text-[11px] text-zinc-600 hover:text-emerald-400 transition-colors px-1.5 py-0.5 rounded border border-zinc-800 hover:border-emerald-900/50 bg-zinc-900/40"
+                    title="View module"
+                  >
+                    Notes
+                  </Link>
                 )}
+                <div className="w-5 text-center text-sm">
+                  {state === "completed" ? (
+                    <span className="text-emerald-400">✓</span>
+                  ) : state === "locked" ? (
+                    <span className="text-zinc-700 text-xs">🔒</span>
+                  ) : isNext ? (
+                    <span className="text-emerald-400">→</span>
+                  ) : (
+                    <span className="text-zinc-600">○</span>
+                  )}
+                </div>
               </div>
             </div>
           );
