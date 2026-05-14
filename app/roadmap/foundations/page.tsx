@@ -79,9 +79,11 @@ const TOKEN_CLASS: Record<TT, string> = {
   text:      "text-zinc-300",
 };
 
+// ── Shared UI ─────────────────────────────────────────────────────────────────
+
 function H2({ children }: { children: React.ReactNode }) {
   return (
-    <h2 className="text-lg font-semibold text-zinc-100 mt-8 mb-3 tracking-tight">
+    <h2 className="text-lg font-semibold text-zinc-100 mt-10 mb-4 tracking-tight border-b border-zinc-800/60 pb-2">
       {children}
     </h2>
   );
@@ -89,7 +91,7 @@ function H2({ children }: { children: React.ReactNode }) {
 
 function H3({ id, children }: { id?: string; children: React.ReactNode }) {
   return (
-    <h3 id={id} className="text-base font-semibold text-zinc-200 mt-6 mb-2 tracking-tight scroll-mt-4">
+    <h3 id={id} className="text-base font-semibold text-zinc-200 mt-8 mb-3 tracking-tight scroll-mt-4">
       {children}
     </h3>
   );
@@ -97,7 +99,7 @@ function H3({ id, children }: { id?: string; children: React.ReactNode }) {
 
 function SelfTest({ children }: { children: React.ReactNode }) {
   return (
-    <div className="mt-3 px-3 py-2.5 rounded-lg border border-zinc-700/50 bg-zinc-900/40 text-sm text-zinc-300">
+    <div className="mt-4 px-4 py-3 rounded-lg border border-zinc-700/50 bg-zinc-900/40 text-sm text-zinc-300">
       <span className="text-xs font-bold uppercase tracking-widest text-zinc-500 mr-2">Self-test</span>
       {children}
     </div>
@@ -106,7 +108,7 @@ function SelfTest({ children }: { children: React.ReactNode }) {
 
 function Reading({ children }: { children: React.ReactNode }) {
   return (
-    <div className="mt-2 text-sm text-zinc-500">
+    <div className="mt-3 text-sm text-zinc-500">
       <span className="text-xs font-bold uppercase tracking-widest text-zinc-600 mr-2">Reading</span>
       {children}
     </div>
@@ -116,7 +118,7 @@ function Reading({ children }: { children: React.ReactNode }) {
 function Code({ children }: { children: string }) {
   const tokens = tokenize(children);
   return (
-    <div className="mt-3 relative">
+    <div className="mt-4 mb-2 relative">
       <span className="absolute top-3 right-3.5 text-[10px] font-mono font-semibold text-zinc-600 uppercase tracking-wider select-none">
         py
       </span>
@@ -138,12 +140,12 @@ function InlineCode({ children }: { children: React.ReactNode }) {
 }
 
 function Divider() {
-  return <div className="divider my-10" />;
+  return <div className="divider mt-10 mb-2" />;
 }
 
 function Table({ headers, rows }: { headers: string[]; rows: string[][] }) {
   return (
-    <div className="mt-3 overflow-x-auto">
+    <div className="mt-4 mb-2 overflow-x-auto">
       <table className="w-full text-sm border-collapse">
         <thead>
           <tr>
@@ -170,9 +172,12 @@ function Table({ headers, rows }: { headers: string[]; rows: string[][] }) {
   );
 }
 
+// ── Page ──────────────────────────────────────────────────────────────────────
+
 export default function FoundationsPage() {
   return (
-    <div className="space-y-1 pb-16">
+    <div className="pb-16">
+
       <div className="flex items-center gap-2 text-xs text-zinc-600 mb-6">
         <Link href="/roadmap" className="no-underline text-zinc-500 hover:text-zinc-300 transition-colors">
           Roadmap
@@ -181,7 +186,7 @@ export default function FoundationsPage() {
         <span className="text-zinc-400">Foundations</span>
       </div>
 
-      <div className="flex items-start justify-between gap-4 flex-wrap">
+      <div className="flex items-start justify-between gap-4 flex-wrap mb-2">
         <div>
           <div className="text-xs font-bold uppercase tracking-widest text-zinc-600 mb-1.5">Module 1</div>
           <h1 className="text-3xl font-semibold tracking-tight">Foundations</h1>
@@ -196,25 +201,26 @@ export default function FoundationsPage() {
         </div>
       </div>
 
-      <p className="text-sm text-zinc-500 mt-2">
+      <p className="text-sm text-zinc-500 mt-3 mb-4">
         Structurally different from modules 2+ — no cold attempt, no problem ladder. Subsequent modules follow a 5-step structure. Complete every item here before moving on.
       </p>
 
-      <Divider />
+      <div className="divider" />
 
       <H2>How to use this module</H2>
-      <ol className="space-y-1.5 text-sm text-zinc-400 list-decimal list-inside">
+
+      <ol className="space-y-2 text-sm text-zinc-400 list-decimal list-inside">
         <li><span className="text-zinc-300 font-medium">Read</span> the skill description.</li>
         <li><span className="text-zinc-300 font-medium">Try</span> the self-test cold — no reference material.</li>
         <li><span className="text-zinc-300 font-medium">Pass?</span> Check it off and move on.</li>
-        <li><span className="text-zinc-300 font-medium">Fail or slow?</span> Follow the reading link before continuing. Don't skip.</li>
+        <li><span className="text-zinc-300 font-medium">Fail or slow?</span> Follow the reading link before continuing. Don&apos;t skip.</li>
       </ol>
-      <p className="text-sm text-zinc-500 mt-3">
+
+      <p className="text-sm text-zinc-500 mt-4">
         Work through every item in order. None of this is taught again — later modules assume it fluently.
       </p>
 
       <Divider />
-
       <H2>Checklist</H2>
 
       {/* 1 */}
@@ -323,7 +329,7 @@ data = sys.stdin.read().split()
 idx = 0
 n = int(data[idx]); idx += 1
 a = [int(data[idx + i]) for i in range(n)]; idx += n`}</Code>
-      <p className="text-sm text-zinc-400 mt-3">For many outputs, accumulate and print once:</p>
+      <p className="text-sm text-zinc-400 mt-4">For many outputs, accumulate and print once:</p>
       <Code>{`print('\\n'.join(map(str, results)))`}</Code>
       <SelfTest>
         Read n integers on one line into a list in one line of Python.{" "}
@@ -340,8 +346,9 @@ a = [int(data[idx + i]) for i in range(n)]; idx += n`}</Code>
       </p>
       <Code>{`import sys
 sys.setrecursionlimit(300_000)   # put at the top of solutions that recurse`}</Code>
-      <p className="text-sm text-zinc-400 mt-3">
-        Iterative rewrites are more reliable for trees with n &gt; 10⁵. We rewrite recursive solutions to iterative in modules 13 (Trees) and 17 (Graph Traversal).
+      <p className="text-sm text-zinc-400 mt-4">
+        Iterative rewrites are more reliable for trees with n &gt; 10⁵. We rewrite recursive solutions
+        to iterative in modules 13 (Trees) and 17 (Graph Traversal).
       </p>
       <SelfTest>
         What happens if you call <InlineCode>fib(2000)</InlineCode> recursively without setting the limit?{" "}
@@ -356,11 +363,12 @@ sys.setrecursionlimit(300_000)   # put at the top of solutions that recurse`}</C
         Python integers have arbitrary precision — no overflow. <InlineCode>10**18 * 10**18</InlineCode> works fine.
         Significant advantage over C++.
       </p>
-      <p className="text-sm text-zinc-500 mt-2">
+      <p className="text-sm text-zinc-500 mt-3">
         Caveat: arithmetic on huge numbers isn&apos;t O(1). For 10⁶ operations on numbers with hundreds of digits, it becomes noticeable.
       </p>
       <p className="text-sm text-zinc-400 mt-3">
-        <span className="text-zinc-300 font-medium">Modular arithmetic:</span> Python&apos;s <InlineCode>%</InlineCode> operator returns a non-negative result for positive modulus — unlike C++.
+        <span className="text-zinc-300 font-medium">Modular arithmetic:</span>{" "}
+        Python&apos;s <InlineCode>%</InlineCode> operator returns a non-negative result for positive modulus — unlike C++.
       </p>
       <Code>{`(-3) % 5   # → 2 in Python (mathematical result)
            # → -3 in C++ (requires manual fix)
@@ -382,10 +390,13 @@ MOD = 10**9 + 7`}</Code>
         Write a recursive function, identify every base case, and argue why it terminates.
       </p>
       <SelfTest>
-        <ol className="mt-1 space-y-1 list-decimal list-inside">
+        <ol className="mt-2 space-y-1.5 list-decimal list-inside">
           <li>Recursive factorial: <InlineCode>def fact(n)</InlineCode>. Base case? Termination?</li>
           <li>Fibonacci with memoisation using <InlineCode>@functools.lru_cache</InlineCode>.</li>
-          <li>Why is <InlineCode>fact(100000)</InlineCode> dangerous even after raising the recursion limit? <span className="text-zinc-500">(Stack memory.)</span></li>
+          <li>
+            Why is <InlineCode>fact(100000)</InlineCode> dangerous even after raising the recursion limit?{" "}
+            <span className="text-zinc-500">(Stack memory.)</span>
+          </li>
         </ol>
       </SelfTest>
       <Code>{`import functools
@@ -394,7 +405,7 @@ MOD = 10**9 + 7`}</Code>
 def fib(n):
     if n <= 1: return n
     return fib(n-1) + fib(n-2)`}</Code>
-      <p className="text-sm text-zinc-500 mt-3">
+      <p className="text-sm text-zinc-500 mt-4">
         Every recursive call must strictly reduce the problem toward a base case.
       </p>
 
@@ -423,20 +434,27 @@ grid = [list(map(int, input().split())) for _ in range(n)]`}</Code>
 
       <Divider />
 
-      <div className="rounded-lg border border-emerald-900/40 bg-emerald-950/20 px-4 py-3">
-        <div className="text-xs font-bold uppercase tracking-widest text-emerald-600 mb-1">
+      <div className="rounded-lg border border-emerald-900/40 bg-emerald-950/20 px-4 py-4">
+        <div className="text-xs font-bold uppercase tracking-widest text-emerald-600 mb-2">
           You&apos;re ready when...
         </div>
         <p className="text-sm text-zinc-400">
-          Every self-test takes under 5 minutes without reference material. If three or more feel shaky, fix them here — every future module assumes these fluently.
+          Every self-test takes under 5 minutes without reference material. If three or more feel shaky,
+          fix them here — every future module assumes these fluently.
         </p>
       </div>
 
-      <div className="flex justify-between items-center pt-4">
+      <div className="divider mt-10" />
+
+      <div className="flex justify-between items-center">
         <Link href="/roadmap" className="no-underline text-sm text-zinc-500 hover:text-zinc-300 transition-colors">
           ← Back to Roadmap
         </Link>
+        <Link href="/roadmap/arrays-hashing" className="no-underline text-sm text-zinc-500 hover:text-zinc-300 transition-colors">
+          Next module →
+        </Link>
       </div>
+
     </div>
   );
 }
