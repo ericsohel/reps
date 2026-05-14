@@ -4,7 +4,21 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 
 const MODULE_PAGES: Record<string, string> = {
-  "foundations": "/roadmap/foundations",
+  "foundations":     "/roadmap/foundations",
+  "arrays-hashing":  "/roadmap/arrays-hashing",
+  "prefix-sums":     "/roadmap/prefix-sums",
+  "two-pointers":    "/roadmap/two-pointers",
+  "sliding-window":  "/roadmap/sliding-window",
+  "stack":           "/roadmap/stack",
+  "monotonic-stack": "/roadmap/monotonic-stack",
+  "monotonic-deque": "/roadmap/monotonic-deque",
+  "linked-list":     "/roadmap/linked-list",
+  "binary-search":   "/roadmap/binary-search",
+  "bs-answer":       "/roadmap/bs-answer",
+  "backtracking":    "/roadmap/backtracking",
+  "trees":           "/roadmap/trees",
+  "tries":           "/roadmap/tries",
+  "heap":            "/roadmap/heap",
 };
 
 const COLORS: Record<string, string> = {
