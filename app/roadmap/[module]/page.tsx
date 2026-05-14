@@ -5,6 +5,7 @@ import Link from "next/link";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import type { Components } from "react-markdown";
+import { ProblemsChecklist, type ProblemRow } from "./problems-checklist";
 
 // ── Module registry ──────────────────────────────────────────────────────────
 
@@ -262,6 +263,70 @@ const mdComponents: Components = {
   },
 };
 
+// ── Step 5 problems-table extraction ─────────────────────────────────────────
+
+function extractProblemsSection(md: string): {
+  before: string;
+  step5Intro: string;
+  problems: ProblemRow[];
+  after: string;
+} | null {
+  const m = md.match(/^## Step 5.*$/m);
+  if (!m || m.index === undefined) return null;
+
+  const step5Start = m.index;
+  const before = md.slice(0, step5Start);
+  const fromStep5 = md.slice(step5Start);
+  const lines = fromStep5.split("\n");
+
+  let tStart = -1;
+  let tEnd = -1;
+  for (let i = 0; i < lines.length; i++) {
+    const trimmed = lines[i].trim();
+    const isTableLine = trimmed.startsWith("|") && trimmed.endsWith("|");
+    if (isTableLine) {
+      if (tStart === -1) tStart = i;
+      tEnd = i;
+    } else if (tStart !== -1) {
+      break;
+    }
+  }
+  if (tStart === -1 || tEnd - tStart < 2) return null;
+
+  const step5Intro = lines.slice(0, tStart).join("\n");
+  const tableLines = lines.slice(tStart, tEnd + 1);
+  const after = lines.slice(tEnd + 1).join("\n");
+
+  const parseRow = (line: string) =>
+    line.split("|").slice(1, -1).map((s) => s.trim());
+
+  const headers = parseRow(tableLines[0]);
+  const rows = tableLines.slice(2).map(parseRow);
+  const roleIdx = headers.findIndex((h) => h.toLowerCase() === "role");
+
+  const problems: ProblemRow[] = rows.map((cells, i) => {
+    const num = parseInt(cells[0]) || i + 1;
+    const problemCell = cells[1] || "";
+    const linkMatch = problemCell.match(/\[(.+?)\]\((.+?)\)/);
+    const title = linkMatch ? linkMatch[1] : problemCell;
+    const url = linkMatch ? linkMatch[2] : "";
+
+    const roleCell = roleIdx >= 0 ? cells[roleIdx] || "" : "";
+    const isCheckpoint = roleCell.toLowerCase().includes("checkpoint");
+
+    return {
+      num,
+      title,
+      url,
+      isCheckpoint,
+      extraHeaders: headers.slice(2),
+      extraCells: cells.slice(2),
+    };
+  });
+
+  return { before, step5Intro, problems, after };
+}
+
 // ── Page ─────────────────────────────────────────────────────────────────────
 
 export default async function ModulePage({
@@ -306,9 +371,30 @@ export default async function ModulePage({
 
       <div className="divider mb-0" />
 
-      <ReactMarkdown remarkPlugins={[remarkGfm]} components={mdComponents}>
-        {content}
-      </ReactMarkdown>
+      {(() => {
+        const section = extractProblemsSection(content);
+        if (!section) {
+          return (
+            <ReactMarkdown remarkPlugins={[remarkGfm]} components={mdComponents}>
+              {content}
+            </ReactMarkdown>
+          );
+        }
+        return (
+          <>
+            <ReactMarkdown remarkPlugins={[remarkGfm]} components={mdComponents}>
+              {section.before}
+            </ReactMarkdown>
+            <ReactMarkdown remarkPlugins={[remarkGfm]} components={mdComponents}>
+              {section.step5Intro}
+            </ReactMarkdown>
+            <ProblemsChecklist moduleId={module} problems={section.problems} />
+            <ReactMarkdown remarkPlugins={[remarkGfm]} components={mdComponents}>
+              {section.after}
+            </ReactMarkdown>
+          </>
+        );
+      })()}
 
       <div className="divider mt-6" />
       <div className="flex justify-between items-center pt-4">
@@ -318,14 +404,19 @@ export default async function ModulePage({
         >
           ← Back to Roadmap
         </Link>
-        {meta.num < 15 && (
-          <Link
-            href={`/roadmap/${Object.keys(MODULE_META)[meta.num - 1]}`}
-            className="no-underline text-sm text-zinc-500 hover:text-zinc-300 transition-colors"
-          >
-            Next module →
-          </Link>
-        )}
+        {(() => {
+          const ids = Object.keys(MODULE_META) as ModuleKey[];
+          const idx = ids.findIndex((k) => MODULE_META[k].num === meta.num + 1);
+          if (idx === -1) return null;
+          return (
+            <Link
+              href={`/roadmap/${ids[idx]}`}
+              className="no-underline text-sm text-zinc-500 hover:text-zinc-300 transition-colors"
+            >
+              Next module →
+            </Link>
+          );
+        })()}
       </div>
     </div>
   );

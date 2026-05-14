@@ -166,15 +166,20 @@ function computeUnlocks(id: string): number {
   return visited.size;
 }
 
+const REQUIRED_PROBLEMS = 5;
+
 export default function RoadmapPage() {
   const [completed, setCompleted] = useState<Set<string>>(new Set());
+  const [problemsSolved, setProblemsSolved] = useState<Record<string, number[]>>({});
   const [currentTrack, setCurrentTrack] = useState<FilterTrack>("all");
   const [hydrated, setHydrated] = useState(false);
 
   useEffect(() => {
     const saved = JSON.parse(localStorage.getItem("dsa-v1-completed") || "[]");
+    const solved = JSON.parse(localStorage.getItem("dsa-v1-problems-solved") || "{}");
     const savedTrack = (localStorage.getItem("dsa-v1-track") || "all") as FilterTrack;
     setCompleted(new Set(saved));
+    setProblemsSolved(solved);
     setCurrentTrack(savedTrack);
     setHydrated(true);
   }, []);
@@ -188,14 +193,23 @@ export default function RoadmapPage() {
     return node.track === "both" || node.track === currentTrack;
   }
 
+  // A module is "done" if manually marked complete OR ≥5 problems solved.
+  function isModuleDone(id: string): boolean {
+    if (completed.has(id)) return true;
+    return (problemsSolved[id]?.length ?? 0) >= REQUIRED_PROBLEMS;
+  }
+
   function nodeState(id: string): "completed" | "available" | "locked" {
-    if (completed.has(id)) return "completed";
+    if (isModuleDone(id)) return "completed";
     const prereqs = EDGES.filter(([, t]) => t === id).map(([s]) => s);
-    return prereqs.every(p => completed.has(p)) ? "available" : "locked";
+    return prereqs.every(p => isModuleDone(p)) ? "available" : "locked";
   }
 
   function toggle(id: string) {
     if (nodeState(id) === "locked") return;
+    // Don't allow toggling off an auto-completed module via card click;
+    // user must uncheck problems on the module page.
+    if (!completed.has(id) && isModuleDone(id)) return;
     const next = new Set(completed);
     if (next.has(id)) next.delete(id);
     else next.add(id);
@@ -210,9 +224,10 @@ export default function RoadmapPage() {
 
   function reset() {
     if (!confirm("Reset all progress?")) return;
-    const empty = new Set<string>();
-    setCompleted(empty);
-    saveCompleted(empty);
+    setCompleted(new Set());
+    setProblemsSolved({});
+    localStorage.removeItem("dsa-v1-completed");
+    localStorage.removeItem("dsa-v1-problems-solved");
   }
 
   const visibleNodes = NODES
@@ -220,7 +235,7 @@ export default function RoadmapPage() {
     .sort((a, b) => (ORDER[a.id] || 99) - (ORDER[b.id] || 99));
 
   const nextId = visibleNodes.find(n => nodeState(n.id) === "available")?.id;
-  const doneCount = visibleNodes.filter(n => completed.has(n.id)).length;
+  const doneCount = visibleNodes.filter(n => isModuleDone(n.id)).length;
 
   if (!hydrated) return null;
 
@@ -275,7 +290,7 @@ export default function RoadmapPage() {
           const sectionColor = COLORS[n.section];
           const prereqIds = EDGES.filter(([, t]) => t === n.id).map(([s]) => s);
           const missing = prereqIds
-            .filter(p => !completed.has(p))
+            .filter(p => !isModuleDone(p))
             .map(p => NODES.find(x => x.id === p)?.label);
           const isNext = n.id === nextId;
           const unlocks = computeUnlocks(n.id);
@@ -343,6 +358,14 @@ export default function RoadmapPage() {
                     unlocks{" "}
                     <span className="text-zinc-500">{unlocks}</span>{" "}
                     {unlocks === 1 ? "module" : "modules"}
+                  </div>
+                )}
+                {state !== "locked" && (problemsSolved[n.id]?.length ?? 0) > 0 && (
+                  <div className="text-[10px] mt-0.5">
+                    <span className={(problemsSolved[n.id]?.length ?? 0) >= REQUIRED_PROBLEMS ? "text-emerald-400 font-semibold" : "text-zinc-500"}>
+                      {problemsSolved[n.id]?.length ?? 0} / {REQUIRED_PROBLEMS}
+                    </span>
+                    <span className="text-zinc-600"> problems solved</span>
                   </div>
                 )}
               </div>
