@@ -70,12 +70,13 @@ O(n) — one pass.
 
 ### Preconditions
 
-Converging two pointers requires a **monotonic relationship between pointer position and the objective**. The two recurring shapes:
+Converging two pointers requires a **monotonic relationship between pointer position and the objective**. Three recurring shapes:
 
-- **Sorted array, looking for a pair:** if the sum is too small, move left right (only this can increase it); if too large, move right left. Each direction is forced.
+- **Sorted array, pair sum:** if the sum is too small, move left right (only direction that can increase it); if too large, move right left. Each direction is forced.
 - **Two ends, one dimension capped by the smaller:** container, trapping rain water. Moving the constrained side is the only direction that can possibly improve the answer.
+- **Sorted array, monotone transform at the ends:** when the quantity that matters is a *transform* of the raw value — `|a[i]|` on a signed sorted array, distance from a pivot, square — the transform is largest at one end or the other. Compare the two transforms, pull the "winning" end into an output, advance. The same converging skeleton; the comparison shifts from raw values to the transform.
 
-If neither shape applies — if moving a pointer can both increase and decrease the objective unpredictably — this technique doesn't work. (Use a hash structure or sliding window instead.)
+If none of these shapes applies — if moving a pointer can both increase and decrease the objective unpredictably — this technique doesn't work. (Use a hash structure or sliding window instead.)
 
 ### Reduce by fixing one dimension ([atlas](00-patterns.md#reduce-by-fixing-one-dimension))
 
@@ -138,6 +139,8 @@ def max_water(height):
 
 ```python
 def three_sum(a):
+    # Invariant: triples are emitted in non-decreasing first-element order;
+    # for the current outer i, a[i] is the smallest of the three
     a.sort()
     result = []
     for i in range(len(a) - 2):
@@ -165,6 +168,7 @@ def three_sum(a):
 
 ```python
 def is_palindrome(s):
+    # Invariant: s[:left] mirrors s[right+1:] reversed (matched prefix/suffix so far)
     left, right = 0, len(s) - 1
     while left < right:
         if s[left] != s[right]:
