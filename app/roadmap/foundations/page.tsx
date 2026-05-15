@@ -184,7 +184,14 @@ const mdComponents: Components = {
   td({ children }) {
     return <td className="px-3 py-2.5 text-zinc-400 text-[13px] align-top">{children}</td>;
   },
-  ul({ children }) {
+  ul({ children, className }) {
+    if (className?.includes("contains-task-list")) {
+      return (
+        <ul className="space-y-2 text-sm text-zinc-400 list-none pl-0 mb-4">
+          {children}
+        </ul>
+      );
+    }
     return (
       <ul className="space-y-1.5 text-sm text-zinc-400 list-disc list-outside pl-5 mb-4">
         {children}
@@ -198,8 +205,23 @@ const mdComponents: Components = {
       </ol>
     );
   },
-  li({ children }) {
+  li({ children, className }) {
+    if (className?.includes("task-list-item")) {
+      return (
+        <li className="flex items-start gap-2.5 leading-relaxed">
+          {children}
+        </li>
+      );
+    }
     return <li className="leading-relaxed">{children}</li>;
+  },
+  input({ type }) {
+    if (type === "checkbox") {
+      return (
+        <span className="mt-0.5 flex-shrink-0 inline-flex w-4 h-4 rounded border border-zinc-600 bg-zinc-800/50" />
+      );
+    }
+    return null;
   },
   blockquote({ children }) {
     return (
