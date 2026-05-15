@@ -126,7 +126,7 @@ const EDGES: [string, string][] = [
   ["binary-search","sparse-table"],["prefix-sums","sparse-table"],
   ["prefix-sums","fenwick"],["coord-comp","fenwick"],
   ["fenwick","seg-tree"],
-  ["backtracking","trees"],["backtracking","dp-intro"],
+  ["backtracking","trees"],["stack","trees"],["backtracking","dp-intro"],
   ["trees","tries"],["trees","heap"],["linked-list","heap"],
   ["trees","graph-traversal"],["trees","dp-trees"],
   ["dp-intro","dp-trees"],
