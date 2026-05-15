@@ -11,6 +11,7 @@ export const graphTraversal: Module = {
   resources: [
     { title: "USACO Guide — Graph Traversal (Silver)", url: "https://usaco.guide/silver/graph-traversal" },
     { title: "USACO Guide — Flood Fill (Silver)", url: "https://usaco.guide/silver/flood-fill" },
+    { title: "CPH Chapter 12 — Graph Traversal", url: "https://cses.fi/book/book.pdf" },
   ],
   problems: [
     {
@@ -85,6 +86,16 @@ export const graphTraversal: Module = {
     },
     {
       num: 8,
+      title: "Open the Lock",
+      url: "https://leetcode.com/problems/open-the-lock/",
+      source: "LC 752",
+      difficulty: "medium",
+      list: "NC150",
+      role: "extension",
+      teaches: "State-space BFS — the node is a 4-tuple of digits, not a position; 8 neighbours per state (each wheel ±1); deadends become walls in the state space. Makes the state-encoding step explicit before Word Ladder hides it inside string transforms",
+    },
+    {
+      num: 9,
       title: "Word Ladder",
       url: "https://leetcode.com/problems/word-ladder/",
       source: "LC 127",
