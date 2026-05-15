@@ -96,6 +96,16 @@ export const bsAnswer: Module = {
     },
     {
       num: 9,
+      title: "Find K-th Smallest Pair Distance",
+      url: "https://leetcode.com/problems/find-k-th-smallest-pair-distance/",
+      source: "LC 719",
+      difficulty: "hard",
+      list: "new",
+      role: "extension",
+      teaches: "Count-feasibility with sliding window — BS on the answer distance d; feasibility = 'count pairs with distance ≤ d ≥ k'. Sort the array, then count pairs using a two-pointer sweep in O(n). Harder than LC 378: feasibility itself requires a non-trivial algorithm",
+    },
+    {
+      num: 10,
       title: "Angry Cows (Gold)",
       url: "http://www.usaco.org/index.php?page=viewproblem2&cpid=597",
       source: "USACO Gold",

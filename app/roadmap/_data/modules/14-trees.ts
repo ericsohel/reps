@@ -125,6 +125,16 @@ export const trees: Module = {
     },
     {
       num: 12,
+      title: "Serialize and Deserialize Binary Tree",
+      url: "https://leetcode.com/problems/serialize-and-deserialize-binary-tree/",
+      source: "LC 297",
+      difficulty: "hard",
+      list: "NC150",
+      role: "extension",
+      teaches: "Preorder traversal with null sentinels — serialize by recording node values and 'null' markers in preorder; deserialize by consuming the same sequence with a pointer or queue. Teaches bidirectional tree ↔ string encoding",
+    },
+    {
+      num: 13,
       title: "Binary Tree Maximum Path Sum",
       url: "https://leetcode.com/problems/binary-tree-maximum-path-sum/",
       source: "LC 124",

@@ -56,6 +56,16 @@ export const monotonicDeque: Module = {
     },
     {
       num: 5,
+      title: "Constrained Subsequence Sum",
+      url: "https://leetcode.com/problems/constrained-subsequence-sum/",
+      source: "LC 1425",
+      difficulty: "hard",
+      list: "new",
+      role: "extension",
+      teaches: "Deque over DP recurrence — `dp[i] = nums[i] + max(dp[i-k..i-1], 0)`. Maintain a monotonic decreasing deque of `dp` values within the window; the front gives the maximum in O(1). This is the canonical 'sliding-window optimisation of a 1D DP' pattern",
+    },
+    {
+      num: 6,
       title: "Maximum Number of Robots Within Budget",
       url: "https://leetcode.com/problems/maximum-number-of-robots-within-budget/",
       source: "LC 2398",
@@ -65,7 +75,7 @@ export const monotonicDeque: Module = {
       teaches: "Deque-max combined with a running cost sum inside a variable window from module 6; cost formula `max_charge + window_size × sum_costs` drives the shrink decision",
     },
     {
-      num: 6,
+      num: 7,
       title: "Shortest Subarray with Sum at Least K",
       url: "https://leetcode.com/problems/shortest-subarray-with-sum-at-least-k/",
       source: "LC 862",
