@@ -305,6 +305,15 @@ function extractProblemsSection(md: string): {
   const headers = parseRow(tableLines[0]);
   const rows = tableLines.slice(2).map(parseRow);
   const roleIdx = headers.findIndex((h) => h.toLowerCase() === "role");
+  const diffIdx = headers.findIndex((h) => h.toLowerCase() === "difficulty");
+
+  const normDifficulty = (s: string): "easy" | "medium" | "hard" | null => {
+    const t = s.toLowerCase().trim();
+    if (t === "easy" || t === "very easy") return "easy";
+    if (t === "medium" || t === "normal") return "medium";
+    if (t === "hard") return "hard";
+    return null;
+  };
 
   const problems: ProblemRow[] = rows.map((cells, i) => {
     const num = parseInt(cells[0]) || i + 1;
@@ -315,12 +324,14 @@ function extractProblemsSection(md: string): {
 
     const roleCell = roleIdx >= 0 ? cells[roleIdx] || "" : "";
     const isCheckpoint = roleCell.toLowerCase().includes("checkpoint");
+    const difficulty = diffIdx >= 0 ? normDifficulty(cells[diffIdx] || "") : null;
 
     return {
       num,
       title,
       url,
       isCheckpoint,
+      difficulty,
       extraHeaders: headers.slice(2),
       extraCells: cells.slice(2),
     };

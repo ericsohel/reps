@@ -1,7 +1,7 @@
 "use client";
 
-import { useTransition, useOptimistic } from "react";
-import { bumpCounter, type CounterKey } from "@/app/counter-actions";
+import { useTransition, useOptimistic, useState } from "react";
+import { bumpCounter, syncCountersFromRoadmap, type CounterKey } from "@/app/counter-actions";
 
 interface Props {
   initial: Record<CounterKey, number>;
@@ -41,19 +41,40 @@ const ITEMS: { key: CounterKey; label: string; tone: { text: string; ring: strin
 ];
 
 export function SolveCounters({ initial }: Props) {
+  const [base, setBase] = useState<Record<CounterKey, number>>(initial);
   const [optimistic, applyOptimistic] = useOptimistic(
-    initial,
+    base,
     (state: Record<CounterKey, number>, action: { key: CounterKey; delta: 1 | -1 }) => ({
       ...state,
       [action.key]: Math.max(0, state[action.key] + action.delta),
     }),
   );
   const [, start] = useTransition();
+  const [syncing, setSyncing] = useState(false);
 
   function bump(key: CounterKey, delta: 1 | -1) {
     start(async () => {
       applyOptimistic({ key, delta });
       await bumpCounter(key, delta);
+    });
+  }
+
+  function sync() {
+    if (!confirm(
+      "Reset Easy/Medium/Hard totals to match your roadmap problem checklist? " +
+      "This overwrites the current counts.",
+    )) return;
+    setSyncing(true);
+    let solved: Record<string, number[]> = {};
+    try {
+      solved = JSON.parse(localStorage.getItem("dsa-v1-problems-solved") || "{}");
+    } catch {
+      /* ignore */
+    }
+    start(async () => {
+      const next = await syncCountersFromRoadmap(solved);
+      setBase(next);
+      setSyncing(false);
     });
   }
 
@@ -91,6 +112,16 @@ export function SolveCounters({ initial }: Props) {
       <div className="px-4 py-2.5 rounded-lg border border-zinc-800/80 bg-zinc-900/30 flex items-center justify-between">
         <span className="text-xs text-zinc-500 uppercase tracking-widest">Total solved</span>
         <span className="mono text-xl font-semibold text-zinc-100 tabular-nums">{total}</span>
+      </div>
+      <div className="flex justify-end">
+        <button
+          onClick={sync}
+          disabled={syncing}
+          className="text-[11px] text-zinc-600 hover:text-emerald-400 transition-colors px-2 py-1 disabled:opacity-50"
+          title="Wipe counters and reseed them from your roadmap problem checklist"
+        >
+          {syncing ? "Syncing…" : "↻ Sync from roadmap"}
+        </button>
       </div>
     </div>
   );

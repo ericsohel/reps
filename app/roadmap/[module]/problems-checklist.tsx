@@ -1,12 +1,14 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { bumpCounter, type CounterKey } from "@/app/counter-actions";
 
 export interface ProblemRow {
   num: number;
   title: string;
   url: string;
   isCheckpoint: boolean;
+  difficulty: CounterKey | null;
   extraHeaders: string[];
   extraCells: string[];
 }
@@ -108,8 +110,9 @@ export function ProblemsChecklist({
   }, [moduleId]);
 
   function toggle(num: number) {
+    const wasSolved = solved.has(num);
     const next = new Set(solved);
-    if (next.has(num)) next.delete(num);
+    if (wasSolved) next.delete(num);
     else next.add(num);
     setSolved(next);
 
@@ -122,6 +125,13 @@ export function ProblemsChecklist({
       localStorage.setItem("dsa-v1-problems-solved", JSON.stringify(data));
     } catch {
       /* ignore */
+    }
+
+    // Bump the home-page Easy/Medium/Hard counter to stay in sync.
+    // Fire-and-forget — the UI doesn't need to wait.
+    const problem = problems.find((p) => p.num === num);
+    if (problem?.difficulty) {
+      void bumpCounter(problem.difficulty, wasSolved ? -1 : 1);
     }
   }
 
