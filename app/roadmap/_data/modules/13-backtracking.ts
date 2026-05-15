@@ -105,6 +105,16 @@ export const backtracking: Module = {
     },
     {
       num: 10,
+      title: "Partition to K Equal Sum Subsets",
+      url: "https://leetcode.com/problems/partition-to-k-equal-sum-subsets/",
+      source: "LC 698",
+      difficulty: "medium",
+      list: "new",
+      role: "extension",
+      teaches: "Bucket-filling backtracking — place each item into one of k buckets that must each sum to `total/k`. Prune by sorting descending (place hardest items first), skipping symmetric empty-bucket states, and bailing when a bucket overflows. Distinct mechanic from constraint-placement (N-Queens) and target-accumulation (Combination Sum)",
+    },
+    {
+      num: 11,
       title: "N-Queens",
       url: "https://leetcode.com/problems/n-queens/",
       source: "LC 51",
