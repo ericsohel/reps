@@ -28,6 +28,20 @@ Meta-patterns that recur across modules. Reference these by name in module Step 
 
 ---
 
+## Count during merge
+
+> A divide-and-conquer sort visits every pair at most once: pairs inside the left half, pairs inside the right half, and pairs crossing the split (counted in the merge). Replace "sort" with "sort *and* accumulate" — the merge step becomes an oracle for any pairwise predicate that's monotone in index.
+
+| Module | Canonical problem | What's accumulated in the merge |
+|---|---|---|
+| 3 — Sorting | CSES 1162 Counting Inversions | `+= len(L) - i` on every R-pull = inversions crossing the split |
+| 3 — Sorting | LC 315 Count Smaller After Self | Per-original-index accumulator: charge R-pulls to each remaining L's result slot |
+| 35 — Fenwick Tree | LC 315 (alt) | Same problem, alternative machinery: BIT over compressed values, queried right-to-left |
+
+The recursive scaffold (`total = within-L + within-R + crossing`) is reusable; the predicate and the accumulator are what change between problems.
+
+---
+
 ## Reduce by fixing one dimension
 
 > When the problem has k variables, fix one and apply a simpler technique to the rest.
