@@ -84,7 +84,7 @@ export const dpTrees: Module = {
       difficulty: "hard",
       list: "new",
       role: "checkpoint",
-      teaches: "**Synthesis checkpoint** — full rerooting on an unrooted tree. First DFS computes `subtree_size[v]` and `ans[root]` (sum of distances from the root) bottom-up. Second DFS rerooting transition: moving the root from `u` to child `v` changes the answer by `+ (n - subtree_size[v]) - subtree_size[v]`. Synthesises subtree aggregation (problems 1-2), unrooted-tree thinking (problem 6), and the rerooting transition — all in one O(n) solution",
+      teaches: "Before reading: recomputing the sum at each root is O(n²). What changes about `ans` when you move the root from `u` to child `v`? Nodes inside `v`'s subtree drop by 1; the rest rise by 1. So `ans[v] = ans[u] + (n − sz[v]) − sz[v]`. First DFS builds `sz` and `ans[root]` bottom-up; second DFS reroots in O(n).",
     },
   ],
 };

@@ -92,7 +92,7 @@ export const heap: Module = {
       difficulty: "hard",
       list: "NC150",
       role: "checkpoint",
-      teaches: "Two-heap balancing — the three-step rebalance order from Step 2",
+      teaches: "Before reading: which earlier problem partitioned items across two heaps with different ordering, and what is the invariant that makes the median O(1) to read? Two-heap balancing: max-heap over the lower half, min-heap over the upper half. The three-step rebalance order from Step 2 keeps `|lo| − |hi| ∈ {0, 1}` so the median is always the top(s).",
     },
   ],
 };

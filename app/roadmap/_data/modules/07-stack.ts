@@ -82,7 +82,7 @@ export const stack: Module = {
       difficulty: "medium",
       list: "⭐",
       role: "checkpoint",
-      teaches: "Augmented stack of `(char, run_length)` with threshold-driven pop when `run_length == k`",
+      teaches: "Before reading: which earlier problem in the module attached extra bookkeeping to each stack entry, and which one popped on a top-vs-incoming comparison? Problem 2's augmented entries plus problem 5's collision check. Stack of `(char, run_length)` with threshold-driven pop when `run_length == k`.",
     },
   ],
 };

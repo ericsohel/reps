@@ -46,6 +46,7 @@ import { probability } from "./modules/39-probability";
 import { geometry } from "./modules/40-geometry";
 import { gameTheory } from "./modules/41-game-theory";
 import { strings } from "./modules/42-strings";
+import { design } from "./modules/43-design";
 
 export const MODULES: readonly Module[] = [
   foundations, arraysHashing, sorting, prefixSums, twoPointers,
@@ -56,7 +57,7 @@ export const MODULES: readonly Module[] = [
   dp2d, knapsack, lisLcs, dpTrees, bitManip,
   bitmaskDp, intervalDp, coordComp, sparseTable, fenwick,
   segTree, numberTheory, combinatorics, probability, geometry,
-  gameTheory, strings,
+  gameTheory, strings, design,
 ];
 
 export const MODULES_BY_ID: Readonly<Record<string, Module>> = Object.fromEntries(
@@ -111,6 +112,7 @@ export const SECTION_NAMES: Readonly<Record<string, string>> = {
   "2d": "Section 2D — Advanced Data Structures",
   "2e": "Section 2E — Math",
   "2f": "Section 2F — Strings",
+  "2g": "Section 2G — Design & OOD",
 };
 
 export const SECTION_COLORS: Readonly<Record<string, string>> = {
@@ -122,4 +124,5 @@ export const SECTION_COLORS: Readonly<Record<string, string>> = {
   "2d": "#7048e8",
   "2e": "#c2255c",
   "2f": "#0c8599",
+  "2g": "#e8590c",
 };

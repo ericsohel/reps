@@ -84,7 +84,7 @@ export const bitManip: Module = {
       difficulty: "medium",
       list: "new",
       role: "checkpoint",
-      teaches: "Synthesis of every XOR idea in the module — XOR the whole array to get `a ^ b` (problem 4), isolate any set bit with `x & -x` (problem 1) to find a position where `a` and `b` differ, then partition the array on that bit and XOR each group separately. Also the bit-isolation primitive that submask enumeration (the bridge into module 31 Bitmask DP) is built on",
+      teaches: "Before reading: XOR-the-array gives `a ^ b`, but you need `a` and `b` separately. What primitive splits one bit-set into a partition of the input? Problem 1's `x & -x` (lowest set bit). XOR all to get `a ^ b`, isolate a 1-bit, partition on that bit, XOR each group. The bit-isolation also seeds submask enumeration in module 31.",
     },
   ],
 };

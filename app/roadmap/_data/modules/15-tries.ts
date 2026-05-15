@@ -72,7 +72,7 @@ export const tries: Module = {
       difficulty: "hard",
       list: "NC150",
       role: "checkpoint",
-      teaches: "Trie of target words + single grid DFS guided by trie; three optimisations compound",
+      teaches: "Before reading: naive is DFS per word against the grid. What structure folds all words into a single grid traversal? Trie of target words. One DFS from each cell, advancing the trie pointer in lockstep with grid moves; prune at missing children, snip leaves after collection, store the full word at each terminal.",
     },
   ],
 };

@@ -122,7 +122,7 @@ export const linkedList: Module = {
       difficulty: "hard",
       list: "NC150",
       role: "checkpoint",
-      teaches: "Min-heap of `(val, index, node)` tuples + the merge subroutine from problem 2",
+      teaches: "Before reading: problem 2 merged two sorted lists in O(n+m). What auxiliary structure generalises that to k lists in O(N log k)? A min-heap keyed on current-front values. Stash `(val, index, node)` tuples (index breaks ties since `ListNode` isn't comparable); the merge subroutine from problem 2 is the inner step.",
     },
   ],
 };

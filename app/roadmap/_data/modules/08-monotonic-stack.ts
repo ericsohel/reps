@@ -82,7 +82,7 @@ export const monotonicStack: Module = {
       difficulty: "medium",
       list: "⭐",
       role: "checkpoint",
-      teaches: "Contribution counting with asymmetric tie-breaking (`≥` on PSE side, `>` on NSE side)",
+      teaches: "Before reading: each element is the minimum of how many subarrays? Which earlier problem computed the span where an element is the minimum? Problem 3's PSE + NSE span. Sum `a[i] * left[i] * right[i]` over all i, with asymmetric tie-breaking (`≥` on PSE side, `>` on NSE side) so each subarray is charged to exactly one minimum.",
     },
   ],
 };

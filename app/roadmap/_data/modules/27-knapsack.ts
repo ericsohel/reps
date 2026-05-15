@@ -93,7 +93,7 @@ export const knapsack: Module = {
       difficulty: "hard",
       list: "UG",
       role: "checkpoint",
-      teaches: "State-swap meta-pattern — when W is huge (10⁹) but the value sum is small (≤ 10⁵), `dp[w]` blows memory. Swap roles: `dp[v]` = **min weight** to achieve value v. Same algorithm, dual state. The takeaway: the dimension you index by is a *choice*, not given by the problem",
+      teaches: "Before reading: `dp[w]` over W = 10⁹ blows memory. The objective and the constraint are both numeric — why is that symmetry the way out? State-swap meta-pattern. Make `dp[v]` = min weight to achieve value v, since `sum(v) ≤ 10⁵`. Same recurrence, dual state. The dimension you index by is a choice, not handed to you by the problem.",
     },
   ],
 };

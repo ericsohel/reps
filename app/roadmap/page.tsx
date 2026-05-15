@@ -358,7 +358,7 @@ export default function RoadmapPage() {
       <header className="flex items-center gap-3 flex-wrap">
         <div>
           <h1 className="text-2xl font-semibold tracking-tight">DSA Roadmap</h1>
-          <p className="text-sm text-zinc-500 mt-0.5">42 modules · prerequisite-locked learning path</p>
+          <p className="text-sm text-zinc-500 mt-0.5">43 modules · prerequisite-locked learning path</p>
         </div>
 
         <div className="ml-auto flex items-center gap-3 flex-wrap">

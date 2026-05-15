@@ -83,7 +83,7 @@ export const sorting: Module = {
       difficulty: "hard",
       list: "NC150",
       role: "checkpoint",
-      teaches: "Per-index inversion counting — carry the original index through the recursion; charge each R-pull to its remaining-L slots",
+      teaches: "Before reading: which earlier problem counted inversions globally during merge, and what has to change to attribute each inversion to a specific index? Problem 6's mergesort + count-during-merge. Carry the original index through the recursion; charge each R-pull to its remaining-L slots so each element gets its own tally.",
     },
   ],
 };

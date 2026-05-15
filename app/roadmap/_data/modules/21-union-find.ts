@@ -82,7 +82,7 @@ export const unionFind: Module = {
       difficulty: "medium",
       list: "UG ⭐",
       role: "checkpoint",
-      teaches: "Binary search on the answer (module 12) + DSU connectivity check — combine two earlier modules",
+      teaches: "Before reading: the answer is the max widget width — monotone in feasibility. Which module gives the search skeleton, which the predicate? Module 12 (BS on the answer) wraps a DSU connectivity check: union only wormholes with width ≥ mid, then verify every required swap-pair lies in the same component.",
     },
   ],
 };

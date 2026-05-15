@@ -112,7 +112,7 @@ export const binarySearch: Module = {
       difficulty: "hard",
       list: "NC150",
       role: "checkpoint",
-      teaches: "Binary search on the partition point of the smaller array; the partition of the larger array is then determined",
+      teaches: "Before reading: there is no target value here — what *is* the monotonic axis you binary-search on? The partition point of the smaller array: once you fix `i` cut-points on the left, the partition of the larger array is determined by `(m+n+1)/2 - i`, and the cross-array inequality serves as the predicate.",
     },
   ],
 };

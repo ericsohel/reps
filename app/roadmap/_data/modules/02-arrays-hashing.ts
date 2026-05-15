@@ -102,7 +102,7 @@ export const arraysHashing: Module = {
       difficulty: "medium",
       list: "NC150",
       role: "checkpoint",
-      teaches: "Pattern 5 — set-guided iteration; only walk chains from their minimum",
+      teaches: "Before reading: O(n) requires that each element is visited a constant number of times — what discipline from earlier in the module enforces that? Pattern 5 — set-guided iteration. Only walk chains from their minimum so each element starts at most one walk.",
     },
   ],
 };

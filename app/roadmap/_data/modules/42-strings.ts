@@ -85,7 +85,7 @@ export const strings: Module = {
       difficulty: "hard",
       list: "new",
       role: "checkpoint",
-      teaches: "Find the longest palindromic *prefix* of `s`, then prepend the reverse of the remaining suffix. The clean trick: build `t = s + \"#\" + reverse(s)` and compute its prefix function — the final value is the length of the longest prefix of `s` that is also a suffix of `reverse(s)`, i.e. the longest palindromic prefix. Recombines the substring-matching primitive (problem 1) with palindrome structure (problems 2-4); a brute `O(n²)` solution using problem 1's scan is also accepted and is the recommended first pass",
+      teaches: "Before reading: the answer prepends `reverse(suffix)` to `s` — the real task is the longest palindromic *prefix* of `s`. What earlier problem reframes that as a prefix-function on what concatenation? Problem 1's KMP. Compute the prefix function of `t = s + \"#\" + reverse(s)`; the final value is the answer. Problem 1's brute scan also passes.",
     },
   ],
 };

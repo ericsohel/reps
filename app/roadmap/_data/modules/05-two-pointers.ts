@@ -91,7 +91,7 @@ export const twoPointers: Module = {
       difficulty: "hard",
       list: "NC150",
       role: "checkpoint",
-      teaches: "Converging while maintaining `left_max` and `right_max` in one pass; combines the monotonic invariant with the [two-scan span](00-patterns.md#two-scan-span) from module 4",
+      teaches: "Before reading: each cell's water depends on the max heights on both sides — what earlier pattern computed those side-maxes? The [two-scan span](00-patterns.md#two-scan-span) from module 4. Fuse the two scans into one converging pass, maintaining `left_max` and `right_max` and advancing the smaller side.",
     },
   ],
 };

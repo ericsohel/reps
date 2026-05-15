@@ -105,7 +105,7 @@ export const probability: Module = {
       difficulty: "hard",
       list: "new",
       role: "checkpoint",
-      teaches: "**Conditional probability as `favourable / total`** with a combinatorial multinomial weight on each split. Enumerate every distribution of each colour between the two boxes; weight each arrangement by its multinomial coefficient; accumulate \"favourable\" (equal distinct counts *and* equal totals) and \"total\" buckets in parallel. The Bayes mindset: don't fight the conditional — expand the joint, then divide. Combines linearity (sum of weighted indicators) with the counting machinery from module 38",
+      teaches: "Before reading: \"P(equal distinct | equal totals)\" looks like Bayes. What dispatches the conditional, and what weighting (module 38) turns each split into a count? Conditional as `favourable / total`: enumerate every per-colour split, weight by its multinomial coefficient, accumulate both buckets in parallel. Expand the joint, then divide.",
     },
   ],
 };

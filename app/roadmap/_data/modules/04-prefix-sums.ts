@@ -113,7 +113,7 @@ export const prefixSums: Module = {
       difficulty: "medium",
       list: "UG ⭐",
       role: "checkpoint",
-      teaches: "Algebraic regrouping unmasks the prefix/suffix structure; then apply two-scan span (problem 3) twice — prefix-max from the left, suffix-max from the right — and combine at the pivot",
+      teaches: "Before reading: the answer is `max over j of (something[i≤j] + a[j] + something[k≥j])`. What earlier pattern handles the bracketed terms? Two-scan span from problem 3. Algebraic regrouping unmasks the prefix/suffix structure; apply prefix-max from the left and suffix-max from the right, combine at each pivot j.",
     },
   ],
 };

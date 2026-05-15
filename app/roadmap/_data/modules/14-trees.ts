@@ -1,5 +1,13 @@
 import type { Module } from "../types";
 
+// Stealth prereqs (not enforced by the DAG):
+// - Functional recursion with return-value composition. Backtracking
+//   teaches mutate-and-undo recursion; trees need return-and-combine
+//   (aggregate up the call stack, parent merges child results).
+//   Novices write `void` helpers with side-effects and stall on
+//   "return the diameter." If shaky on this, revisit recursion
+//   before problem 3.
+
 export const trees: Module = {
   id: "trees",
   num: 14,
@@ -95,6 +103,16 @@ export const trees: Module = {
     },
     {
       num: 9,
+      title: "Lowest Common Ancestor of a Binary Tree",
+      url: "https://leetcode.com/problems/lowest-common-ancestor-of-a-binary-tree/",
+      source: "LC 236",
+      difficulty: "medium",
+      list: "NC150",
+      role: "extension",
+      teaches: "BST property is gone — recurse on both subtrees; if `p` and `q` are found in different subtrees the current node IS the LCA, else recurse into whichever side returned non-null. The return-as-found-marker trick is what makes this elegant",
+    },
+    {
+      num: 10,
       title: "Kth Smallest Element in a BST",
       url: "https://leetcode.com/problems/kth-smallest-element-in-a-bst/",
       source: "LC 230",
@@ -104,7 +122,7 @@ export const trees: Module = {
       teaches: "In-order = sorted; stop at the k-th yield; iterative in-order short-circuits, recursive does not",
     },
     {
-      num: 10,
+      num: 11,
       title: "Construct Binary Tree from Preorder and Inorder Traversal",
       url: "https://leetcode.com/problems/construct-binary-tree-from-preorder-and-inorder-traversal/",
       source: "LC 105",
@@ -114,7 +132,7 @@ export const trees: Module = {
       teaches: "Tree reconstruction — preorder root splits inorder into left/right children; hash-map the inorder positions for O(1) lookup at each recursive split",
     },
     {
-      num: 11,
+      num: 12,
       title: "Tree Diameter",
       url: "https://cses.fi/problemset/task/1131",
       source: "CSES",
@@ -124,7 +142,7 @@ export const trees: Module = {
       teaches: "Unrooted general tree — two-pass BFS algorithm; first farthest is one endpoint, second farthest from it is the other",
     },
     {
-      num: 12,
+      num: 13,
       title: "Serialize and Deserialize Binary Tree",
       url: "https://leetcode.com/problems/serialize-and-deserialize-binary-tree/",
       source: "LC 297",
@@ -134,14 +152,14 @@ export const trees: Module = {
       teaches: "Preorder traversal with null sentinels — serialize by recording node values and 'null' markers in preorder; deserialize by consuming the same sequence with a pointer or queue. Teaches bidirectional tree ↔ string encoding",
     },
     {
-      num: 13,
+      num: 14,
       title: "Binary Tree Maximum Path Sum",
       url: "https://leetcode.com/problems/binary-tree-maximum-path-sum/",
       source: "LC 124",
       difficulty: "hard",
       list: "NC150",
       role: "checkpoint",
-      teaches: "Same post-order pattern as LC 543, but the distinction between *returned value* and *globally recorded value* is the entire problem",
+      teaches: "Before reading: LC 543 (Diameter) shares the recursion skeleton — what one structural distinction defines this problem? The split between the value *returned* upward (best one-armed extension) and the value *recorded globally* (best bent path with both arms). Post-order; the global max captures bent paths that cannot propagate.",
     },
   ],
 };

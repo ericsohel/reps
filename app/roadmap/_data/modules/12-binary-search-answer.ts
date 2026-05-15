@@ -112,7 +112,7 @@ export const bsAnswer: Module = {
       difficulty: "hard",
       list: "UG ⭐",
       role: "checkpoint",
-      teaches: "Feasibility itself is O(n log n) — chain-reaction simulation over sorted haybales + converging two-pointer over launch positions",
+      teaches: "Before reading: the BS-on-answer skeleton is fixed — what does the feasibility predicate cost when problem 9 forced you to use a sweep inside it? O(n log n). Chain-reaction simulation over sorted haybales plus a converging two-pointer (module 5) over launch positions; total runtime O(n log² n).",
     },
   ],
 };

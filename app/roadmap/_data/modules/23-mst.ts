@@ -83,7 +83,7 @@ export const mst: Module = {
       difficulty: "medium",
       list: "UG",
       role: "checkpoint",
-      teaches: "Grid with portal edges — construct edge list from grid constraints then MST; requires identifying which edges to add",
+      teaches: "Before reading: no edge list is handed in — what is the unit of work, and how do you reduce the grid to a Kruskal-ready edge set? Treat each portal pair as a candidate edge between its two endpoints; enumerate the O(n²) pair-of-portals edges with costs from the grid, then run Kruskal + DSU. The leap is recognising the right edge model.",
     },
   ],
 };

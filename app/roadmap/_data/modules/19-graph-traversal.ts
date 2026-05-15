@@ -112,7 +112,7 @@ export const graphTraversal: Module = {
       difficulty: "hard",
       list: "NC150",
       role: "checkpoint",
-      teaches: "Implicit graph — words are nodes, BFS finds shortest transformation",
+      teaches: "Before reading: no adjacency list is given — what made problem 9's state-space BFS work, and how do you transplant it to strings? Implicit graph: words are nodes, edges join words differing by one letter. BFS for shortest transformation; bucket neighbours by wildcard patterns (`h*t`, `ho*`, ...) to avoid the O(L · |dict|) per-pop pairwise check.",
     },
   ],
 };

@@ -82,7 +82,7 @@ export const advGraphs: Module = {
       difficulty: "hard",
       list: "UG",
       role: "checkpoint",
-      teaches: "SCC application with counting — min edges to add to make all nodes mutually reachable; `max(sources, sinks)` in condensation where `sources = SCCs with in-degree 0`, `sinks = SCCs with out-degree 0`",
+      teaches: "Before reading: \"mutually reachable\" means one SCC — what structure does collapsing each SCC to a single node produce, and how does counting edges to add reduce to that DAG? Condensation DAG. Answer is `max(sources, sinks)` where `sources` = SCCs with in-degree 0 and `sinks` = SCCs with out-degree 0 (special-case: already one SCC ⇒ 0).",
     },
   ],
 };

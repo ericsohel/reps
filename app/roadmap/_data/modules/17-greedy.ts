@@ -102,7 +102,7 @@ export const greedy: Module = {
       difficulty: "medium",
       list: "NC150",
       role: "checkpoint",
-      teaches: "Two-bound tracking — maintain `low` and `high` simultaneously to handle the `*` wildcard",
+      teaches: "Before reading: a single open-paren counter can't decide whether `*` should be `(`, `)`, or empty. What lightweight extension tracks all possibilities at once? Two-bound tracking. Maintain `low` (min possible open count) and `high` (max possible open count); reject if `high < 0`, succeed if `low == 0` at the end.",
     },
   ],
 };

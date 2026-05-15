@@ -32,7 +32,7 @@ export const lisLcs: Module = {
       difficulty: "medium",
       list: "NC150",
       role: "baseline",
-      teaches: "Two-string 2D DP — new sub-pattern distinct from module 26's edit-distance family. No cost for mismatches; the only choices are skip-left (`dp[i][j] = dp[i-1][j]`), skip-right (`dp[i][j] = dp[i][j-1]`), or match (`dp[i][j] = dp[i-1][j-1]+1`). The shared subproblem structure is the foundation for every LCS-reduction problem that follows.",
+      teaches: "Specialization of the two-string 2D DP introduced in module 26 problem 4 (Edit Distance): same `dp[i][j]` over two prefixes, but a cheaper cost model — no insert/delete cost, only match (`dp[i-1][j-1]+1`) or skip-one (`max(dp[i-1][j], dp[i][j-1])`). Foundation for every LCS-reduction problem that follows.",
     },
     {
       num: 3,
@@ -82,7 +82,7 @@ export const lisLcs: Module = {
       difficulty: "hard",
       list: "NC150",
       role: "checkpoint",
-      teaches: "2D LIS with a non-trivial sort. Sort by width ASC, height DESC — the DESC on height ensures no two equal-width envelopes can chain (if widths match, the taller one comes first in the sorted order, so its height is never a valid extension). After sorting, O(n log n) LIS on heights only. The sort insight is the leap; the patience-sort from problem 6 is the implementation.",
+      teaches: "Before reading: 1D LIS handles one increasing axis. With two strict-increase constraints, what sort lets you drop one axis? Width ASC, height DESC. DESC on ties stops equal-width envelopes from chaining, so an O(n log n) LIS on heights alone is exact. The sort is the leap; problem 6's patience-sort is the implementation.",
     },
   ],
 };

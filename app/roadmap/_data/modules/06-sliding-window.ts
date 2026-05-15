@@ -100,7 +100,7 @@ export const slidingWindow: Module = {
       difficulty: "hard",
       list: "NC150",
       role: "checkpoint",
-      teaches: "Minimum-window (problem 2's shape) + multi-character tracking — the \"missing counter\" trick replaces the freq-dict comparison",
+      teaches: "Before reading: which earlier problem in the module shrinks the window once a feasibility predicate holds, and what has to generalise when the predicate spans multiple characters? Problem 2's minimum-window shape. Replace the O(26) freq-dict comparison with a single \"missing counter\" that decrements only on the satisfying step.",
     },
   ],
 };

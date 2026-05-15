@@ -83,7 +83,7 @@ export const intervals: Module = {
       difficulty: "hard",
       list: "NC150",
       role: "checkpoint",
-      teaches: "Sort queries offline + heap of size k keyed by interval size; remove expired intervals",
+      teaches: "Before reading: queries arrive unordered; each needs only the intervals covering it. What decouples query order from processing, and what (module 16) finds the smallest live interval? Sort queries offline; sweep a min-heap keyed by interval size; lazily pop intervals whose end has passed the current query point.",
     },
   ],
 };

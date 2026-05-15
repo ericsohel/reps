@@ -93,7 +93,7 @@ export const topoSort: Module = {
       difficulty: "hard",
       list: "NC150",
       role: "checkpoint",
-      teaches: "Build the graph from word pairs (compare letter-by-letter, first difference is the edge), then topo-sort the 26 letters; handle the prefix-conflict edge case",
+      teaches: "Before reading: the input is a list of strings, not edges — where does the precedence graph come from? Compare each adjacent word pair letter-by-letter; the first differing position contributes one edge. Topo-sort the 26 letters with Kahn's; reject if a longer word precedes its own prefix (`ab` after `abc`) since that's an unencodable order.",
     },
   ],
 };

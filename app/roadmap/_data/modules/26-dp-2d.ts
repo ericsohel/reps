@@ -15,16 +15,6 @@ export const dp2d: Module = {
   problems: [
     {
       num: 1,
-      title: "Unique Paths",
-      url: "https://leetcode.com/problems/unique-paths/",
-      source: "LC 62",
-      difficulty: "medium",
-      list: "NC150",
-      role: "baseline",
-      teaches: "2D grid path count baseline — `dp[i][j] = dp[i-1][j] + dp[i+1][j]` (paths to (i,j) = paths from above + paths from left). The cleanest introduction to grid DP before constraints (obstacles, costs) are added",
-    },
-    {
-      num: 2,
       title: "Grid Paths",
       url: "https://cses.fi/problemset/task/1638",
       source: "CSES",
@@ -34,7 +24,7 @@ export const dp2d: Module = {
       teaches: "Your Step 1 problem — 2D grid DP with blocked cells; `dp[i][j] = dp[i-1][j] + dp[i][j-1]` when cell is open, 0 when blocked",
     },
     {
-      num: 3,
+      num: 2,
       title: "Minimum Path Sum",
       url: "https://leetcode.com/problems/minimum-path-sum/",
       source: "LC 64",
@@ -44,7 +34,7 @@ export const dp2d: Module = {
       teaches: "Same grid-DP structure, different objective — optimize min cost instead of count paths. Recurrence: `dp[i][j] = grid[i][j] + min(dp[i-1][j], dp[i][j-1])`. Shifts the mental model from counting to optimizing over the same 2D state",
     },
     {
-      num: 4,
+      num: 3,
       title: "Maximal Square",
       url: "https://leetcode.com/problems/maximal-square/",
       source: "LC 221",
@@ -54,7 +44,7 @@ export const dp2d: Module = {
       teaches: "Geometric grid DP — `dp[i][j]` = side length of largest all-1 square with bottom-right at `(i,j)`. Recurrence `dp[i][j] = min(up, left, diagonal) + 1` is non-obvious: the bottleneck is the smallest square in the three directions",
     },
     {
-      num: 5,
+      num: 4,
       title: "Edit Distance",
       url: "https://leetcode.com/problems/edit-distance/",
       source: "LC 72",
@@ -64,7 +54,7 @@ export const dp2d: Module = {
       teaches: "Two-string 2D DP — new sub-pattern: `dp[i][j]` over prefixes of two strings. Three transitions: insert, delete, replace; fill row by row",
     },
     {
-      num: 6,
+      num: 5,
       title: "Interleaving String",
       url: "https://leetcode.com/problems/interleaving-string/",
       source: "LC 97",
@@ -74,7 +64,7 @@ export const dp2d: Module = {
       teaches: "2D boolean DP on two string positions — can `s3[:i+j]` be interleaved from `s1[:i]` and `s2[:j]`?",
     },
     {
-      num: 7,
+      num: 6,
       title: "Distinct Subsequences",
       url: "https://leetcode.com/problems/distinct-subsequences/",
       source: "LC 115",
@@ -84,14 +74,14 @@ export const dp2d: Module = {
       teaches: "Same two-string 2D state, counting instead of optimising; only deletion direction matters",
     },
     {
-      num: 8,
+      num: 7,
       title: "Longest Increasing Path in a Matrix",
       url: "https://leetcode.com/problems/longest-increasing-path-in-a-matrix/",
       source: "LC 329",
       difficulty: "hard",
       list: "NC150",
       role: "checkpoint",
-      teaches: "DFS + memoisation with `(i, j)` as cache key — no fixed traversal order; `@lru_cache` handles topological order implicitly",
+      teaches: "Before reading: every earlier problem fills the table in row/column order. Why can't you do that here? Dependencies follow the value gradient, not the index gradient, so there's no static fill order. DFS + memoisation with `(i, j)` as cache key; `@lru_cache` handles topological order implicitly per cell.",
     },
   ],
 };

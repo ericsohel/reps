@@ -142,7 +142,7 @@ export const backtracking: Module = {
       difficulty: "hard",
       list: "NC150",
       role: "checkpoint",
-      teaches: "Place queens row by row; prune on `cols`, `r − c`, `r + c` simultaneously",
+      teaches: "Before reading: which earlier problem pruned by tracking a set of \"already-used\" indices, and how do you extend that idea when three orthogonal attacks (column, two diagonals) must all be free? Place queens row by row; maintain three sets indexed by `col`, `r − c`, and `r + c`, prune on all three simultaneously before recursing.",
     },
   ],
 };

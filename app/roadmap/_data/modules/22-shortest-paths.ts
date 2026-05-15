@@ -1,5 +1,12 @@
 import type { Module } from "../types";
 
+// Stealth prereqs (not enforced by the DAG):
+// - Heap-with-staleness discipline. Module 16 teaches heap for top-K
+//   and merge-K, not lazy decrease-key. Dijkstra pushes duplicate
+//   entries as distances improve; on pop, discard any entry whose
+//   stored distance exceeds the current best. Without this check
+//   Dijkstra runs but produces subtly wrong distances.
+
 export const shortestPaths: Module = {
   id: "shortest-paths",
   num: 22,
@@ -84,7 +91,7 @@ export const shortestPaths: Module = {
       difficulty: "hard",
       list: "NC150",
       role: "checkpoint",
-      teaches: "Dijkstra with **minimax relaxation** — replace `dist[u] + w` with `max(dist[u], cell)`; the greedy invariant still holds for monotone path statistics",
+      teaches: "Before reading: the path \"cost\" is the maximum cell elevation, not the sum. Does Dijkstra still apply, and what changes? Yes — the greedy invariant holds for any monotone path statistic. Minimax relaxation: replace `dist[u] + w` with `max(dist[u], cell)` in the priority queue update.",
     },
   ],
 };
