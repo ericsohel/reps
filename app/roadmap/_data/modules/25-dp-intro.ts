@@ -10,6 +10,9 @@ export const dpIntro: Module = {
   prereqIds: ["backtracking"],
   resources: [
     { title: "USACO Guide — Intro to DP (Gold)", url: "https://usaco.guide/gold/intro-dp" },
+    { title: "AtCoder Educational DP Contest", url: "https://atcoder.jp/contests/dp" },
+    { title: "CPH Book Ch. 7 — Dynamic Programming", url: "https://cses.fi/book/book.pdf" },
+    { title: "CP-Algorithms — Dynamic Programming", url: "https://cp-algorithms.com/dynamic_programming/intro-to-dp.html" },
   ],
   problems: [
     {
@@ -74,13 +77,13 @@ export const dpIntro: Module = {
     },
     {
       num: 7,
-      title: "Time is Mooney",
-      url: "http://www.usaco.org/index.php?page=viewproblem2&cpid=993",
-      source: "USACO Gold",
-      difficulty: "easy",
-      list: "UG ⭐",
+      title: "Best Time to Buy and Sell Stock with Cooldown",
+      url: "https://leetcode.com/problems/best-time-to-buy-and-sell-stock-with-cooldown/",
+      source: "LC 309",
+      difficulty: "medium",
+      list: "NC150",
       role: "extension",
-      teaches: "DP on a graph with a time dimension — must recognise the 2D state space `dp[t][v]` from the problem statement",
+      teaches: "State-machine DP — `dp[i][state]` with finite states (hold / sold / rest); transitions are between states, not just indices. The state dimension is what separates this from House Robber's collapsible take-or-skip",
     },
     {
       num: 8,
