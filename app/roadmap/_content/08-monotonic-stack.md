@@ -63,6 +63,32 @@ The stack always holds elements in monotone order. The four variants differ in (
 
 **Right (next):** the answer for index j is determined when j is *popped* — the index causing the pop is the answer.
 
+### Carrying state on the stack
+
+Stack entries don't have to be bare indices. When the pop step does meaningful work — accumulating a span, merging into a group — store `(key, payload)` tuples. The monotone invariant on the **key** stays the same; the payload is whatever you need to combine on pop.
+
+**LC 901 Online Stock Span** stores `(price, span)` with prices strictly decreasing bottom-to-top. On each new price, pop all entries with `price ≤ current` and absorb their spans into the current day's span. The accumulation collapses what would otherwise be a Previous-Greater-Element pass followed by a subtraction into one motion.
+
+**Numeric trace** with `prices = [100, 80, 60, 70, 60, 75, 85]`:
+
+```
+day 1 (100): span=1                              stack=[(100,1)]
+day 2  (80): 80 < 100; span=1                    stack=[(100,1),(80,1)]
+day 3  (60): 60 < 80;  span=1                    stack=[(100,1),(80,1),(60,1)]
+day 4  (70): pop (60,1) → span=2                 stack=[(100,1),(80,1),(70,2)]
+day 5  (60): 60 < 70;  span=1                    stack=[(100,1),(80,1),(70,2),(60,1)]
+day 6  (75): pop (60,1)→2; pop (70,2)→4; span=4  stack=[(100,1),(80,1),(75,4)]
+day 7  (85): pop (75,4)→5; pop (80,1)→6; span=6  stack=[(100,1),(85,6)]
+
+spans = [1, 1, 1, 2, 1, 4, 6]
+```
+
+Each price is pushed once and popped at most once across all `next()` calls → amortised O(1) per call.
+
+**LC 853 Car Fleet** uses the same idea with a different payload: sort cars by position descending, walk them in order toward the destination, and store arrival times on the stack. When a new car's arrival time is **≤** the stack top, it cannot pass the slower fleet ahead — *merge* (don't push). When greater, it forms a new fleet. The final stack height is the number of fleets.
+
+Unifying idea: the stack's order encodes "what's still distinct"; the payload and the pop action encode the aggregation. PSE/NSE answer a per-element question; carrying state answers an aggregate one (counts, sums, spans).
+
 ### Two-scan span ([atlas](00-patterns.md#two-scan-span))
 
 For each element you can compute both PSE (previous smaller) and NSE (next smaller). The span `(NSE_index − PSE_index − 1)` is the widest subarray where this element is the strict minimum.
@@ -154,6 +180,25 @@ def next_greater(a):
     return right
 ```
 
+### State-carrying skeleton (LC 901-style: accumulate on pop)
+
+```python
+def state_carrying(values):
+    # Invariant: stack stores (key, payload) with keys strictly decreasing bottom→top.
+    # On pop, absorb the popped payload into the current entry's payload.
+    stack = []
+    answers = []
+    for v in values:
+        payload = 1                          # init from the current element (problem-specific)
+        while stack and stack[-1][0] <= v:   # inclusive ≤ — see Step 2 for why
+            payload += stack.pop()[1]        # absorb
+        stack.append((v, payload))
+        answers.append(payload)
+    return answers
+```
+
+For LC 853 the payload is the arrival time and the "absorb" step is a no-op (the slower fleet's time wins, the faster car simply doesn't get pushed). The skeleton is the same shape; what changes is the payload field and what `absorb` does.
+
 ### Largest rectangle in histogram (with sentinel)
 
 ```python
@@ -185,10 +230,11 @@ Sources: **NC150** = NeetCode 150 · **UG** = USACO Guide curated · ⭐ = USACO
 |---|---------|--------|-----------|------|------|-----------------|
 | 1 | [Nearest Smaller Values](https://cses.fi/problemset/task/1645) | CSES | Easy | UG | baseline | PSE going left-to-right — implement your Step 1 problem with the increasing stack |
 | 2 | [Daily Temperatures](https://leetcode.com/problems/daily-temperatures/) | LC 739 | Medium | NC150 | extension | NGE going right — answer assigned at pop time; the mirror direction of problem 1 |
-| 3 | [Mike and Feet](https://codeforces.com/contest/547/problem/B) | CF 547B | Medium | UG ⭐ | extension | Span = PSE + NSE — for each height, find the widest subarray where it is the min; first use of the two-scan span pattern |
-| 4 | [Car Fleet](https://leetcode.com/problems/car-fleet/) | LC 853 | Medium | NC150 | extension | Sort by position + decreasing stack — a new car merges into the existing fleet when its arrival time is ≤ stack top |
-| 5 | [Largest Rectangle in Histogram](https://leetcode.com/problems/largest-rectangle-in-histogram/) | LC 84 | Hard | NC150 | extension | Classic PSE + NSE with the sentinel-flush trick; computes `height[i] × span[i]` for each bar |
-| 6 | [Sum of Subarray Minimums](https://leetcode.com/problems/sum-of-subarray-minimums/) | LC 907 | Medium | ⭐ | **checkpoint** | Contribution counting with the asymmetric tie-breaking (`≥` on PSE side, `>` on NSE side) |
+| 3 | [Mike and Feet](https://codeforces.com/contest/547/problem/B) | CF 547B | Medium | UG ⭐ | extension | Span = PSE + NSE — for each height, find the widest subarray where it is the minimum; first use of the two-scan span pattern |
+| 4 | [Online Stock Span](https://leetcode.com/problems/online-stock-span/) | LC 901 | Medium | new | extension | New sub-pattern: `(price, span)` pairs with accumulate-on-pop — the stack carries state, popping does work (Step 2 "carrying state") |
+| 5 | [Car Fleet](https://leetcode.com/problems/car-fleet/) | LC 853 | Medium | NC150 | extension | Same carrying-state idiom in a lateral framing — sort by position, decreasing stack of arrival times, a slower fleet absorbs faster cars trapped behind it |
+| 6 | [Largest Rectangle in Histogram](https://leetcode.com/problems/largest-rectangle-in-histogram/) | LC 84 | Hard | NC150 | extension | Canonical PSE + NSE with the sentinel-flush trick; computes `height[i] × span[i]` at pop time |
+| 7 | [Sum of Subarray Minimums](https://leetcode.com/problems/sum-of-subarray-minimums/) | LC 907 | Medium | ⭐ | **checkpoint** | Contribution counting with asymmetric tie-breaking (`≥` on PSE side, `>` on NSE side) |
 
 **Checkpoint:** LC 907 without hints. The mechanics — count subarrays where `a[i]` is the minimum using `left_span × right_span` — follow from problem 3's pattern. The tie-breaking trick (one side strict, one side not) is the leap. Without it, arrays with duplicates get counted multiple times. Step 2's numeric trace on `[1, 2, 1]` is the canonical demonstration.
 
@@ -196,6 +242,7 @@ Sources: **NC150** = NeetCode 150 · **UG** = USACO Guide curated · ⭐ = USACO
 
 ## Common mistakes
 
-- **Storing values instead of indices.** You need indices for distance calculations and to assign right-side answers at pop time. Always store indices; look up values as `a[stack[-1]]`.
+- **Bare indices vs. tuples.** For PSE/NSE/NGE/PGE questions where the answer depends on positions, store **indices** and look up values as `a[stack[-1]]`. For state-carrying problems (LC 901, LC 853), store `(key, payload)` tuples so the pop step can absorb state. Picking the wrong representation makes the pop logic awkward.
 - **Missing the sentinel.** After the main loop, the stack may still hold indices with no next-smaller to the right. Either append a sentinel (height = 0 for rectangles, ∞ for next-smaller) or write a separate post-loop cleanup.
-- **NGE order: assigning answer on push vs. pop.** PSE/PGE answer is determined when the new index is pushed (read the top before pushing). NSE/NGE answer is determined when an old index is popped (the popping index is the answer). Mixing these up gives garbage.
+- **NGE order: assigning answer on push vs. pop.** PSE/PGE answer is determined when the new index is *pushed* (read the top before pushing). NSE/NGE answer is determined when an old index is *popped* (the popping index is the answer). Mixing these up gives garbage.
+- **Inclusive vs. exclusive pop in state-carrying stacks.** LC 901 says "less than or equal to today's price" — pop on `≤`. LC 853 likewise: a slower car ahead absorbs anything arriving at time `≤` it. Using strict `<` undercounts the span / overcounts the fleets. Read the problem's definition of "absorbed" before fixing the operator.
