@@ -5,7 +5,7 @@ export const intervalDp: Module = {
   num: 32,
   name: "Interval DP",
   section: "2d",
-  track: "cp",
+  tier: "faang-plus",
   order: 32,
   prereqIds: ["dp-intro"],
   isNew: true,

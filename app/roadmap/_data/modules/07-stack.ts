@@ -5,7 +5,7 @@ export const stack: Module = {
   num: 7,
   name: "Stack",
   section: "1b",
-  track: "both",
+  tier: "core",
   order: 8,
   prereqIds: ["arrays-hashing"],
   resources: [

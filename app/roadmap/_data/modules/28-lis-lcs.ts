@@ -5,7 +5,7 @@ export const lisLcs: Module = {
   num: 28,
   name: "LIS / LCS",
   section: "2b",
-  track: "both",
+  tier: "core",
   order: 22,
   prereqIds: ["dp-intro"],
   isNew: true,

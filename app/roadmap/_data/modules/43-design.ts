@@ -5,7 +5,7 @@ export const design: Module = {
   num: 43,
   name: "Design & OOD",
   section: "2h",
-  track: "interview",
+  tier: "core",
   order: 43,
   prereqIds: ["arrays-hashing", "linked-list", "heap"],
   isNew: true,

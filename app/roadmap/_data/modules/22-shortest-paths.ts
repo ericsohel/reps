@@ -12,7 +12,7 @@ export const shortestPaths: Module = {
   num: 22,
   name: "Shortest Paths",
   section: "2c",
-  track: "both",
+  tier: "core",
   order: 27,
   prereqIds: ["graph-traversal", "heap"],
   isNew: true,

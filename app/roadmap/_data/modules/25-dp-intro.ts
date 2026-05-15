@@ -5,7 +5,7 @@ export const dpIntro: Module = {
   num: 25,
   name: "DP Intro / 1D",
   section: "2b",
-  track: "both",
+  tier: "core",
   order: 20,
   prereqIds: ["backtracking"],
   resources: [

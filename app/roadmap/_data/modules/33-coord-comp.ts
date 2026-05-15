@@ -6,7 +6,7 @@ export const coordComp: Module = {
   name: "Coordinate Compression",
   label: "Coordinate\nCompression",
   section: "2e",
-  track: "cp",
+  tier: "faang-plus",
   order: 33,
   prereqIds: ["arrays-hashing"],
   isNew: true,

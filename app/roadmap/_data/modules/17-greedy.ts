@@ -5,7 +5,7 @@ export const greedy: Module = {
   num: 17,
   name: "Greedy",
   section: "2a",
-  track: "both",
+  tier: "core",
   order: 18,
   prereqIds: ["arrays-hashing", "sorting"],
   resources: [

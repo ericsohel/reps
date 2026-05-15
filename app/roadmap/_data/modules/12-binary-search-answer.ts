@@ -6,7 +6,7 @@ export const bsAnswer: Module = {
   name: "Binary Search on Answer",
   label: "Binary Search\non Answer",
   section: "1c",
-  track: "both",
+  tier: "core",
   order: 13,
   prereqIds: ["binary-search"],
   isNew: true,

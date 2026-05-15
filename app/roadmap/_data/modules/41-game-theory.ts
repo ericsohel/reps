@@ -5,7 +5,7 @@ export const gameTheory: Module = {
   num: 41,
   name: "Game Theory",
   section: "2f",
-  track: "cp",
+  tier: "quant",
   order: 41,
   prereqIds: ["combinatorics", "probability"],
   isNew: true,

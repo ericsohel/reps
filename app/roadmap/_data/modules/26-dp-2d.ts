@@ -5,7 +5,7 @@ export const dp2d: Module = {
   num: 26,
   name: "2D / Grid DP",
   section: "2d",
-  track: "both",
+  tier: "core",
   order: 30,
   prereqIds: ["dp-intro"],
   resources: [

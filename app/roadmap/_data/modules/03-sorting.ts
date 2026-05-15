@@ -5,7 +5,7 @@ export const sorting: Module = {
   num: 3,
   name: "Sorting",
   section: "1a",
-  track: "both",
+  tier: "core",
   order: 3,
   prereqIds: ["arrays-hashing"],
   isNew: true,

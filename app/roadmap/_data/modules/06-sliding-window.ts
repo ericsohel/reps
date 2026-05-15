@@ -5,7 +5,7 @@ export const slidingWindow: Module = {
   num: 6,
   name: "Sliding Window",
   section: "1b",
-  track: "both",
+  tier: "core",
   order: 7,
   prereqIds: ["two-pointers"],
   resources: [

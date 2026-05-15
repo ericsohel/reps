@@ -5,7 +5,7 @@ export const heap: Module = {
   num: 16,
   name: "Heap / Priority Queue",
   section: "1d",
-  track: "both",
+  tier: "core",
   order: 17,
   prereqIds: ["trees", "linked-list"],
   resources: [

@@ -5,7 +5,7 @@ export const linkedList: Module = {
   num: 10,
   name: "Linked List",
   section: "1a",
-  track: "both",
+  tier: "core",
   order: 11,
   prereqIds: ["arrays-hashing"],
   resources: [

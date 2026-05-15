@@ -5,7 +5,7 @@ export const knapsack: Module = {
   num: 27,
   name: "Knapsack Family",
   section: "2b",
-  track: "both",
+  tier: "core",
   order: 21,
   prereqIds: ["dp-intro"],
   isNew: true,

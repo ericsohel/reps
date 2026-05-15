@@ -13,7 +13,7 @@ export const trees: Module = {
   num: 14,
   name: "Trees",
   section: "1d",
-  track: "both",
+  tier: "core",
   order: 15,
   prereqIds: ["backtracking", "stack"],
   resources: [

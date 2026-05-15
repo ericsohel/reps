@@ -5,7 +5,7 @@ export const mst: Module = {
   num: 23,
   name: "MST",
   section: "2c",
-  track: "cp",
+  tier: "faang-plus",
   order: 28,
   prereqIds: ["union-find", "shortest-paths"],
   isNew: true,

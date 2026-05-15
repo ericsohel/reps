@@ -5,7 +5,7 @@ export const twoPointers: Module = {
   num: 5,
   name: "Two Pointers",
   section: "1b",
-  track: "both",
+  tier: "core",
   order: 6,
   prereqIds: ["arrays-hashing", "sorting"],
   resources: [

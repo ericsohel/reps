@@ -2,7 +2,8 @@
 // Add/edit problems and resources in app/roadmap/_data/modules/*.ts.
 // NODES, EDGES, ORDER, PROBLEM_COUNTS are derived from MODULES — never edited directly.
 
-export type Track = "both" | "interview" | "cp";
+export type Tier = "core" | "faang-plus" | "quant";
+export const TIER_RANK: Record<Tier, number> = { "core": 0, "faang-plus": 1, "quant": 2 };
 export type Section = "0" | "1a" | "1b" | "1c" | "1d" | "2a" | "2b" | "2c" | "2d" | "2e" | "2f" | "2g" | "2h";
 export type Difficulty = "easy" | "medium" | "hard";
 export type Role = "baseline" | "extension" | "combination" | "checkpoint";
@@ -34,7 +35,7 @@ export interface Module {
   name: string;          // "Prefix Sums"
   label?: string;        // optional display override (may contain \n for line break)
   section: Section;
-  track: Track;
+  tier: Tier;
   order: number;         // learning-path position
   prereqIds: string[];   // ids of modules that gate this one
   isNew?: boolean;       // not in NeetCode 150

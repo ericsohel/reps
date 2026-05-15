@@ -5,7 +5,7 @@ export const prefixSums: Module = {
   num: 4,
   name: "Prefix Sums",
   section: "1a",
-  track: "both",
+  tier: "core",
   order: 4,
   prereqIds: ["arrays-hashing"],
   isNew: true,

@@ -71,7 +71,7 @@ export interface DagNode {
   id: string;
   label: string;
   section: string;
-  track: "both" | "interview" | "cp";
+  tier: "core" | "faang-plus" | "quant";
   isNew?: boolean;
   kind?: "utility";
 }
@@ -80,7 +80,7 @@ export const NODES: readonly DagNode[] = MODULES.map((m) => ({
   id: m.id,
   label: m.label ?? m.name,
   section: m.section,
-  track: m.track,
+  tier: m.tier,
   ...(m.isNew ? { isNew: true as const } : {}),
   ...(m.isUtility ? { kind: "utility" as const } : {}),
 }));

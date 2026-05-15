@@ -5,7 +5,7 @@ export const advGraphs: Module = {
   num: 24,
   name: "Advanced Graphs",
   section: "2c",
-  track: "cp",
+  tier: "faang-plus",
   order: 29,
   prereqIds: ["topo-sort", "shortest-paths"],
   resources: [

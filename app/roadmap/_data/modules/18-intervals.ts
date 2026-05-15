@@ -6,7 +6,7 @@ export const intervals: Module = {
   name: "Intervals & Sweep Line",
   label: "Intervals &\nSweep Line",
   section: "2a",
-  track: "both",
+  tier: "core",
   order: 19,
   prereqIds: ["greedy", "heap"],
   isNew: true,

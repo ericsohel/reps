@@ -5,7 +5,7 @@ export const segTree: Module = {
   num: 36,
   name: "Segment Tree",
   section: "2e",
-  track: "cp",
+  tier: "faang-plus",
   order: 36,
   prereqIds: ["fenwick"],
   isNew: true,

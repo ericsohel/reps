@@ -5,7 +5,7 @@ export const graphTraversal: Module = {
   num: 19,
   name: "Graph Traversal",
   section: "2c",
-  track: "both",
+  tier: "core",
   order: 24,
   prereqIds: ["trees", "binary-search"],
   resources: [

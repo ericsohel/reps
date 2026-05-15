@@ -5,7 +5,7 @@ export const bitManip: Module = {
   num: 30,
   name: "Bit Manipulation",
   section: "1a",
-  track: "both",
+  tier: "core",
   order: 5,
   prereqIds: ["foundations"],
   isUtility: true,

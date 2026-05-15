@@ -5,7 +5,7 @@ export const binarySearch: Module = {
   num: 11,
   name: "Binary Search",
   section: "1c",
-  track: "both",
+  tier: "core",
   order: 12,
   prereqIds: ["arrays-hashing", "sorting", "two-pointers"],
   resources: [

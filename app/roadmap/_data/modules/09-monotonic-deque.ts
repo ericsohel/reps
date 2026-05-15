@@ -5,7 +5,7 @@ export const monotonicDeque: Module = {
   num: 9,
   name: "Monotonic Deque",
   section: "1b",
-  track: "both",
+  tier: "core",
   order: 10,
   prereqIds: ["sliding-window", "monotonic-stack", "prefix-sums"],
   isNew: true,

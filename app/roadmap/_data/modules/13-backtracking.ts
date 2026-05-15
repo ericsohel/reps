@@ -6,7 +6,7 @@ export const backtracking: Module = {
   name: "Recursion & Backtracking",
   label: "Recursion &\nBacktracking",
   section: "1d",
-  track: "both",
+  tier: "core",
   order: 14,
   prereqIds: ["foundations"],
   resources: [

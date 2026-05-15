@@ -5,7 +5,7 @@ export const topoSort: Module = {
   num: 20,
   name: "Topological Sort",
   section: "2c",
-  track: "both",
+  tier: "core",
   order: 25,
   prereqIds: ["graph-traversal"],
   isNew: true,

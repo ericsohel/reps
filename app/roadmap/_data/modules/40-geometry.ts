@@ -5,7 +5,7 @@ export const geometry: Module = {
   num: 40,
   name: "Geometry Basics",
   section: "2f",
-  track: "cp",
+  tier: "faang-plus",
   order: 40,
   prereqIds: ["arrays-hashing"],
   resources: [],

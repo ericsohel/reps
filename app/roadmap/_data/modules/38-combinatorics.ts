@@ -5,7 +5,7 @@ export const combinatorics: Module = {
   num: 38,
   name: "Combinatorics",
   section: "2f",
-  track: "cp",
+  tier: "quant",
   order: 38,
   prereqIds: ["foundations"],
   isNew: true,

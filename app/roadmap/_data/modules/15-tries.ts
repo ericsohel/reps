@@ -5,7 +5,7 @@ export const tries: Module = {
   num: 15,
   name: "Tries",
   section: "1d",
-  track: "both",
+  tier: "core",
   order: 16,
   prereqIds: ["trees"],
   resources: [

@@ -5,7 +5,7 @@ export const unionFind: Module = {
   num: 21,
   name: "Union-Find / DSU",
   section: "2c",
-  track: "both",
+  tier: "core",
   order: 26,
   prereqIds: ["arrays-hashing"],
   isNew: true,

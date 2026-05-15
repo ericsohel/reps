@@ -18,7 +18,9 @@ const MODULE_PAGES: Record<string, string> = {
 };
 
 type Node = DagNode;
-type FilterTrack = "all" | "interview" | "cp";
+type FilterTier = "core" | "faang-plus" | "quant";
+const TIER_RANK: Record<FilterTier, number> = { "core": 0, "faang-plus": 1, "quant": 2 };
+const TIER_LABEL: Record<FilterTier, string> = { "core": "Core", "faang-plus": "FAANG+", "quant": "Quant" };
 
 function computeUnlocks(id: string): number {
   const visited = new Set<string>();
@@ -48,7 +50,7 @@ export default function RoadmapPage() {
   const [completed, setCompleted] = useState<Set<string>>(new Set());
   const [problemsSolved, setProblemsSolved] = useState<Record<string, number[]>>({});
   const [problemsSolvedAt, setProblemsSolvedAt] = useState<Record<string, Record<string, number>>>({});
-  const [currentTrack, setCurrentTrack] = useState<FilterTrack>("all");
+  const [currentTier, setCurrentTier] = useState<FilterTier>("faang-plus");
   const [hydrated, setHydrated] = useState(false);
   const [activeModule, setActiveModule] = useState<{
     id: string;
@@ -65,12 +67,21 @@ export default function RoadmapPage() {
     const saved = JSON.parse(localStorage.getItem("dsa-v1-completed") || "[]");
     const solved = JSON.parse(localStorage.getItem("dsa-v1-problems-solved") || "{}");
     const solvedAt = JSON.parse(localStorage.getItem("dsa-v1-problems-solved-at") || "{}");
-    const savedTrack = (localStorage.getItem("dsa-v1-track") || "all") as FilterTrack;
+    // Tier preference with one-time migration from the old `dsa-v1-track` key.
+    // Old "interview" → core, old "cp" or "all" → quant (maximalist), default = faang-plus.
+    let savedTier = localStorage.getItem("dsa-v1-tier") as FilterTier | null;
+    if (!savedTier) {
+      const legacy = localStorage.getItem("dsa-v1-track");
+      if (legacy === "interview") savedTier = "core";
+      else if (legacy === "cp" || legacy === "all") savedTier = "quant";
+      else savedTier = "faang-plus";
+      if (legacy) localStorage.setItem("dsa-v1-tier", savedTier);
+    }
     const savedLastVisited = localStorage.getItem("dsa-v1-last-visited");
     setCompleted(new Set(saved));
     setProblemsSolved(solved);
     setProblemsSolvedAt(solvedAt);
-    setCurrentTrack(savedTrack);
+    setCurrentTier(savedTier);
     setLastVisitedModule(savedLastVisited || null);
     setShowBanner(localStorage.getItem("dsa-v1-gating-v2-seen") !== "1");
     setHydrated(true);
@@ -105,9 +116,10 @@ export default function RoadmapPage() {
     localStorage.setItem("dsa-v1-completed", JSON.stringify([...next]));
   }
 
-  function inTrack(node: Node): boolean {
-    if (currentTrack === "all") return true;
-    return node.track === "both" || node.track === currentTrack;
+  // Cumulative filter: selecting a tier shows that tier AND all lower tiers.
+  // core → core only; faang-plus → core + faang-plus; quant → all three.
+  function inTier(node: Node): boolean {
+    return TIER_RANK[node.tier as FilterTier] <= TIER_RANK[currentTier];
   }
 
   // Cache unlocks per node — EDGES is constant for the session.
@@ -124,9 +136,9 @@ export default function RoadmapPage() {
   function masteryTarget(id: string): number {
     const total = PROBLEM_COUNTS[id] ?? 0;
     if (total === 0) return 0;
-    // Interview track: low bar, prioritize breadth.
-    // CP track and default: scale with downstream count.
-    if (currentTrack === "interview") {
+    // Core-only tier: low bar, prioritize breadth across FAANG fundamentals.
+    // FAANG+ and Quant tiers: scale with downstream count to reward depth on hubs.
+    if (currentTier === "core") {
       return Math.min(UNLOCK_THRESHOLD, total);
     }
     const unlocks = unlocksOf(id);
@@ -172,9 +184,9 @@ export default function RoadmapPage() {
     saveCompleted(next);
   }
 
-  function handleSetTrack(track: FilterTrack) {
-    setCurrentTrack(track);
-    localStorage.setItem("dsa-v1-track", track);
+  function handleSetTier(tier: FilterTier) {
+    setCurrentTier(tier);
+    localStorage.setItem("dsa-v1-tier", tier);
   }
 
   function reset() {
@@ -190,7 +202,7 @@ export default function RoadmapPage() {
   }
 
   const visibleNodes = NODES
-    .filter(inTrack)
+    .filter(inTier)
     .sort((a, b) => (ORDER[a.id] || 99) - (ORDER[b.id] || 99));
 
   const nextId = visibleNodes.find(n => nodeState(n.id) === "available")?.id;
@@ -294,10 +306,14 @@ export default function RoadmapPage() {
     const maxUnlocks = Math.max(1, ...allUnlocksPool.map(n => unlocksOf(n.id)));
     const maxProblems = Math.max(1, ...Object.values(PROBLEM_COUNTS));
 
+    // Prefer modules that align with the user's current tier focus.
+    // Same-tier match = full score, lower-tier (more fundamental) = strong, higher-tier (above focus) = 0.
     const trackScoreFor = (n: Node) => {
-      const match = currentTrack !== "all" && n.track === currentTrack ? 1 : 0;
-      const neutral = currentTrack === "all" || n.track === "both" ? 0.5 : 0;
-      return Math.max(match, neutral);
+      const nodeRank = TIER_RANK[n.tier as FilterTier];
+      const focusRank = TIER_RANK[currentTier];
+      if (nodeRank === focusRank) return 1;
+      if (nodeRank < focusRank) return 0.6;
+      return 0;
     };
 
     // Most-recently-completed section — used for continuity bonus.
@@ -311,7 +327,7 @@ export default function RoadmapPage() {
       const order = ORDER[n.id] || 99;
       const distance = Math.abs(order - currentPos);
 
-      const sectionPeers = NODES.filter(x => x.section === n.section && inTrack(x));
+      const sectionPeers = NODES.filter(x => x.section === n.section && inTier(x));
       const sectionDone = sectionPeers.filter(x => isModuleDone(x.id)).length;
       const sectionCoherence = sectionPeers.length > 0 ? sectionDone / sectionPeers.length : 0;
 
@@ -397,7 +413,7 @@ export default function RoadmapPage() {
       // module-done threshold for peers (min(5, total)) — consistent with
       // how the rest of the app defines "done". Previously this checked
       // strict full-solve which fired far less often than it should.
-      const sectionPeers = NODES.filter(x => x.section === n.section && inTrack(x));
+      const sectionPeers = NODES.filter(x => x.section === n.section && inTier(x));
       const sectionPeersComplete = sectionPeers.every(x =>
         x.id === n.id ? true : isModuleDone(x.id),
       );
@@ -493,24 +509,27 @@ export default function RoadmapPage() {
         </div>
 
         <div className="ml-auto flex items-center gap-3 flex-wrap">
-          <div className="flex overflow-hidden rounded-md border border-zinc-700 bg-zinc-900">
-            {(["interview", "cp", "all"] as const).map((track, i) => (
+          <div
+            className="flex overflow-hidden rounded-md border border-zinc-700 bg-zinc-900"
+            title="Cumulative scope: each tier includes the ones to its left. Core = FAANG essentials; FAANG+ adds harder algos (Fenwick, bitmask DP, advanced graphs); Quant adds probability, combinatorics, game theory."
+          >
+            {(["core", "faang-plus", "quant"] as const).map((tier, i) => (
               <button
-                key={track}
-                onClick={() => handleSetTrack(track)}
+                key={tier}
+                onClick={() => handleSetTier(tier)}
                 className={[
                   "px-3 py-1.5 text-xs font-medium transition-colors",
                   i < 2 ? "border-r border-zinc-700" : "",
-                  currentTrack === track
-                    ? track === "interview"
+                  currentTier === tier
+                    ? tier === "core"
                       ? "bg-emerald-950/80 text-emerald-400"
-                      : track === "cp"
-                      ? "bg-amber-950/80 text-amber-400"
-                      : "bg-zinc-700 text-zinc-100"
+                      : tier === "faang-plus"
+                      ? "bg-sky-950/80 text-sky-400"
+                      : "bg-amber-950/80 text-amber-400"
                     : "text-zinc-500 hover:text-zinc-300 hover:bg-zinc-800/50",
                 ].join(" ")}
               >
-                {track === "interview" ? "Interview" : track === "cp" ? "CP" : "All"}
+                {TIER_LABEL[tier]}
               </button>
             ))}
           </div>

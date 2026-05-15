@@ -5,7 +5,7 @@ export const foundations: Module = {
   num: 1,
   name: "Foundations",
   section: "0",
-  track: "both",
+  tier: "core",
   order: 1,
   prereqIds: [],
   resources: [

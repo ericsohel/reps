@@ -5,7 +5,7 @@ export const dpTrees: Module = {
   num: 29,
   name: "DP on Trees",
   section: "2d",
-  track: "both",
+  tier: "core",
   order: 23,
   prereqIds: ["dp-intro", "trees"],
   isNew: true,
