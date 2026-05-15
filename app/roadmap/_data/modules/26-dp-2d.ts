@@ -55,16 +55,6 @@ export const dp2d: Module = {
     },
     {
       num: 5,
-      title: "Longest Palindromic Substring",
-      url: "https://leetcode.com/problems/longest-palindromic-substring/",
-      source: "LC 5",
-      difficulty: "medium",
-      list: "NC150",
-      role: "extension",
-      teaches: "Palindrome DP — `dp[i][j] = \"is s[i..j] a palindrome\"`; fill in order of increasing length",
-    },
-    {
-      num: 6,
       title: "Edit Distance",
       url: "https://leetcode.com/problems/edit-distance/",
       source: "LC 72",
@@ -74,7 +64,7 @@ export const dp2d: Module = {
       teaches: "Two-string 2D DP — new sub-pattern: `dp[i][j]` over prefixes of two strings. Three transitions: insert, delete, replace; fill row by row",
     },
     {
-      num: 7,
+      num: 6,
       title: "Interleaving String",
       url: "https://leetcode.com/problems/interleaving-string/",
       source: "LC 97",
@@ -84,7 +74,7 @@ export const dp2d: Module = {
       teaches: "2D boolean DP on two string positions — can `s3[:i+j]` be interleaved from `s1[:i]` and `s2[:j]`?",
     },
     {
-      num: 8,
+      num: 7,
       title: "Distinct Subsequences",
       url: "https://leetcode.com/problems/distinct-subsequences/",
       source: "LC 115",
@@ -94,7 +84,7 @@ export const dp2d: Module = {
       teaches: "Same two-string 2D state, counting instead of optimising; only deletion direction matters",
     },
     {
-      num: 9,
+      num: 8,
       title: "Longest Increasing Path in a Matrix",
       url: "https://leetcode.com/problems/longest-increasing-path-in-a-matrix/",
       source: "LC 329",
