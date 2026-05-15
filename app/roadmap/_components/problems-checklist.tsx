@@ -95,11 +95,13 @@ export function ProblemsChecklist({
   problems,
   hideProgress = false,
   readOnly = false,
+  moduleTarget,
 }: {
   moduleId: string;
   problems: ProblemRow[];
   hideProgress?: boolean;
   readOnly?: boolean;
+  moduleTarget?: number;
 }) {
   // Always use the main key. isModuleDone("foundations") is hardcoded
   // true so foundations problem counts never affect unlock logic.
@@ -159,7 +161,7 @@ export function ProblemsChecklist({
 
   const solvedCount = solved.size;
   const total = problems.length;
-  const target = Math.min(REQUIRED_PROBLEMS, total);
+  const target = moduleTarget !== undefined ? Math.min(moduleTarget, total) : Math.min(REQUIRED_PROBLEMS, total);
   const remaining = Math.max(0, target - solvedCount);
   const unlocked = hydrated && solvedCount >= target;
   const progressPct = hydrated

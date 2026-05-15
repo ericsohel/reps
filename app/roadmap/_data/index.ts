@@ -127,7 +127,7 @@ export const SECTION_COLORS: Readonly<Record<string, string>> = {
   "1d": "#748ffc",
   "2a": "#2f9e44",
   "2b": "#fab005",
-  "2c": "#1971c2",
+  "2c": "#0891b2",
   "2d": "#c07a00",
   "2e": "#7048e8",
   "2f": "#c2255c",

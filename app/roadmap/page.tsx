@@ -54,7 +54,9 @@ export default function RoadmapPage() {
     id: string;
     title: string;
     previewMode?: boolean;
-    unmetPrereqs?: string[];
+    unmetPrereqs?: { id: string; label: string }[];
+    moduleTarget?: number;
+    onMarkKnown?: () => void;
   } | null>(null);
   const [lastVisitedModule, setLastVisitedModule] = useState<string | null>(null);
   const [showBanner, setShowBanner] = useState(false);
@@ -396,16 +398,8 @@ export default function RoadmapPage() {
       // how the rest of the app defines "done". Previously this checked
       // strict full-solve which fired far less often than it should.
       const sectionPeers = NODES.filter(x => x.section === n.section && inTrack(x));
-      const peerIsDone = (xId: string) => {
-        if (xId === "foundations") return true;
-        if (completed.has(xId)) return true;
-        const xTotal = PROBLEM_COUNTS[xId] ?? 0;
-        if (xTotal === 0) return false;
-        const xTarget = Math.min(REQUIRED_PROBLEMS, xTotal);
-        return (problemsSolved[xId]?.length ?? 0) >= xTarget;
-      };
       const sectionPeersComplete = sectionPeers.every(x =>
-        x.id === n.id ? true : peerIsDone(x.id),
+        x.id === n.id ? true : isModuleDone(x.id),
       );
       const wouldCloseSection = sectionPeersComplete && sectionPeers.length > 1 ? 1 : 0;
 
@@ -425,7 +419,7 @@ export default function RoadmapPage() {
     });
 
     // ── REVIEW scoring (retention) ────────────────────────────────────────────
-    // Ceiling ≈ 1.00 (0.35 + 0.20 + 0.15 + 0.10 + 0.20). Surfaces when a
+    // Ceiling ≈ 1.15 (0.40 + 0.25 + 0.15 + 0.10 + 0.25). Surfaces when a
     // mastered module has solved problems that have decayed past their review
     // window. Plain-English reasons in retrieval voice.
     const scoredReview: Scored[] = reviewDueInfos.map(info => {
@@ -434,11 +428,11 @@ export default function RoadmapPage() {
       const criticality = unlocksOf(n.id) / maxUnlocks;
       const accumulatedDecay = solvedCount > 0 ? Math.min(1, overdueCount / solvedCount) : 0;
       const contributions = [
-        { label: `${overdueCount} problem${overdueCount === 1 ? "" : "s"} decayed past review window`, value: 0.35 * retentionDeficit },
-        { label: "high-leverage module due for review",                                                 value: 0.20 * criticality },
+        { label: `${overdueCount} problem${overdueCount === 1 ? "" : "s"} decayed past review window`, value: 0.40 * retentionDeficit },
+        { label: "high-leverage module due for review",                                                 value: 0.25 * criticality },
         { label: "matches your current track",                                                          value: 0.15 * trackScoreFor(n) },
         { label: "checkpoint due for review",                                                           value: checkpointDue ? 0.10 : 0 },
-        { label: "retention slipping across this module",                                               value: 0.20 * accumulatedDecay },
+        { label: "retention slipping across this module",                                               value: 0.25 * accumulatedDecay },
       ];
       return {
         id: n.id,
@@ -610,9 +604,13 @@ export default function RoadmapPage() {
                     ? EDGES.filter(([, t]) => t === n.id)
                         .map(([s]) => s)
                         .filter(p => !isModuleUnlocking(p))
-                        .map(p => NODES.find(x => x.id === p)?.label.replace("\n", " ") ?? p)
+                        .map(p => ({ id: p, label: NODES.find(x => x.id === p)?.label.replace("\n", " ") ?? p }))
                     : undefined;
-                  setActiveModule({ id: n.id, title: n.label, previewMode: isLocked, unmetPrereqs: unmet });
+                  const target = masteryTarget(n.id);
+                  const markKnown = !isLocked && nodeState(n.id) !== "locked"
+                    ? () => { toggle(n.id); setActiveModule(null); }
+                    : undefined;
+                  setActiveModule({ id: n.id, title: n.label, previewMode: isLocked, unmetPrereqs: unmet, moduleTarget: target, onMarkKnown: markKnown });
                   setLastVisitedModule(n.id);
                   localStorage.setItem("dsa-v1-last-visited", n.id);
                 } else if (MODULE_PAGES[n.id]) {
@@ -786,6 +784,23 @@ export default function RoadmapPage() {
           title={activeModule.title}
           previewMode={activeModule.previewMode}
           unmetPrereqs={activeModule.unmetPrereqs}
+          moduleTarget={activeModule.moduleTarget}
+          onMarkKnown={activeModule.onMarkKnown}
+          onOpenPrereq={(id) => {
+            const node = NODES.find(n => n.id === id);
+            if (node) {
+              setActiveModule({
+                id: node.id,
+                title: node.label.replace("\n", " "),
+                previewMode: false,
+                unmetPrereqs: undefined,
+                moduleTarget: masteryTarget(node.id),
+                onMarkKnown: nodeState(node.id) !== "locked"
+                  ? () => { toggle(node.id); setActiveModule(null); }
+                  : undefined,
+              });
+            }
+          }}
           onClose={() => setActiveModule(null)}
         />
       )}
