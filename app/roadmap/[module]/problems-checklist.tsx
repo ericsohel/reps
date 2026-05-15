@@ -96,11 +96,9 @@ export function ProblemsChecklist({
   problems: ProblemRow[];
   hideProgress?: boolean;
 }) {
-  // Reference checklists (e.g. foundations) use a separate key so they
-  // don't affect the unlock logic which reads dsa-v1-problems-solved.
-  const storageKey = hideProgress
-    ? "dsa-v1-ref-solved"
-    : "dsa-v1-problems-solved";
+  // Always use the main key. isModuleDone("foundations") is hardcoded
+  // true so foundations problem counts never affect unlock logic.
+  const storageKey = "dsa-v1-problems-solved";
 
   const [solved, setSolved] = useState<Set<number>>(new Set());
   const [hydrated, setHydrated] = useState(false);
@@ -113,7 +111,7 @@ export function ProblemsChecklist({
       /* ignore */
     }
     setHydrated(true);
-  }, [moduleId, storageKey]);
+  }, [moduleId]);
 
   function toggle(num: number) {
     const wasSolved = solved.has(num);
