@@ -203,6 +203,22 @@ export default function RoadmapPage() {
     setHydrated(true);
   }, []);
 
+  // Re-sync solved state whenever a problem is toggled in the modal.
+  // ProblemsChecklist dispatches "roadmap-progress-changed" after every
+  // localStorage write, so cards update in real-time without a reload.
+  useEffect(() => {
+    function onProgress() {
+      try {
+        const fresh = JSON.parse(
+          localStorage.getItem("dsa-v1-problems-solved") || "{}",
+        );
+        setProblemsSolved(fresh);
+      } catch { /* ignore */ }
+    }
+    window.addEventListener("roadmap-progress-changed", onProgress);
+    return () => window.removeEventListener("roadmap-progress-changed", onProgress);
+  }, []);
+
   function saveCompleted(next: Set<string>) {
     localStorage.setItem("dsa-v1-completed", JSON.stringify([...next]));
   }
@@ -706,17 +722,7 @@ export default function RoadmapPage() {
         <ModuleModal
           moduleId={activeModule.id}
           title={activeModule.title}
-          onClose={() => {
-            // Re-hydrate solved state so card completion reflects what
-            // the user just checked off in the modal.
-            try {
-              const fresh = JSON.parse(
-                localStorage.getItem("dsa-v1-problems-solved") || "{}",
-              );
-              setProblemsSolved(fresh);
-            } catch { /* ignore */ }
-            setActiveModule(null);
-          }}
+          onClose={() => setActiveModule(null)}
         />
       )}
     </div>

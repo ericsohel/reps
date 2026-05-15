@@ -127,6 +127,8 @@ export function ProblemsChecklist({
       if (next.size === 0) delete data[moduleId];
       else data[moduleId] = [...next].sort((a, b) => a - b);
       localStorage.setItem(storageKey, JSON.stringify(data));
+      // Notify the roadmap page so card states update without a reload.
+      window.dispatchEvent(new Event("roadmap-progress-changed"));
     } catch {
       /* ignore */
     }
