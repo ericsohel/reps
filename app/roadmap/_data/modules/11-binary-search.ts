@@ -7,7 +7,7 @@ export const binarySearch: Module = {
   section: "1",
   track: "both",
   order: 11,
-  prereqIds: ["arrays-hashing", "two-pointers"],
+  prereqIds: ["arrays-hashing", "sorting", "two-pointers"],
   resources: [
     { title: "USACO Guide — Binary Search on Sorted Array (Silver)", url: "https://usaco.guide/silver/binary-search-sorted-array" },
     { title: "USACO Guide — Binary Search (Silver)", url: "https://usaco.guide/silver/binary-search" },
