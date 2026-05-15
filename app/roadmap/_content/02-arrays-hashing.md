@@ -41,7 +41,7 @@ With set:  O(1) — hash 7, check the bucket. Independent of collection size.
 With list: O(n) — scan every element until found or exhausted.
 ```
 
-This single property — O(1) membership — is what all four patterns below exploit.
+This single property — O(1) membership — is what every pattern below exploits.
 
 ### Pattern 1 — existence
 
@@ -56,6 +56,13 @@ i=2: x=3.  3 IN seen={3, 1}        → duplicate found. Done.
 ```
 
 The set never grows larger than the array, and each step is O(1).
+
+**Multi-track existence.** Some problems run Pattern 1 in parallel across several tracks — Sudoku validates 9 rows, 9 columns, and 9 boxes simultaneously; each track must be duplicate-free *within itself* but can collide across tracks. Two encodings, both Pattern 1:
+
+- **One set, tuple keys** that name the track: `seen.add(('row', i, v))`, `seen.add(('col', j, v))`, `seen.add(('box', i // 3, j // 3, v))`. One pass over the grid, one set, one membership check per insert.
+- **27 separate sets** keyed by `(track_kind, index)`. Slightly less elegant but smaller hash keys.
+
+The encoding step — turning "27 parallel constraints" into "one set with disambiguated keys" — is what the reader has to invent. The membership test that follows is still Pattern 1.
 
 ### Pattern 2 — frequency counting
 
@@ -74,6 +81,33 @@ Counter([3, 1, 3, 2, 1, 1])
 ```
 
 Two strings are anagrams iff `Counter(s) == Counter(t)`. Two arrays have the same multiset iff their `Counter`s are equal.
+
+**Inverting by count — frequency buckets.** Sometimes you want to traverse values *by their frequency* ("the k most-common values", "list values from rarest to most common"). Sorting `Counter.items()` by count is O(n log n); when counts are integers bounded by `n`, an O(n) inversion is available — invert the Counter into an array indexed by count:
+
+```
+buckets[c] = list of values appearing exactly c times
+```
+
+Since no value can appear more than `n` times, `buckets` needs `n + 1` slots. Walking `buckets` from index `n` downward yields values by frequency descending — collect until you have `k`.
+
+**Numeric trace** with `a = [1, 1, 1, 2, 2, 3]`, k = 2:
+
+```
+freq = Counter(a) = {1: 3, 2: 2, 3: 1}
+
+buckets[0] = []     ← no value appears 0 times
+buckets[1] = [3]    ← value 3 appears once
+buckets[2] = [2]    ← value 2 appears twice
+buckets[3] = [1]    ← value 1 appears 3 times
+buckets[4..6] = []
+
+walk from c=6 down:
+  c=6,5,4: empty
+  c=3: buckets[3] = [1]   → result = [1]
+  c=2: buckets[2] = [2]   → result = [1, 2]   length == k, return.
+```
+
+Total work: O(n) to build the Counter, O(n) to fill buckets, O(n + k) to walk — O(n) overall. Beats sorting by a factor of `log n` once n is non-trivial.
 
 ### Pattern 3 — complement lookup ([atlas](00-patterns.md#complement-lookup))
 
@@ -230,16 +264,18 @@ Sources: **NC150** = NeetCode 150 · **UG** = USACO Guide curated · ⭐ = USACO
 | 1 | [Contains Duplicate](https://leetcode.com/problems/contains-duplicate/) | LC 217 | Easy | NC150 | baseline | Pattern 1 — set existence; simplest application |
 | 2 | [Valid Anagram](https://leetcode.com/problems/valid-anagram/) | LC 242 | Easy | NC150 | baseline | Pattern 2 — `Counter(s) == Counter(t)` |
 | 3 | [Two Sum](https://leetcode.com/problems/two-sum/) | LC 1 | Easy | NC150 | baseline | Pattern 3 — complement lookup; solves your Step 1 problem (CSES 1640) |
-| 4 | [Where Am I?](http://www.usaco.org/index.php?page=viewproblem2&cpid=964) | USACO Bronze | Easy | UG ⭐ | extension | Pattern 1 in a contest framing — must recognise the pattern without scaffolding |
-| 5 | [Group Anagrams](https://leetcode.com/problems/group-anagrams/) | LC 49 | Medium | NC150 | extension | Pattern 4 — `tuple(sorted(s))` as the canonical key; grouping by derived property |
-| 6 | [Don't Be Last!](http://www.usaco.org/index.php?page=viewproblem2&cpid=687) | USACO Bronze | Medium | UG ⭐ | combination | Dict aggregation + sort to extract a ranked answer; first combination of Pattern 2 with downstream processing |
-| 7 | [Longest Consecutive Sequence](https://leetcode.com/problems/longest-consecutive-sequence/) | LC 128 | Medium | NC150 | **checkpoint** | Pattern 5 — set-guided iteration; only walk chains from their minimum |
+| 4 | [Group Anagrams](https://leetcode.com/problems/group-anagrams/) | LC 49 | Medium | NC150 | baseline | Pattern 4 — `tuple(sorted(s))` as the canonical key; grouping by derived property |
+| 5 | [Valid Sudoku](https://leetcode.com/problems/valid-sudoku/) | LC 36 | Medium | NC150 | extension | Pattern 1 multi-tracked — encode each constraint as `(track, value)` in one set (or maintain 27 separate sets). The encoding step is what scales the pattern across 27 parallel constraints |
+| 6 | [Top K Frequent Elements](https://leetcode.com/problems/top-k-frequent-elements/) | LC 347 | Medium | NC150 | extension | Pattern 2 + frequency buckets — invert Counter into a `count → values` array and walk from the top; O(n) without sorting |
+| 7 | [Don't Be Last!](http://www.usaco.org/index.php?page=viewproblem2&cpid=687) | USACO Bronze | Medium | UG ⭐ | combination | Pattern 2 + sort by composite key — dict aggregation followed by tuple-sort to extract a ranked answer; first time Pattern 2 feeds into downstream processing |
+| 8 | [Longest Consecutive Sequence](https://leetcode.com/problems/longest-consecutive-sequence/) | LC 128 | Medium | NC150 | **checkpoint** | Pattern 5 — set-guided iteration; only walk chains from their minimum |
 
 **Checkpoint:** LC 128 without hints. After building the set, the question is which elements to walk from. The naive approach (walk from every element) is O(n²). The leap: only start a chain from x if `x - 1 not in s` — i.e., x is a minimum. This gates the inner walk so each element is visited at most once across all chains. The gate is exactly Pattern 5's structure; the inner walk is Pattern 1. Together they give O(n).
 
 ### NC150 problems handed off to other modules
 
 - *Product of Array Except Self* (LC 238, NC150) → module 4 (Prefix Sums). It's a forward-and-backward prefix product problem, not a hash problem; NC150 misfiles it.
+- *Encode and Decode Strings* (LC 271, NC150) — no first-class home in this roadmap. It's a string-serialization design problem (pick an encoding that's parseable in reverse); no hashing or other module's technique applies. Solve it directly when you encounter it.
 
 ---
 
@@ -251,3 +287,5 @@ Sources: **NC150** = NeetCode 150 · **UG** = USACO Guide curated · ⭐ = USACO
 - **`dict[key]` on a missing key raises `KeyError`.** Use `dict.get(key, default)` or test `key in dict` first. `defaultdict` auto-initialises missing keys — useful but can silently create entries you didn't intend.
 - **Inserting before checking in complement lookup.** `seen[x] = i` then `seen.get(target - x)` will find `x` itself when `target == 2 * x`. Always check first, insert after.
 - **Set iteration order.** Python 3.7+ `dict` is insertion-ordered, but `set` is not. Don't rely on the order elements come out of a `set` — if order matters, convert to a sorted list first.
+- **Frequency-bucket array length.** Allocate `n + 1` slots (`[[] for _ in range(n + 1)]`), not `n`. A single value can appear `n` times (the entire array is one value), so index `n` must be a valid bucket. Off-by-one here drops the most-frequent case silently.
+- **Sudoku box index.** The 3×3 box containing cell `(i, j)` is identified by `(i // 3, j // 3)`, not `(i // 3) * 3 + (j // 3)` — the second flattens to one int (also valid), but mixing the two encodings across rows/cols/boxes causes silent key collisions if any two encodings collide.
