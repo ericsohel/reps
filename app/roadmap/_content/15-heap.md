@@ -226,13 +226,13 @@ Sources: **NC150** = NeetCode 150 · **UG** = USACO Guide curated · ⭐ = USACO
 
 | # | Problem | Source | Difficulty | List | Role | What it teaches |
 |---|---------|--------|-----------|------|------|-----------------|
-| 1 | [Room Allocation](https://cses.fi/problemset/task/1164) | CSES | Normal | UG ⭐ | baseline | Sort by arrival + min-heap of departures — your Step 1 problem |
+| 1 | [Room Allocation](https://cses.fi/problemset/task/1164) | CSES | Medium | UG ⭐ | baseline | Sort by arrival + min-heap of departures — your Step 1 problem |
 | 2 | [Kth Largest Element In a Stream](https://leetcode.com/problems/kth-largest-element-in-a-stream/) | LC 703 | Easy | NC150 | baseline | Min-heap of size k pattern — top is the k-th largest |
 | 3 | [Last Stone Weight](https://leetcode.com/problems/last-stone-weight/) | LC 1046 | Easy | NC150 | extension | Max-heap simulation — negate on push and pop |
 | 4 | [K Closest Points to Origin](https://leetcode.com/problems/k-closest-points-to-origin/) | LC 973 | Medium | NC150 | extension | Heap-of-size-k applied to distances — max-heap so we pop when the new point is closer |
 | 5 | [Merge K Sorted Lists](https://leetcode.com/problems/merge-k-sorted-lists/) | LC 23 | Hard | NC150 | extension | Heap of `(val, index, node)` tuples — module 9's deferred problem |
 | 6 | [Task Scheduler](https://leetcode.com/problems/task-scheduler/) | LC 621 | Medium | NC150 | extension | Greedy + max-heap with a cooldown queue — schedule the most frequent task that's off cooldown |
-| 7 | [Convention II](http://www.usaco.org/index.php?page=viewproblem2&cpid=859) | USACO Silver | Normal | UG ⭐ | extension | Sort + heap in a contest problem — identify that PQ is the right tool from the problem statement |
+| 7 | [Convention II](http://www.usaco.org/index.php?page=viewproblem2&cpid=859) | USACO Silver | Medium | UG ⭐ | extension | Sort + heap in a contest problem — identify that PQ is the right tool from the problem statement |
 | 8 | [Find Median From Data Stream](https://leetcode.com/problems/find-median-from-data-stream/) | LC 295 | Hard | NC150 | **checkpoint** | Two-heap balancing — the three-step rebalance order from Step 2 |
 
 **Checkpoint:** LC 295 without hints. The leap is the **three-step rebalance order** — push to `lo`, transfer `lo`'s top to `hi`, then balance sizes. Skipping or reordering any step breaks an invariant. The fact that you don't need a sorted data structure at all — you only need the boundary values between the two halves — is the non-obvious framing.

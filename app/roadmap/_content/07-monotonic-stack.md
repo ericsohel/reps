@@ -209,7 +209,7 @@ Sources: **NC150** = NeetCode 150 · **UG** = USACO Guide curated · ⭐ = USACO
 |---|---------|--------|-----------|------|------|-----------------|
 | 1 | [Nearest Smaller Values](https://cses.fi/problemset/task/1645) | CSES | Easy | UG | baseline | PSE going left-to-right — implement your Step 1 problem with the increasing stack |
 | 2 | [Daily Temperatures](https://leetcode.com/problems/daily-temperatures/) | LC 739 | Medium | NC150 | extension | NGE going right — answer assigned at pop time; the mirror direction of problem 1 |
-| 3 | [Mike and Feet](https://codeforces.com/contest/547/problem/B) | CF 547B | Normal | UG ⭐ | extension | Span = PSE + NSE — for each height, find the widest subarray where it is the min; first use of the two-scan span pattern |
+| 3 | [Mike and Feet](https://codeforces.com/contest/547/problem/B) | CF 547B | Medium | UG ⭐ | extension | Span = PSE + NSE — for each height, find the widest subarray where it is the min; first use of the two-scan span pattern |
 | 4 | [Car Fleet](https://leetcode.com/problems/car-fleet/) | LC 853 | Medium | NC150 | extension | Sort by position + decreasing stack — a new car merges into the existing fleet when its arrival time is ≤ stack top |
 | 5 | [Largest Rectangle in Histogram](https://leetcode.com/problems/largest-rectangle-in-histogram/) | LC 84 | Hard | NC150 | extension | Classic PSE + NSE with the sentinel-flush trick; computes `height[i] × span[i]` for each bar |
 | 6 | [Sum of Subarray Minimums](https://leetcode.com/problems/sum-of-subarray-minimums/) | LC 907 | Medium | ⭐ | **checkpoint** | Contribution counting with the asymmetric tie-breaking (`≥` on PSE side, `>` on NSE side) |

@@ -200,7 +200,7 @@ Sources: **NC150** = NeetCode 150 · **UG** = USACO Guide curated
 | # | Problem | Source | Difficulty | List | Role | What it teaches |
 |---|---------|--------|-----------|------|------|-----------------|
 | 1 | [Sliding Window Maximum](https://leetcode.com/problems/sliding-window-maximum/) | LC 239 | Hard | NC150 | baseline | Fixed-window decreasing deque — your Step 1 problem |
-| 2 | [Max Subarray Sum II](https://cses.fi/problemset/task/1644) | CSES | Normal | UG | extension | Fixed-window deque over prefix sums — max subarray sum with length in `[a, b]`; reduces to "max of P[i] over a sliding window of size b−a+1" |
+| 2 | [Max Subarray Sum II](https://cses.fi/problemset/task/1644) | CSES | Medium | UG | extension | Fixed-window deque over prefix sums — max subarray sum with length in `[a, b]`; reduces to "max of P[i] over a sliding window of size b−a+1" |
 | 3 | [Longest Continuous Subarray With Absolute Diff ≤ Limit](https://leetcode.com/problems/longest-continuous-subarray-with-absolute-diff-leq-limit/) | LC 1438 | Medium | ⭐ | extension | Two deques simultaneously — max-deque and min-deque tracked together (two-scan span variant) |
 | 4 | [Maximum Number of Robots Within Budget](https://leetcode.com/problems/maximum-number-of-robots-within-budget/) | LC 2398 | Hard | ⭐ | extension | Sliding-window max (deque) combined with a running cost sum; constraint check on `max_charge + window_size × sum_costs` |
 | 5 | [Shortest Subarray with Sum at Least K](https://leetcode.com/problems/shortest-subarray-with-sum-at-least-k/) | LC 862 | Hard | ⭐ | **checkpoint** | Deque over prefix sums — the only working approach when the array contains negatives |

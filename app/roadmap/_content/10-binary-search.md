@@ -2,7 +2,7 @@
 
 **Prerequisites:** Arrays & Hashing  
 **Unlocks:** Binary Search on Answer, Sparse Table  
-**Patterns introduced:** the binary search invariant (specialised in module 11 to non-array predicates)  
+**Patterns introduced:** none new — module 11 generalises binary search to [monotonic predicates](00-patterns.md#binary-search-on-monotonic-predicate) (atlas entry lives there)  
 **Patterns reused:** none
 
 ---

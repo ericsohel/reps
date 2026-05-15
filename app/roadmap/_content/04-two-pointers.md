@@ -182,7 +182,7 @@ Sources: **NC150** = NeetCode 150 · **UG** = USACO Guide curated · ⭐ = USACO
 
 | # | Problem | Source | Difficulty | List | Role | What it teaches |
 |---|---------|--------|-----------|------|------|-----------------|
-| 1 | [Sum of Two Values](https://cses.fi/problemset/task/1640) | CSES | Very Easy | UG ⭐ | baseline | Converging two-sum on sorted array — you solved this in module 2 with a dict (complement lookup); now sort + two pointers, then map back to original indices |
+| 1 | [Sum of Two Values](https://cses.fi/problemset/task/1640) | CSES | Easy | UG ⭐ | baseline | Converging two-sum on sorted array — you solved this in module 2 with a dict (complement lookup); now sort + two pointers, then map back to original indices |
 | 2 | [Valid Palindrome](https://leetcode.com/problems/valid-palindrome/) | LC 125 | Easy | NC150 | extension | Converging on a string from both ends — character-skipping edge case (filter non-alphanumeric in place) |
 | 3 | [Sum of Three Values](https://cses.fi/problemset/task/1641) | CSES | Easy | UG ⭐ | extension | Reduce by fixing one — fix outer index `i`, run two-pointer on the rest |
 | 4 | [3Sum](https://leetcode.com/problems/3sum/) | LC 15 | Medium | NC150 | extension | Same skeleton as problem 3 plus deduplication — skip duplicate `a[i]` outer; skip duplicate `left`/`right` after a hit |

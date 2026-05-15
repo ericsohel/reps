@@ -2,7 +2,7 @@
 
 **Prerequisites:** Trees  
 **Unlocks:** Topological Sort, Union-Find / DSU, Shortest Paths  
-**Patterns introduced:** BFS/DFS skeleton (modules 19, 21 reuse heavily)  
+**Patterns introduced:** [BFS/DFS skeleton](00-patterns.md#bfs-dfs-skeleton) (modules 19, 21 reuse heavily)  
 **Patterns reused:** [state down vs return up (tree DFS)](00-patterns.md#state-down-vs-return-up-tree-dfs) — extended to general graphs with visited tracking
 
 ---

@@ -233,10 +233,10 @@ Sources: **NC150** = NeetCode 150 · **UG** = USACO Guide curated · ⭐ = USACO
 | 1 | [Array Division](https://cses.fi/problemset/task/1085) | CSES | Easy | UG ⭐ | baseline | Your Step 1 problem — greedy partition feasibility |
 | 2 | [Koko Eating Bananas](https://leetcode.com/problems/koko-eating-bananas/) | LC 875 | Medium | NC150 | reskin | Same outer template, new feasibility — ceiling-division sum |
 | 3 | [Factory Machines](https://cses.fi/problemset/task/1620) | CSES | Easy | UG | extension | Throughput sum across machines — `sum(T // k_i) >= t` |
-| 4 | [The Meeting Place Cannot Be Changed](https://codeforces.com/contest/782/problem/B) | CF 782B | Normal | UG ⭐ | extension | Feasibility on sorted positions — find a common reachable point within time T |
-| 5 | [Social Distancing](http://www.usaco.org/index.php?page=viewproblem2&cpid=1038) | USACO Silver | Normal | UG | extension | **Maximise-minimum** direction — sort intervals, greedily place k cows with gap ≥ d |
+| 4 | [The Meeting Place Cannot Be Changed](https://codeforces.com/contest/782/problem/B) | CF 782B | Medium | UG ⭐ | extension | Feasibility on sorted positions — find a common reachable point within time T |
+| 5 | [Social Distancing](http://www.usaco.org/index.php?page=viewproblem2&cpid=1038) | USACO Silver | Medium | UG | extension | **Maximise-minimum** direction — sort intervals, greedily place k cows with gap ≥ d |
 | 6 | [Maximum Median](https://codeforces.com/contest/1201/problem/C) | CF 1201C | Easy | UG | extension | Feasibility uses a prefix-sum trick — count operations to lift second-half medians above x |
-| 7 | [Magic Ship](https://codeforces.com/problemset/problem/1117/C) | CF 1117C | Normal | UG ⭐ | extension | Feasibility uses prefix sums + modular arithmetic — cyclic wind pattern over T days |
+| 7 | [Magic Ship](https://codeforces.com/problemset/problem/1117/C) | CF 1117C | Medium | UG ⭐ | extension | Feasibility uses prefix sums + modular arithmetic — cyclic wind pattern over T days |
 | 8 | [Angry Cows (Gold)](http://www.usaco.org/index.php?page=viewproblem2&cpid=597) | USACO Gold | Hard | UG ⭐ | **checkpoint** | Feasibility itself is O(n log n) — chain-reaction simulation with sorting and greedy |
 
 **Checkpoint:** USACO Gold Angry Cows without hints. The outer binary search is routine. The leap is the feasibility function — given a launch power R, can a single cow flatten all the haybales? Simulate the chain reaction: sort haybales, scan outward from each launch position, propagate by R minus the gap travelled. The greedy choice of launch position is non-obvious and requires combining BS on answer (this module) with module 4's converging-two-pointer reasoning over the sorted positions.

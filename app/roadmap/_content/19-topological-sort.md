@@ -2,8 +2,8 @@
 
 **Prerequisites:** Graph Traversal  
 **Unlocks:** Shortest Paths, Advanced Graphs  
-**Patterns introduced:** in-degree wave (Kahn's), DFS post-order ordering  
-**Patterns reused:** BFS/DFS skeleton (module 18)
+**Patterns introduced:** in-degree wave (Kahn's), DFS post-order ordering — both module-specific specialisations  
+**Patterns reused:** [BFS/DFS skeleton](00-patterns.md#bfs-dfs-skeleton)
 
 ---
 

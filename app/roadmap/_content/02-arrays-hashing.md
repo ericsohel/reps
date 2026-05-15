@@ -172,7 +172,7 @@ Sources: **NC150** = NeetCode 150 · **UG** = USACO Guide curated · ⭐ = USACO
 | 3 | [Two Sum](https://leetcode.com/problems/two-sum/) | LC 1 | Easy | NC150 | baseline | Complement lookup — this is the technique that solves your Step 1 problem (CSES 1640); now apply it cleanly |
 | 4 | [Where Am I?](http://www.usaco.org/index.php?page=viewproblem2&cpid=964) | USACO Bronze | Easy | UG ⭐ | extension | Set existence in a contest problem — must recognise the pattern yourself |
 | 5 | [Group Anagrams](https://leetcode.com/problems/group-anagrams/) | LC 49 | Medium | NC150 | extension | Dict-of-lists with a derived key — `tuple(sorted(s))` as the canonical form |
-| 6 | [Don't Be Last!](http://www.usaco.org/index.php?page=viewproblem2&cpid=687) | USACO Bronze | Normal | UG ⭐ | combination | Dict aggregation + sort to extract a ranked answer |
+| 6 | [Don't Be Last!](http://www.usaco.org/index.php?page=viewproblem2&cpid=687) | USACO Bronze | Medium | UG ⭐ | combination | Dict aggregation + sort to extract a ranked answer |
 | 7 | [Longest Consecutive Sequence](https://leetcode.com/problems/longest-consecutive-sequence/) | LC 128 | Medium | NC150 | **checkpoint** | Build a set, then only start chains from values where `x - 1 ∉ set` — the "use the set to *decide what to do*" insight is not derivable from problems 1–6 |
 
 **Checkpoint:** LC 128 without hints. The mechanical part (set construction) is trivial after this module. The leap is recognising that you don't sort, and you only walk chains from their minimum — checking `x - 1 not in num_set` before starting. That observation isn't in any earlier problem; the reader has to invent it.

@@ -277,7 +277,7 @@ Sources: **NC150** = NeetCode 150 · **UG** = USACO Guide curated · ⭐ = USACO
 | 6 | [Generate Parentheses](https://leetcode.com/problems/generate-parentheses/) | LC 22 | Medium | NC150 | extension | Count-constrained recursion — `open < n` to add `(`, `close < open` to add `)` |
 | 7 | [Combination Sum II](https://leetcode.com/problems/combination-sum-ii/) | LC 40 | Medium | NC150 | extension | Skip rule from problem 4 + no-reuse (pass `i+1`) |
 | 8 | [Word Search](https://leetcode.com/problems/word-search/) | LC 79 | Medium | NC150 | extension | Grid backtracking — mark with `#`, recurse 4 directions, restore on return |
-| 9 | [Livestock Lineup](http://www.usaco.org/index.php?page=viewproblem2&cpid=965) | USACO Bronze | Normal | UG ⭐ | extension | Permutation backtracking in a problem statement that doesn't name the pattern — must identify it |
+| 9 | [Livestock Lineup](http://www.usaco.org/index.php?page=viewproblem2&cpid=965) | USACO Bronze | Medium | UG ⭐ | extension | Permutation backtracking in a problem statement that doesn't name the pattern — must identify it |
 | 10 | [N-Queens](https://leetcode.com/problems/n-queens/) | LC 51 | Hard | NC150 | **checkpoint** | Place queens row by row; prune on `cols`, `r − c`, `r + c` simultaneously |
 
 **Checkpoint:** LC 51 without hints. Track three sets — occupied columns, occupied diagonals (`r − c`), occupied anti-diagonals (`r + c`). Try every column in the current row; skip if any set contains the relevant key. The leap is recognising that diagonal collisions are encoded by simple arithmetic on row/column indices — `r − c` for one diagonal direction, `r + c` for the other.

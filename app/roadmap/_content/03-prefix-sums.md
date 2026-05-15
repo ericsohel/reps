@@ -3,7 +3,7 @@
 **Prerequisites:** [complement lookup (module 2)](00-patterns.md#complement-lookup)  
 **Unlocks:** Sliding Window, Binary Search on Answer, Monotonic Deque, 2D DP  
 **Patterns introduced:** [two-scan span](00-patterns.md#two-scan-span)  
-**Patterns reused:** complement lookup (now over prefix sums)
+**Patterns reused:** [complement lookup](00-patterns.md#complement-lookup) (now over prefix sums)
 
 ---
 
@@ -229,14 +229,14 @@ Sources: **NC150** = NeetCode 150 · **UG** = USACO Guide curated · ⭐ = USACO
 
 | # | Problem | Source | Difficulty | List | Role | What it teaches |
 |---|---------|--------|-----------|------|------|-----------------|
-| 1 | [Static Range Sum Queries](https://cses.fi/problemset/task/1646) | CSES | Very Easy | UG | baseline | Pure 1D prefix sum — implement the cold attempt from Step 1 properly |
-| 2 | [Breed Counting](http://www.usaco.org/index.php?page=viewproblem2&cpid=572) | USACO Silver | Very Easy | UG ⭐ | extension | One prefix array *per breed* — prefix sums generalise to "counts of anything" |
+| 1 | [Static Range Sum Queries](https://cses.fi/problemset/task/1646) | CSES | Easy | UG | baseline | Pure 1D prefix sum — implement the cold attempt from Step 1 properly |
+| 2 | [Breed Counting](http://www.usaco.org/index.php?page=viewproblem2&cpid=572) | USACO Silver | Easy | UG ⭐ | extension | One prefix array *per breed* — prefix sums generalise to "counts of anything" |
 | 3 | [Product of Array Except Self](https://leetcode.com/problems/product-of-array-except-self/) | LC 238 | Medium | NC150 | extension | Two-scan span — introduces the forward + backward sweep pattern that returns in modules 7 and 8 |
 | 4 | [Subarray Sums II](https://cses.fi/problemset/task/1661) | CSES | Easy | UG | extension | Complement lookup over prefix sums — recombines module 2's pattern with module 3's quantity |
 | 5 | [Subarray Divisibility](https://cses.fi/problemset/task/1662) | CSES | Easy | UG | extension | Same complement-lookup machinery, but the equivalence is `prefix % k` instead of equality |
 | 6 | [Forest Queries](https://cses.fi/problemset/task/1652) | CSES | Easy | UG | extension | 2D prefix sums — first time the 4-term inclusion-exclusion is needed |
-| 7 | [Haybale Stacking](https://www.spoj.com/problems/HAYBALE/) | SPOJ | Normal | UG ⭐ | extension | Difference array — the inverse direction (range updates, point queries) |
-| 8 | [Running Miles](https://codeforces.com/contest/1826/problem/D) | CF 1826D | Normal | UG ⭐ | **checkpoint** | Decompose a 3-term expression into prefix max and suffix max — combines the two-scan span (problem 3) with the "track-what's-best-so-far" framing from problems 4–5 |
+| 7 | [Haybale Stacking](https://www.spoj.com/problems/HAYBALE/) | SPOJ | Medium | UG ⭐ | extension | Difference array — the inverse direction (range updates, point queries) |
+| 8 | [Running Miles](https://codeforces.com/contest/1826/problem/D) | CF 1826D | Medium | UG ⭐ | **checkpoint** | Decompose a 3-term expression into prefix max and suffix max — combines the two-scan span (problem 3) with the "track-what's-best-so-far" framing from problems 4–5 |
 
 **Checkpoint:** CF 1826D without hints. The problem asks you to maximise `a[i] + a[j] - i + a[k] + k` over `i ≤ j ≤ k`. The leap: rewrite the expression as `(a[i] - i) + a[j] + (a[k] + k)`. The three terms are then independent — track the maximum of `(a[i] - i)` over `i ≤ j` (prefix max from the left) and the maximum of `(a[k] + k)` over `k ≥ j` (suffix max from the right). For each candidate `j`, the answer is `prefix_max[j] + a[j] + suffix_max[j]`. The two-scan span pattern from problem 3 makes this implementation easy; the algebraic decomposition is the part you have to invent.
 
