@@ -67,6 +67,16 @@ export const topoSort: Module = {
     },
     {
       num: 6,
+      title: "Time is Mooney",
+      url: "http://www.usaco.org/index.php?page=viewproblem2&cpid=993",
+      source: "USACO Gold",
+      difficulty: "medium",
+      list: "UG ⭐",
+      role: "extension",
+      teaches: "DP on an implicit DAG with a time dimension — state is `dp[t][v]` (mooney collected at node v after exactly t days). The DAG structure isn't given; you must recognise that `(t, v)` forms a DAG because time only increases",
+    },
+    {
+      num: 7,
       title: "Build a Matrix With Conditions",
       url: "https://leetcode.com/problems/build-a-matrix-with-conditions/",
       source: "LC 2392",
@@ -76,7 +86,7 @@ export const topoSort: Module = {
       teaches: "Multi-dim topo — run topological sort independently on rowConditions and colConditions, then place each value at `(rowPos[v], colPos[v])`. Each axis fails its own cycle check independently",
     },
     {
-      num: 7,
+      num: 8,
       title: "Alien Dictionary",
       url: "https://leetcode.com/problems/alien-dictionary/",
       source: "LC 269",
