@@ -11,6 +11,7 @@ export const unionFind: Module = {
   isNew: true,
   resources: [
     { title: "USACO Guide — Disjoint Set Union (Gold)", url: "https://usaco.guide/gold/dsu" },
+    { title: "CP-Algorithms — Disjoint Set Union", url: "https://cp-algorithms.com/data_structures/disjoint_set_union.html" },
   ],
   problems: [
     {
@@ -45,16 +46,26 @@ export const unionFind: Module = {
     },
     {
       num: 4,
+      title: "Accounts Merge",
+      url: "https://leetcode.com/problems/accounts-merge/",
+      source: "LC 721",
+      difficulty: "medium",
+      list: "NC150",
+      role: "extension",
+      teaches: "String-keyed DSU — replace the integer parent array with a dict; each email is a node. Groups accounts by unioning emails that appear together, then reconstructs sorted groups per root. The canonical interview DSU problem where the key insight is that nodes are strings, not indices",
+    },
+    {
+      num: 5,
       title: "Number of Operations to Make Network Connected",
       url: "https://leetcode.com/problems/number-of-operations-to-make-network-connected/",
       source: "LC 1319",
       difficulty: "medium",
-      list: "⭐",
+      list: "new",
       role: "extension",
       teaches: "Count surplus edges (those within already-connected components); check if surplus ≥ components − 1",
     },
     {
-      num: 5,
+      num: 6,
       title: "Mootube",
       url: "http://www.usaco.org/index.php?page=viewproblem2&cpid=789",
       source: "USACO Gold",
@@ -64,7 +75,7 @@ export const unionFind: Module = {
       teaches: "Offline DSU — sort queries and edges by weight, sweep with unions; preview of Kruskal's-style technique used in module 23",
     },
     {
-      num: 6,
+      num: 7,
       title: "Wormhole Sort",
       url: "http://www.usaco.org/index.php?page=viewproblem2&cpid=992",
       source: "USACO Silver",
