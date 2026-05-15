@@ -10,6 +10,7 @@ export const monotonicDeque: Module = {
   prereqIds: ["sliding-window", "monotonic-stack", "prefix-sums"],
   isNew: true,
   resources: [
+    { title: "USACO Guide — Stacks (Gold)", url: "https://usaco.guide/gold/stacks" },
     { title: "USACO Guide — Sliding Window (Gold)", url: "https://usaco.guide/gold/sliding-window" },
   ],
   problems: [
