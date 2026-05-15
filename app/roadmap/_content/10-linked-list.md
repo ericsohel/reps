@@ -176,20 +176,20 @@ All NC150. Linked list is the one module where USACO Guide has nothing analogous
 | # | Problem | Source | Difficulty | Role | What it teaches |
 |---|---------|--------|-----------|------|-----------------|
 | 1 | [Reverse Linked List](https://leetcode.com/problems/reverse-linked-list/) | LC 206 | Easy | baseline | Pointer manipulation — `prev / curr / nxt` discipline |
-| 2 | [Merge Two Sorted Lists](https://leetcode.com/problems/merge-two-sorted-lists/) | LC 21 | Easy | baseline | Dummy head + merge — the subroutine reused in problems 5 and in module 15's LC 23 |
+| 2 | [Merge Two Sorted Lists](https://leetcode.com/problems/merge-two-sorted-lists/) | LC 21 | Easy | baseline | Dummy head + merge — the subroutine reused in problems 5 and in module 16's LC 23 |
 | 3 | [Linked List Cycle](https://leetcode.com/problems/linked-list-cycle/) | LC 141 | Easy | baseline | Fast/slow pointer — detect cycle in O(1) space |
 | 4 | [Remove Nth Node From End of List](https://leetcode.com/problems/remove-nth-node-from-end-of-list/) | LC 19 | Medium | baseline | Two pointers with a gap — your Step 1 problem |
 | 5 | [Reorder List](https://leetcode.com/problems/reorder-list/) | LC 143 | Medium | combination | Find middle (fast/slow) + reverse second half (problem 1) + merge alternating (problem 2) — first multi-pattern problem |
 | 6 | [Copy List With Random Pointer](https://leetcode.com/problems/copy-list-with-random-pointer/) | LC 138 | Medium | extension | Hash map `{old → new}` for cross-referenced duplication — single-pass insufficient because of random pointers |
 | 7 | [Find The Duplicate Number](https://leetcode.com/problems/find-the-duplicate-number/) | LC 287 | Medium | extension | Floyd's on an implicit functional graph (`i → a[i]`) — cycle start = duplicate value |
 | 8 | [LRU Cache](https://leetcode.com/problems/lru-cache/) | LC 146 | Medium | combination | Doubly linked list + dict — augmented structure; implement the DLL explicitly (not `OrderedDict`) for interview |
-| 9 | [Merge K Sorted Lists](https://leetcode.com/problems/merge-k-sorted-lists/) | LC 23 | Hard | **checkpoint** | Min-heap of `(val, index, node)` tuples; combines problem 2's merge with module 15's heap |
+| 9 | [Merge K Sorted Lists](https://leetcode.com/problems/merge-k-sorted-lists/) | LC 23 | Hard | **checkpoint** | Min-heap of `(val, index, node)` tuples; combines problem 2's merge with module 16's heap |
 
-**Checkpoint:** LC 23 without hints. Two ingredients combine: the merge subroutine from problem 2 (extended from k=2 to k=n) and a min-heap (preview of module 15). The implementation detail that catches everyone in Python: `heapq` will compare tuple elements in order; when values tie, it tries to compare `ListNode` objects and raises `TypeError`. Include an integer tiebreaker: `(val, i, node)`.
+**Checkpoint:** LC 23 without hints. Two ingredients combine: the merge subroutine from problem 2 (extended from k=2 to k=n) and a min-heap (preview of module 16). The implementation detail that catches everyone in Python: `heapq` will compare tuple elements in order; when values tie, it tries to compare `ListNode` objects and raises `TypeError`. Include an integer tiebreaker: `(val, i, node)`.
 
 **Also doable now:** [Add Two Numbers (LC 2)](https://leetcode.com/problems/add-two-numbers/) — simulation with carry; no new technique, useful as a quick warm-up at any point in the ladder.
 
-**Defer to after module 15:** [Reverse Nodes In K Group (LC 25)](https://leetcode.com/problems/reverse-nodes-in-k-group/) — hard pointer manipulation across k nodes at a time; no new pattern, just demanding implementation.
+**Defer to after module 16:** [Reverse Nodes In K Group (LC 25)](https://leetcode.com/problems/reverse-nodes-in-k-group/) — hard pointer manipulation across k nodes at a time; no new pattern, just demanding implementation.
 
 ---
 

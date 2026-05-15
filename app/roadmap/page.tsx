@@ -7,6 +7,7 @@ import { PROBLEM_COUNTS } from "./_lib/problem-counts";
 const MODULE_PAGES: Record<string, string> = {
   "foundations":     "/roadmap/foundations",
   "arrays-hashing":  "/roadmap/arrays-hashing",
+  "sorting":         "/roadmap/sorting",
   "prefix-sums":     "/roadmap/prefix-sums",
   "two-pointers":    "/roadmap/two-pointers",
   "sliding-window":  "/roadmap/sliding-window",
@@ -67,6 +68,7 @@ interface Node {
 const NODES: Node[] = [
   { id: "foundations",     label: "Foundations",               section: "0",  track: "both" },
   { id: "arrays-hashing",  label: "Arrays & Hashing",          section: "1",  track: "both" },
+  { id: "sorting",         label: "Sorting",                   section: "1",  track: "both", isNew: true },
   { id: "prefix-sums",     label: "Prefix Sums",               section: "1",  track: "both", isNew: true },
   { id: "two-pointers",    label: "Two Pointers",              section: "1",  track: "both" },
   { id: "sliding-window",  label: "Sliding Window",            section: "1",  track: "both" },
@@ -110,6 +112,8 @@ const NODES: Node[] = [
 const EDGES: [string, string][] = [
   ["foundations","arrays-hashing"],["foundations","backtracking"],
   ["foundations","bit-manip"],["foundations","number-theory"],
+  ["arrays-hashing","sorting"],
+  ["sorting","two-pointers"],["sorting","greedy"],
   ["arrays-hashing","prefix-sums"],["arrays-hashing","two-pointers"],
   ["arrays-hashing","stack"],["arrays-hashing","linked-list"],
   ["arrays-hashing","binary-search"],["two-pointers","binary-search"],
@@ -146,20 +150,20 @@ const EDGES: [string, string][] = [
 ];
 
 const ORDER: Record<string, number> = {
-  "foundations": 1,   "arrays-hashing": 2,  "prefix-sums": 3,
-  "two-pointers": 4,  "sliding-window": 5,  "stack": 6,
-  "monotonic-stack": 7, "monotonic-deque": 8, "linked-list": 9,
-  "binary-search": 10, "bs-answer": 11,     "backtracking": 12,
-  "trees": 13,        "tries": 14,          "heap": 15,
-  "greedy": 16,       "intervals": 17,      "graph-traversal": 18,
-  "topo-sort": 19,    "union-find": 20,     "shortest-paths": 21,
-  "mst": 22,          "adv-graphs": 23,     "dp-intro": 24,
-  "dp-2d": 25,        "knapsack": 26,       "lis-lcs": 27,
-  "dp-trees": 28,     "bit-manip": 29,      "bitmask-dp": 30,
-  "interval-dp": 31,  "coord-comp": 32,     "sparse-table": 33,
-  "fenwick": 34,      "seg-tree": 35,       "number-theory": 36,
-  "combinatorics": 37,"probability": 38,    "geometry": 39,
-  "game-theory": 40,
+  "foundations": 1,   "arrays-hashing": 2,  "sorting": 3,
+  "prefix-sums": 4,   "two-pointers": 5,    "sliding-window": 6,
+  "stack": 7,         "monotonic-stack": 8, "monotonic-deque": 9,
+  "linked-list": 10,  "binary-search": 11,  "bs-answer": 12,
+  "backtracking": 13, "trees": 14,          "tries": 15,
+  "heap": 16,         "greedy": 17,         "intervals": 18,
+  "graph-traversal": 19, "topo-sort": 20,   "union-find": 21,
+  "shortest-paths": 22,  "mst": 23,         "adv-graphs": 24,
+  "dp-intro": 25,     "dp-2d": 26,          "knapsack": 27,
+  "lis-lcs": 28,      "dp-trees": 29,       "bit-manip": 30,
+  "bitmask-dp": 31,   "interval-dp": 32,    "coord-comp": 33,
+  "sparse-table": 34, "fenwick": 35,        "seg-tree": 36,
+  "number-theory": 37,"combinatorics": 38,  "probability": 39,
+  "geometry": 40,     "game-theory": 41,
 };
 
 type FilterTrack = "all" | "interview" | "cp";
@@ -455,7 +459,7 @@ export default function RoadmapPage() {
       <header className="flex items-center gap-3 flex-wrap">
         <div>
           <h1 className="text-2xl font-semibold tracking-tight">DSA Roadmap</h1>
-          <p className="text-sm text-zinc-500 mt-0.5">40 modules · prerequisite-locked learning path</p>
+          <p className="text-sm text-zinc-500 mt-0.5">41 modules · prerequisite-locked learning path</p>
         </div>
 
         <div className="ml-auto flex items-center gap-3 flex-wrap">

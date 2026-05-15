@@ -1,7 +1,7 @@
 # Foundations
 
 **Type:** Checklist. Structurally different from modules 2+ — no Step 1 cold attempt, no problem ladder. Subsequent modules follow the 5-step structure ([see CLAUDE.md](../CLAUDE.md)).
-**Unlocks:** Arrays & Hashing (2), Recursion & Backtracking (12), Bit Manipulation (29), Number Theory (36).
+**Unlocks:** Arrays & Hashing (2), Recursion & Backtracking (13), Bit Manipulation (30), Number Theory (37). Sorting (3) is reachable via Arrays & Hashing.
 
 ---
 
@@ -154,6 +154,8 @@ arr.sort(key=cmp_to_key(lambda a, b: -1 if a + b > b + a else 1))
 
 **Self-test:** Sort intervals by start ascending, break ties by end descending. (*`intervals.sort(key=lambda iv: (iv[0], -iv[1]))`.*)
 
+These are the *idioms*. The algorithm-level work — mergesort by hand, inversion counting during merge, counting sort, Dutch flag — lives in module 3 (Sorting). Foundations covers what you reach for; module 3 covers what you write when the built-in isn't enough.
+
 ---
 
 ### 5. I/O
@@ -234,7 +236,7 @@ import sys
 sys.setrecursionlimit(300_000)   # top of any recursive solution
 ```
 
-But `setrecursionlimit(10**9)` is a trap — the **C stack** is the real limit. On CPython 3.11 a frame is ~500 bytes; an 8 MB OS stack ≈ 16k frames. Raising the limit past that segfaults the interpreter, not raises an exception. Once recursion depth genuinely exceeds ~10⁴–10⁵, rewrite iteratively — this is why modules 13 (Trees) and 18 (Graph Traversal) cover explicit-stack DFS.
+But `setrecursionlimit(10**9)` is a trap — the **C stack** is the real limit. On CPython 3.11 a frame is ~500 bytes; an 8 MB OS stack ≈ 16k frames. Raising the limit past that segfaults the interpreter, not raises an exception. Once recursion depth genuinely exceeds ~10⁴–10⁵, rewrite iteratively — this is why modules 14 (Trees) and 19 (Graph Traversal) cover explicit-stack DFS.
 
 Recursion correctness reduces to three obligations:
 

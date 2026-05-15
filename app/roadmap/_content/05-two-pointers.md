@@ -85,15 +85,15 @@ For 3Sum specifically, the deduplication is the non-trivial part: skip `a[i]` if
 
 ### What this module is *not*
 
-Same-direction two pointers — where both pointers move forward and one trails the other — is its own technique. We cover it in module 5 (Sliding Window). Module 4 is converging only.
+Same-direction two pointers — where both pointers move forward and one trails the other — is its own technique. We cover it in module 6 (Sliding Window). Module 5 is converging only.
 
 ---
 
 ## Step 3 — Read
 
-The USACO Guide's Silver Two Pointers page is the load-bearing reading for this module — it does the formal walkthrough of the sample problems and covers both converging and same-direction (read the converging half here; the same-direction half is reading for module 5).
+The USACO Guide's Silver Two Pointers page is the load-bearing reading for this module — it does the formal walkthrough of the sample problems and covers both converging and same-direction (read the converging half here; the same-direction half is reading for module 6).
 
-1. [USACO Guide — Two Pointers (Silver)](https://usaco.guide/silver/two-pointers) — read through the converging examples (CSES 1640 sample). The CF Books / sliding-window section can be skipped until module 5.
+1. [USACO Guide — Two Pointers (Silver)](https://usaco.guide/silver/two-pointers) — read through the converging examples (CSES 1640 sample). The CF Books / sliding-window section can be skipped until module 6.
 2. CPH Chapter 8.1 (Two Pointers), pp. 79–81 — short, language-agnostic complement.
 
 ---
@@ -187,7 +187,7 @@ Sources: **NC150** = NeetCode 150 · **UG** = USACO Guide curated · ⭐ = USACO
 | 3 | [Sum of Three Values](https://cses.fi/problemset/task/1641) | CSES | Easy | UG ⭐ | extension | Reduce by fixing one — fix outer index `i`, run two-pointer on the rest |
 | 4 | [3Sum](https://leetcode.com/problems/3sum/) | LC 15 | Medium | NC150 | extension | Same skeleton as problem 3 plus deduplication — skip duplicate `a[i]` outer; skip duplicate `left`/`right` after a hit |
 | 5 | [Container With Most Water](https://leetcode.com/problems/container-with-most-water/) | LC 11 | Medium | NC150 | extension | Different objective (max area, not match a target). Now solve the Step 1 cold attempt with the monotonic invariant from Step 2 |
-| 6 | [Trapping Rain Water](https://leetcode.com/problems/trapping-rain-water/) | LC 42 | Hard | NC150 | **checkpoint** | Converging while maintaining `left_max` and `right_max` simultaneously; combines the monotonic invariant with the [two-scan span](00-patterns.md#two-scan-span) idea from module 3 |
+| 6 | [Trapping Rain Water](https://leetcode.com/problems/trapping-rain-water/) | LC 42 | Hard | NC150 | **checkpoint** | Converging while maintaining `left_max` and `right_max` simultaneously; combines the monotonic invariant with the [two-scan span](00-patterns.md#two-scan-span) idea from module 4 |
 
 **Checkpoint:** LC 42 without hints. The two-pointer approach maintains running `left_max` and `right_max`. At each step, whichever side has the smaller max determines the water trapped on that side (because the other side guarantees a wall at least as tall). This combines the monotonic invariant (the smaller side decides) with the two-scan span idea (prefix max from the left, suffix max from the right) but in one pass rather than two — that compression is the leap.
 

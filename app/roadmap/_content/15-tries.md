@@ -116,7 +116,7 @@ This is the [augmented data structure pattern](00-patterns.md#augmented-data-str
 ### When NOT to use a trie
 
 - **String set with no prefix queries:** a plain `set` is simpler and faster (O(L) average, constant overhead). Reach for a trie only when prefix queries dominate.
-- **Sorted prefix lookups, no wildcards:** `sorted(words)` + `bisect_left` (module 10) gives the start of the prefix range in O(log N + L). Cleaner than a trie unless you need wildcard matching.
+- **Sorted prefix lookups, no wildcards:** `sorted(words)` + `bisect_left` (module 11) gives the start of the prefix range in O(log N + L). Cleaner than a trie unless you need wildcard matching.
 - **Few words, short alphabet, lots of memory:** a 2D `bool` table can outperform a trie's dict overhead.
 
 ---
@@ -267,7 +267,7 @@ Sources: **NC150** = NeetCode 150 · ⭐ = well-known
 | 4 | [Maximum XOR of Two Numbers in an Array](https://leetcode.com/problems/maximum-xor-of-two-numbers-in-an-array/) | LC 421 | Medium | ⭐ | extension | Binary (XOR) trie — different alphabet (bits), different objective (maximise XOR by greedily picking opposite bits) |
 | 5 | [Word Search II](https://leetcode.com/problems/word-search-ii/) | LC 212 | Hard | NC150 | **checkpoint** | Trie of target words + single grid DFS guided by trie; three optimisations compound |
 
-**Checkpoint:** LC 212 without hints. The naive (run Word Search from module 12 for each target word) is exponential per word. The leap is recognising that *one* DFS from each cell, guided by a trie of all words, prunes branches with no possible word — turning N independent searches into one guided search. The duplicate-removal trick (`node.word = None`) is necessary because the same word can be found from multiple starting cells.
+**Checkpoint:** LC 212 without hints. The naive (run Word Search from module 13 for each target word) is exponential per word. The leap is recognising that *one* DFS from each cell, guided by a trie of all words, prunes branches with no possible word — turning N independent searches into one guided search. The duplicate-removal trick (`node.word = None`) is necessary because the same word can be found from multiple starting cells.
 
 ---
 

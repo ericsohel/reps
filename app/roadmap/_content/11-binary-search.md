@@ -2,7 +2,7 @@
 
 **Prerequisites:** Arrays & Hashing  
 **Unlocks:** Binary Search on Answer, Sparse Table  
-**Patterns introduced:** none new — module 11 generalises binary search to [monotonic predicates](00-patterns.md#binary-search-on-monotonic-predicate) (atlas entry lives there)  
+**Patterns introduced:** none new — module 12 generalises binary search to [monotonic predicates](00-patterns.md#binary-search-on-monotonic-predicate) (atlas entry lives there)  
 **Patterns reused:** none
 
 ---
@@ -122,10 +122,10 @@ An m×n matrix with row-wise sorting and `row[i].first > row[i-1].last` is equiv
 
 ## Step 3 — Read
 
-The USACO Guide's two binary-search pages cover the basics. Module 10 uses the sorted-array page; module 11 uses the parametric page.
+The USACO Guide's two binary-search pages cover the basics. Module 11 uses the sorted-array page; module 12 uses the parametric page.
 
 1. [USACO Guide — Binary Search on Sorted Array (Silver)](https://usaco.guide/silver/binary-search-sorted-array) — covers `bisect_left` / `bisect_right` with USACO examples. Short.
-2. [USACO Guide — Binary Search (Silver)](https://usaco.guide/silver/binary-search) — read up to the "Checking Feasibility" section, then stop (the rest is module 11).
+2. [USACO Guide — Binary Search (Silver)](https://usaco.guide/silver/binary-search) — read up to the "Checking Feasibility" section, then stop (the rest is module 12).
 3. CPH Chapter 3 (Sorting and Searching), pp. 29–33 — language-agnostic complement.
 
 ---

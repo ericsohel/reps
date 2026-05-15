@@ -70,7 +70,7 @@ while lo < hi:
 return lo
 ```
 
-This is module 10's Template B with a custom predicate instead of an array comparison.
+This is module 11's Template B with a custom predicate instead of an array comparison.
 
 ### Numeric trace — Array Division
 
@@ -129,7 +129,7 @@ The feasibility predicate must be monotonic. If `feasible(X)` is True at some X 
 
 ## Step 3 — Read
 
-This module is a curated path through the USACO Guide's Binary Search page (from "Checking Feasibility" onward — you read the first half in module 10).
+This module is a curated path through the USACO Guide's Binary Search page (from "Checking Feasibility" onward — you read the first half in module 11).
 
 1. [USACO Guide — Binary Search (Silver)](https://usaco.guide/silver/binary-search) — the "Checking Feasibility" section and its examples are the load-bearing teaching.
 2. CPH Chapter 12.1, pp. 113–115 — "Binary search on the answer" section, two pages.
@@ -239,7 +239,7 @@ Sources: **NC150** = NeetCode 150 · **UG** = USACO Guide curated · ⭐ = USACO
 | 7 | [Magic Ship](https://codeforces.com/problemset/problem/1117/C) | CF 1117C | Medium | UG ⭐ | extension | Feasibility uses prefix sums + modular arithmetic — cyclic wind pattern over T days |
 | 8 | [Angry Cows (Gold)](http://www.usaco.org/index.php?page=viewproblem2&cpid=597) | USACO Gold | Hard | UG ⭐ | **checkpoint** | Feasibility itself is O(n log n) — chain-reaction simulation with sorting and greedy |
 
-**Checkpoint:** USACO Gold Angry Cows without hints. The outer binary search is routine. The leap is the feasibility function — given a launch power R, can a single cow flatten all the haybales? Simulate the chain reaction: sort haybales, scan outward from each launch position, propagate by R minus the gap travelled. The greedy choice of launch position is non-obvious and requires combining BS on answer (this module) with module 4's converging-two-pointer reasoning over the sorted positions.
+**Checkpoint:** USACO Gold Angry Cows without hints. The outer binary search is routine. The leap is the feasibility function — given a launch power R, can a single cow flatten all the haybales? Simulate the chain reaction: sort haybales, scan outward from each launch position, propagate by R minus the gap travelled. The greedy choice of launch position is non-obvious and requires combining BS on answer (this module) with module 5's converging-two-pointer reasoning over the sorted positions.
 
 ---
 

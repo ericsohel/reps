@@ -2,7 +2,7 @@
 
 **Prerequisites:** Trees  
 **Unlocks:** Topological Sort, Union-Find / DSU, Shortest Paths  
-**Patterns introduced:** [BFS/DFS skeleton](00-patterns.md#bfs-dfs-skeleton) (modules 19, 21 reuse heavily)  
+**Patterns introduced:** [BFS/DFS skeleton](00-patterns.md#bfs-dfs-skeleton) (modules 20, 22 reuse heavily)  
 **Patterns reused:** [state down vs return up (tree DFS)](00-patterns.md#state-down-vs-return-up-tree-dfs) — extended to general graphs with visited tracking
 
 ---
@@ -58,7 +58,7 @@ while q:
 | Reachability ("can A reach B?") | Either; DFS shorter to write |
 | Count connected components | Either; DFS recursion is cleanest |
 | Shortest path in unweighted graph | BFS — distance = pop generation |
-| Detect a cycle | DFS with 3-colour states (module 19 specialises) |
+| Detect a cycle | DFS with 3-colour states (module 20 specialises) |
 | Bipartite check (2-colour) | Either; BFS with colour alternation is natural |
 
 ### Grids as implicit graphs

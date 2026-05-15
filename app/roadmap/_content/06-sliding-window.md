@@ -1,6 +1,6 @@
 # Sliding Window
 
-**Prerequisites:** [complement lookup (module 2)](00-patterns.md#complement-lookup), [monotonic invariant (module 4)](00-patterns.md#monotonic-invariant)  
+**Prerequisites:** [complement lookup (module 2)](00-patterns.md#complement-lookup), [monotonic invariant (module 5)](00-patterns.md#monotonic-invariant)  
 **Unlocks:** Monotonic Deque  
 **Patterns introduced:** none new (specialises [monotonic invariant](00-patterns.md#monotonic-invariant) for same-direction pointers)  
 **Patterns reused:** [complement lookup](00-patterns.md#complement-lookup) (over window dicts), [monotonic invariant](00-patterns.md#monotonic-invariant)
@@ -44,7 +44,7 @@ left →  →    →→   →→→
 
 This is the [monotonic invariant pattern](00-patterns.md#monotonic-invariant) specialised: there must be a monotonic relationship between the window and its constraint — extending right makes the window "worse" in one direction, shrinking left makes it "better". Each pointer crosses each index at most once → O(n) total.
 
-**Difference from module 4:** in module 4 both pointers could move in either direction (converging from both ends). Here both pointers always move *forward*, but the right pointer leads. There's no symmetric mirror logic.
+**Difference from module 5:** in module 5 both pointers could move in either direction (converging from both ends). Here both pointers always move *forward*, but the right pointer leads. There's no symmetric mirror logic.
 
 ### Numeric trace — variable window for exact sum
 
@@ -74,7 +74,7 @@ The technique applies when the window property is **monotonic in the window's ex
 - "Longest substring with no duplicates" — adding a character can introduce a duplicate; removing one can resolve it.
 - "Longest window with `max − min ≤ K`" — once max − min exceeds K, shrinking left can only fix it.
 
-**Negative numbers break the precondition.** With negatives, extending right doesn't necessarily grow the sum. Use prefix sums + dict (module 3) instead — that's exactly what LC 862 in module 8 requires.
+**Negative numbers break the precondition.** With negatives, extending right doesn't necessarily grow the sum. Use prefix sums + dict (module 4) instead — that's exactly what LC 862 in module 9 requires.
 
 ### Variable window with a dict (recombination with module 2)
 
@@ -122,7 +122,7 @@ The over-estimate doesn't break correctness because the answer is the *maximum* 
 
 This module is a curated path through the second half of the USACO Guide's Two Pointers page (the same-direction examples).
 
-1. [USACO Guide — Two Pointers (Silver)](https://usaco.guide/silver/two-pointers) — the CF Books / sliding-window section onward. Skip the converging part (that was module 4's reading).
+1. [USACO Guide — Two Pointers (Silver)](https://usaco.guide/silver/two-pointers) — the CF Books / sliding-window section onward. Skip the converging part (that was module 5's reading).
 2. CPH Chapter 8.1, pp. 79–81 — the subarray examples at the bottom of the section cover the variable-window pattern.
 
 ---
@@ -240,7 +240,7 @@ Sources: **NC150** = NeetCode 150 · **UG** = USACO Guide curated · ⭐ = USACO
 
 ## Common mistakes
 
-- **Applying sliding window when the property is not monotonic.** With negative numbers in the array, sum is not monotonic in window extent. Use module 3's prefix-sum + dict (which doesn't require monotonicity); LC 862 in module 8 is the canonical case.
+- **Applying sliding window when the property is not monotonic.** With negative numbers in the array, sum is not monotonic in window extent. Use module 4's prefix-sum + dict (which doesn't require monotonicity); LC 862 in module 9 is the canonical case.
 - **Forgetting `del freq[x]` when count hits zero.** `len(freq)` reads count-of-keys, which stays inflated if you leave zero-valued keys. Either `del` on zero, or use `if freq[x] == 0: missing += 1`-style tracking that doesn't depend on dict size.
 - **Fixed-window off-by-one.** Build the initial window with `window = sum(a[:k])`, then start the slide loop at `range(k, n)`. Iterating from index 0 double-counts the first window.
 - **`while` vs `if` for shrink.** Variable-window shrinkage uses `while` (the window might be invalid for several elements). Using `if` advances `left` by at most 1 per iteration and produces wrong answers when multiple shrinks are needed.

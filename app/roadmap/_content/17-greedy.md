@@ -91,7 +91,7 @@ Greedy fails here because the local "best" choice (4) prevents the global "best"
 
 ### Why this module precedes Intervals
 
-Module 17 (Intervals & Sweep Line) is a specialisation of greedy where the elements are time ranges. The exchange argument idea here is the foundation; in module 17 it applies to interval-scheduling problems specifically.
+Module 18 (Intervals & Sweep Line) is a specialisation of greedy where the elements are time ranges. The exchange argument idea here is the foundation; in module 18 it applies to interval-scheduling problems specifically.
 
 ---
 
@@ -99,7 +99,7 @@ Module 17 (Intervals & Sweep Line) is a specialisation of greedy where the eleme
 
 The USACO Guide has two greedy pages. The Silver one is load-bearing for this module's harder problems.
 
-1. [USACO Guide — Intro to Greedy (Bronze)](https://usaco.guide/bronze/intro-greedy) — gentle introduction with the Mad Scientist sample. Read the prose, the problem set is for module 17's overlap.
+1. [USACO Guide — Intro to Greedy (Bronze)](https://usaco.guide/bronze/intro-greedy) — gentle introduction with the Mad Scientist sample. Read the prose, the problem set is for module 18's overlap.
 2. [USACO Guide — Greedy Sorting (Silver)](https://usaco.guide/silver/greedy-sorting) — covers CSES 1630 (your Step 1) with the full exchange-argument proof. Load-bearing.
 
 ---

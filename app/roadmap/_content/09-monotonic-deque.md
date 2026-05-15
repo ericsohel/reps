@@ -23,10 +23,10 @@ result = [max(a[i:i+k]) for i in range(n - k + 1)]
 For n = 10⁵ and k = 10⁴ that's 10⁹ comparisons — TLE.
 
 You have two tools that almost-but-not-quite work:
-- A monotonic stack (module 7) pops dominated elements from one end only.
-- A sliding window (module 5) advances both pointers in one direction.
+- A monotonic stack (module 8) pops dominated elements from one end only.
+- A sliding window (module 6) advances both pointers in one direction.
 
-The question: *the monotonic stack from module 7 handles dominance but only pops from one end. A sliding window expires elements from the front when they fall out. What changes about the stack to support both operations at once?*
+The question: *the monotonic stack from module 8 handles dominance but only pops from one end. A sliding window expires elements from the front when they fall out. What changes about the stack to support both operations at once?*
 
 ---
 
@@ -75,7 +75,7 @@ Output: [3, 3, 5, 5, 6, 7]
 
 ### Why this is the right structure ([atlas](00-patterns.md#monotonic-invariant))
 
-The back-pop rule is the monotonic stack rule from module 7: discard candidates that are dominated by a newer, larger value. The front-pop rule is the sliding window expiry rule from module 5: drop indices that have left the window.
+The back-pop rule is the monotonic stack rule from module 8: discard candidates that are dominated by a newer, larger value. The front-pop rule is the sliding window expiry rule from module 6: drop indices that have left the window.
 
 Neither rule alone solves the problem — together they're sufficient. A regular stack can't pop from the front. A regular queue can't pop dominated elements from the back. The deque supports both.
 
@@ -101,7 +101,7 @@ For LC 862 (shortest subarray with sum ≥ k):
 - For each new j, **front-pop** while `prefix[j] − prefix[front] ≥ k` (a valid subarray ending at j-1 is found; record its length, then discard the front because shorter is what we want).
 - **Back-pop** while `prefix[back] ≥ prefix[j]` (the back can never be a useful start point — j is at least as small and more recent, so any future r > j prefers j over back for length).
 
-This is module 5's pattern broken by negatives, repaired by augmenting with prefix sums.
+This is module 6's pattern broken by negatives, repaired by augmenting with prefix sums.
 
 ---
 
@@ -205,7 +205,7 @@ Sources: **NC150** = NeetCode 150 · **UG** = USACO Guide curated
 | 4 | [Maximum Number of Robots Within Budget](https://leetcode.com/problems/maximum-number-of-robots-within-budget/) | LC 2398 | Hard | ⭐ | extension | Sliding-window max (deque) combined with a running cost sum; constraint check on `max_charge + window_size × sum_costs` |
 | 5 | [Shortest Subarray with Sum at Least K](https://leetcode.com/problems/shortest-subarray-with-sum-at-least-k/) | LC 862 | Hard | ⭐ | **checkpoint** | Deque over prefix sums — the only working approach when the array contains negatives |
 
-**Checkpoint:** LC 862 without hints. Two things must combine without hand-holding: (1) recognise that negatives break module 5's sliding window — extending right doesn't necessarily grow the sum, so the monotonic invariant fails; (2) repair by computing prefix sums and running the deque pattern over the *prefix array*. The front-pop and back-pop rules look similar to LC 239 but the meanings are different (front-pop records valid subarrays; back-pop discards useless start points). Step 2's exposition is the load-bearing teaching for this leap.
+**Checkpoint:** LC 862 without hints. Two things must combine without hand-holding: (1) recognise that negatives break module 6's sliding window — extending right doesn't necessarily grow the sum, so the monotonic invariant fails; (2) repair by computing prefix sums and running the deque pattern over the *prefix array*. The front-pop and back-pop rules look similar to LC 239 but the meanings are different (front-pop records valid subarrays; back-pop discards useless start points). Step 2's exposition is the load-bearing teaching for this leap.
 
 ---
 

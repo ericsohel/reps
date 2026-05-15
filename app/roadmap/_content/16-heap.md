@@ -230,7 +230,7 @@ Sources: **NC150** = NeetCode 150 · **UG** = USACO Guide curated · ⭐ = USACO
 | 2 | [Kth Largest Element In a Stream](https://leetcode.com/problems/kth-largest-element-in-a-stream/) | LC 703 | Easy | NC150 | baseline | Min-heap of size k pattern — top is the k-th largest |
 | 3 | [Last Stone Weight](https://leetcode.com/problems/last-stone-weight/) | LC 1046 | Easy | NC150 | extension | Max-heap simulation — negate on push and pop |
 | 4 | [K Closest Points to Origin](https://leetcode.com/problems/k-closest-points-to-origin/) | LC 973 | Medium | NC150 | extension | Heap-of-size-k applied to distances — max-heap so we pop when the new point is closer |
-| 5 | [Merge K Sorted Lists](https://leetcode.com/problems/merge-k-sorted-lists/) | LC 23 | Hard | NC150 | extension | Heap of `(val, index, node)` tuples — module 9's deferred problem |
+| 5 | [Merge K Sorted Lists](https://leetcode.com/problems/merge-k-sorted-lists/) | LC 23 | Hard | NC150 | extension | Heap of `(val, index, node)` tuples — module 10's deferred problem |
 | 6 | [Task Scheduler](https://leetcode.com/problems/task-scheduler/) | LC 621 | Medium | NC150 | extension | Greedy + max-heap with a cooldown queue — schedule the most frequent task that's off cooldown |
 | 7 | [Convention II](http://www.usaco.org/index.php?page=viewproblem2&cpid=859) | USACO Silver | Medium | UG ⭐ | extension | Sort + heap in a contest problem — identify that PQ is the right tool from the problem statement |
 | 8 | [Find Median From Data Stream](https://leetcode.com/problems/find-median-from-data-stream/) | LC 295 | Hard | NC150 | **checkpoint** | Two-heap balancing — the three-step rebalance order from Step 2 |
@@ -241,9 +241,9 @@ Sources: **NC150** = NeetCode 150 · **UG** = USACO Guide curated · ⭐ = USACO
 - [Design Twitter (LC 355, NC150)](https://leetcode.com/problems/design-twitter/) — merge k sorted tweet feeds; uses the same heap-of-tuples pattern as problem 5.
 - [Kth Largest Element in an Array (LC 215, NC150)](https://leetcode.com/problems/kth-largest-element-in-an-array/) — same heap-of-size-k pattern as problem 2, one-shot on a fixed array (also solvable with quickselect, a fancier alternative).
 
-**Deferred from module 9:**
+**Deferred from module 10:**
 - [Reverse Nodes In K Group (LC 25, NC150)](https://leetcode.com/problems/reverse-nodes-in-k-group/) — hard pointer manipulation in groups of k; not heap-related, just demanding implementation.
-- [Serialize and Deserialize Binary Tree (LC 297, NC150, module 13)](https://leetcode.com/problems/serialize-and-deserialize-binary-tree/) — BFS-based serialisation; you have all the tools now.
+- [Serialize and Deserialize Binary Tree (LC 297, NC150, module 14)](https://leetcode.com/problems/serialize-and-deserialize-binary-tree/) — BFS-based serialisation; you have all the tools now.
 
 ---
 

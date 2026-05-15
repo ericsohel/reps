@@ -14,7 +14,7 @@ Open [LC 743 — Network Delay Time](https://leetcode.com/problems/network-delay
 > Given a directed weighted graph and a source node, return the time it takes for a signal to reach every node (the maximum shortest-path distance from source). Return `-1` if any node is unreachable.  
 > Weights are positive.
 
-Try BFS from the source — module 18's tool for unweighted shortest paths.
+Try BFS from the source — module 19's tool for unweighted shortest paths.
 
 ```python
 from collections import deque
@@ -145,12 +145,12 @@ O(V³). The outer loop over `k` is the "use node k as a possible intermediate" r
 | You have | Use |
 |---|---|
 | Non-negative weights, single source, sparse graph | Dijkstra |
-| Non-negative weights, unit-weight edges only | BFS (module 18) |
+| Non-negative weights, unit-weight edges only | BFS (module 19) |
 | Negative weights possible, single source, ~V × E ≤ 10⁷ | Bellman-Ford |
 | All pairs, V ≤ 500 | Floyd-Warshall |
 | Weights ∈ {0, 1} only | 0-1 BFS (deque variant) — appears in some USACO problems |
 
-### Dijkstra on implicit graphs (module 18 echo)
+### Dijkstra on implicit graphs (module 19 echo)
 
 LC 778 Swim in Rising Water has the structure of a grid where each cell has a height. The "cost" of a path is the *maximum* cell height along it (not the sum). Dijkstra still applies — replace the relaxation `dist[v] = dist[u] + w` with `dist[v] = max(dist[u], grid[v])`. The greedy invariant still holds: the popped distance (now: maximum height seen) is monotone, and any path through unpopped nodes cannot reduce a maximum.
 

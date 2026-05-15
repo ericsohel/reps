@@ -13,7 +13,7 @@ Open [CSES 1683 — Planets & Kingdoms](https://cses.fi/problemset/task/1683) an
 
 > A universe has n planets and m one-way paths. Two planets are in the same kingdom if each can reach the other. Find the number of kingdoms and assign each planet to its kingdom.
 
-Unlike module 18 (connected components in undirected graphs), paths here are directed. Just because planet A can reach B doesn't mean B can reach A.
+Unlike module 19 (connected components in undirected graphs), paths here are directed. Just because planet A can reach B doesn't mean B can reach A.
 
 The question to carry into Step 2: *you run DFS from planet 1 and reach planet 5. Does that mean planet 5 can reach planet 1? What's the condition that would guarantee mutual reachability?*
 

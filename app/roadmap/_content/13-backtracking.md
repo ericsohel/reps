@@ -141,7 +141,7 @@ This rule appears in problems 4 (Creating Strings I, permutations) and 7 (Combin
 
 ### Reduce by fixing one dimension ([atlas](00-patterns.md#reduce-by-fixing-one-dimension))
 
-Permutations and Subsets both apply this pattern: at each recursion depth, fix one decision (which element here, or include/exclude this one), then recurse on the smaller subproblem. Same as 3Sum (module 4) and contribution counting (module 7) — fix one variable, reduce to a simpler problem.
+Permutations and Subsets both apply this pattern: at each recursion depth, fix one decision (which element here, or include/exclude this one), then recurse on the smaller subproblem. Same as 3Sum (module 5) and contribution counting (module 8) — fix one variable, reduce to a simpler problem.
 
 ---
 

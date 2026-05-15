@@ -1,6 +1,6 @@
 # Monotonic Stack
 
-**Prerequisites:** Stack, [monotonic invariant (module 4)](00-patterns.md#monotonic-invariant)  
+**Prerequisites:** Stack, [monotonic invariant (module 5)](00-patterns.md#monotonic-invariant)  
 **Unlocks:** Monotonic Deque  
 **Patterns introduced:** [two-scan span](00-patterns.md#two-scan-span) (combining PSE + NSE), [sentinel flush](00-patterns.md#sentinel-flush)  
 **Patterns reused:** monotonic invariant, [reduce by fixing one dimension](00-patterns.md#reduce-by-fixing-one-dimension)
@@ -29,7 +29,7 @@ The question to carry into Step 2: *as you scan left-to-right, when you arrive a
 
 This means: maintain a stack that is always **strictly increasing from bottom to top**. When a new index i arrives, pop everything `≥ a[i]` from the top. The new top (if any) is i's nearest-smaller to the left. Then push i.
 
-This is the [monotonic invariant pattern](00-patterns.md#monotonic-invariant) again — the "useless candidates" insight from module 4 is the same idea, now used to maintain a stack instead of advance a pointer.
+This is the [monotonic invariant pattern](00-patterns.md#monotonic-invariant) again — the "useless candidates" insight from module 5 is the same idea, now used to maintain a stack instead of advance a pointer.
 
 ### Numeric trace — Nearest Smaller Values
 
@@ -67,7 +67,7 @@ The stack always holds elements in monotone order. The four variants differ in (
 
 For each element you can compute both PSE (previous smaller) and NSE (next smaller). The span `(NSE_index − PSE_index − 1)` is the widest subarray where this element is the strict minimum.
 
-This is the [two-scan span pattern from module 3](00-patterns.md#two-scan-span): one forward sweep, one backward sweep, combine. Largest Rectangle in Histogram (LC 84) uses this directly — `height[i] × span[i]` is the largest rectangle whose lowest bar is `i`.
+This is the [two-scan span pattern from module 4](00-patterns.md#two-scan-span): one forward sweep, one backward sweep, combine. Largest Rectangle in Histogram (LC 84) uses this directly — `height[i] × span[i]` is the largest rectangle whose lowest bar is `i`.
 
 ### Sentinel flush ([atlas](00-patterns.md#sentinel-flush))
 

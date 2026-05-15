@@ -72,7 +72,7 @@ i=3: x=7, need 3. seen={3:0, 5:1, 8:2}. ✓ Found at index 0. Return (0, 3).
 
 **Critical ordering:** check `need in seen` *before* inserting `a[i]`. If you insert first and `target = 2x`, the lookup for `x - x = x` finds the element you just inserted, returning `(i, i)` — using the same index twice. The check-then-insert order forbids this.
 
-This complement-lookup pattern reappears in module 3, where the "seen" dict tracks prefix sums instead of raw values. Same machinery, different quantity.
+This complement-lookup pattern reappears in module 4, where the "seen" dict tracks prefix sums instead of raw values. Same machinery, different quantity.
 
 ### Pattern 4 — dict-of-lists for grouping
 
@@ -81,7 +81,7 @@ This complement-lookup pattern reappears in module 3, where the "seen" dict trac
 ### When *not* to use a dict or set
 
 - Need sorted iteration → use `sorted()` once, or `sortedcontainers.SortedList`.
-- Need range queries ("count values in [3, 7]") → sort + `bisect` (module 10) or Fenwick tree (module 33).
+- Need range queries ("count values in [3, 7]") → sort + `bisect` (module 11) or Fenwick tree (module 35).
 - Need O(log n) ordered insert/delete → `sortedcontainers.SortedList`.
 
 A plain `dict`/`set` is fast for O(1) lookup but blind to order.

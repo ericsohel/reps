@@ -90,7 +90,7 @@ while heap:
 
 **Complexity:** O((n + m) log n) with a heap.
 
-**Mark on POP, not on PUSH** (same rule as Dijkstra in module 21, *opposite* to BFS in module 18). The heap can hold the same node multiple times with different edge costs — the cheapest one comes out first, so the first pop is the right one to commit. If you marked on push, a later cheaper edge to the same node would push a fresh entry that's now incorrectly ignored. The contrast:
+**Mark on POP, not on PUSH** (same rule as Dijkstra in module 22, *opposite* to BFS in module 19). The heap can hold the same node multiple times with different edge costs — the cheapest one comes out first, so the first pop is the right one to commit. If you marked on push, a later cheaper edge to the same node would push a fresh entry that's now incorrectly ignored. The contrast:
 
 - **BFS** (unweighted): mark on push — first visit IS shortest because every edge has the same cost.
 - **Dijkstra / Prim's** (weighted): mark on pop — the heap orders by cost, so the first pop is the cheapest path/edge, but multiple entries for the same node may have been pushed earlier.

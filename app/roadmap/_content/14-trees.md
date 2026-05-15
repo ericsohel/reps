@@ -59,7 +59,7 @@ def diameterOfBinaryTree(root):
 
 One pass, O(n). **The value returned upward is the single-arm height. The value recorded globally is the full path through this node.** Confusing these is the most common bug in this pattern.
 
-This appears in module 13's checkpoint (LC 124 Max Path Sum), where the distinction is the entire problem.
+This appears in module 14's checkpoint (LC 124 Max Path Sum), where the distinction is the entire problem.
 
 ### State down — pass info from parent to child
 
@@ -287,7 +287,7 @@ Sources: **NC150** = NeetCode 150 · **UG** = USACO Guide curated · ⭐ = USACO
 - After #4: [Binary Tree Right Side View (LC 199)](https://leetcode.com/problems/binary-tree-right-side-view/) — same BFS, record only the last node per level.
 - After #6: [Construct Binary Tree from Preorder and Inorder (LC 105)](https://leetcode.com/problems/construct-binary-tree-from-preorder-and-inorder-traversal/) — divide and conquer; preorder gives root, inorder splits left/right.
 
-**Deferred to after module 15 (Heap):**
+**Deferred to after module 16 (Heap):**
 - [Serialize and Deserialize Binary Tree (LC 297)](https://leetcode.com/problems/serialize-and-deserialize-binary-tree/) — design problem; BFS serialisation, level-order reconstruction.
 
 ---

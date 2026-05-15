@@ -68,7 +68,7 @@ Sometimes one forward sweep gives only half the answer. Run a second sweep backw
 
 LC 238 (Product of Array Except Self) is the cleanest case: for each index `i`, you want the product of everything *except* `a[i]`. Compute `left[i]` = product of `a[0..i-1]` (forward). Compute `right[i]` = product of `a[i+1..n-1]` (backward). Answer is `left[i] * right[i]`.
 
-This same idea drives PSE + NSE in module 7 and max-deque + min-deque in module 8.
+This same idea drives PSE + NSE in module 8 and max-deque + min-deque in module 9.
 
 ### Complement lookup over prefix sums ([atlas](00-patterns.md#complement-lookup))
 
@@ -131,7 +131,7 @@ After all updates, recover A by taking the prefix sum of D — one O(n) pass at 
 
 ### Preconditions
 
-- 1D prefix sums require an **associative invertible** operation. Sums, XOR, counts: yes. Min, max, GCD: no (no subtraction). For those, use sparse tables (module 33) or segment trees (module 34).
+- 1D prefix sums require an **associative invertible** operation. Sums, XOR, counts: yes. Min, max, GCD: no (no subtraction). For those, use sparse tables (module 34) or segment trees (module 36).
 - Difference arrays require **all updates done first, then all queries**. Interleaved updates and point queries need a Fenwick tree.
 
 ---
@@ -231,8 +231,8 @@ Sources: **NC150** = NeetCode 150 · **UG** = USACO Guide curated · ⭐ = USACO
 |---|---------|--------|-----------|------|------|-----------------|
 | 1 | [Static Range Sum Queries](https://cses.fi/problemset/task/1646) | CSES | Easy | UG | baseline | Pure 1D prefix sum — implement the cold attempt from Step 1 properly |
 | 2 | [Breed Counting](http://www.usaco.org/index.php?page=viewproblem2&cpid=572) | USACO Silver | Easy | UG ⭐ | extension | One prefix array *per breed* — prefix sums generalise to "counts of anything" |
-| 3 | [Product of Array Except Self](https://leetcode.com/problems/product-of-array-except-self/) | LC 238 | Medium | NC150 | extension | Two-scan span — introduces the forward + backward sweep pattern that returns in modules 7 and 8 |
-| 4 | [Subarray Sums II](https://cses.fi/problemset/task/1661) | CSES | Easy | UG | extension | Complement lookup over prefix sums — recombines module 2's pattern with module 3's quantity |
+| 3 | [Product of Array Except Self](https://leetcode.com/problems/product-of-array-except-self/) | LC 238 | Medium | NC150 | extension | Two-scan span — introduces the forward + backward sweep pattern that returns in modules 8 and 9 |
+| 4 | [Subarray Sums II](https://cses.fi/problemset/task/1661) | CSES | Easy | UG | extension | Complement lookup over prefix sums — recombines module 2's pattern with module 4's quantity |
 | 5 | [Subarray Divisibility](https://cses.fi/problemset/task/1662) | CSES | Easy | UG | extension | Same complement-lookup machinery, but the equivalence is `prefix % k` instead of equality |
 | 6 | [Forest Queries](https://cses.fi/problemset/task/1652) | CSES | Easy | UG | extension | 2D prefix sums — first time the 4-term inclusion-exclusion is needed |
 | 7 | [Haybale Stacking](https://www.spoj.com/problems/HAYBALE/) | SPOJ | Medium | UG ⭐ | extension | Difference array — the inverse direction (range updates, point queries) |

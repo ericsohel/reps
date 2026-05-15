@@ -233,10 +233,10 @@ Sources: **NC150** = NeetCode 150 · **UG** = USACO Guide curated · ⭐ = USACO
 - After #8 as a state-machine extension: [Best Time to Buy and Sell Stock with Cooldown (LC 309, NC150)](https://leetcode.com/problems/best-time-to-buy-and-sell-stock-with-cooldown/) — three running states (holding, sold, rest) instead of two; same multi-state pattern.
 
 **Deferred to other modules:**
-- *Coin Change* (LC 322) → module 26 (Knapsack Family) — it's unbounded knapsack.
-- *Longest Increasing Subsequence* (LC 300) → module 27 (LIS / LCS).
-- *Partition Equal Subset Sum* (LC 416) → module 26.
-- *Longest Palindromic Substring* (LC 5), *Palindromic Substrings* (LC 647) → module 25 (2D / Grid DP) — the DP table is 2D `dp[i][j] = "is s[i..j] a palindrome"`.
+- *Coin Change* (LC 322) → module 27 (Knapsack Family) — it's unbounded knapsack.
+- *Longest Increasing Subsequence* (LC 300) → module 28 (LIS / LCS).
+- *Partition Equal Subset Sum* (LC 416) → module 27.
+- *Longest Palindromic Substring* (LC 5), *Palindromic Substrings* (LC 647) → module 26 (2D / Grid DP) — the DP table is 2D `dp[i][j] = "is s[i..j] a palindrome"`.
 
 ---
 

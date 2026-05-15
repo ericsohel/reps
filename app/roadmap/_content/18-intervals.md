@@ -118,7 +118,7 @@ The checkpoint problem (LC 1851) combines:
 - Sort queries by value (offline processing).
 - Two-pointer through intervals, [heap of size k](00-patterns.md#heap-of-size-k) of active intervals keyed by end time.
 
-This recombines this module's sort-by-key idea with module 15's heap pattern.
+This recombines this module's sort-by-key idea with module 16's heap pattern.
 
 ---
 

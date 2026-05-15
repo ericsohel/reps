@@ -124,7 +124,7 @@ order built: [2, 1, 0]. Reverse to [0, 1, 2] — a valid topological order.
 
 The reverse-at-the-end matters: post-order DFS finishes leaves first, but topological order wants roots first.
 
-**Kahn's vs DFS:** prefer Kahn's. It's iterative (no recursion limit), the cycle detection falls out naturally (count check), and the in-degree representation is reused in module 21 (Shortest Paths) and module 22 (MST).
+**Kahn's vs DFS:** prefer Kahn's. It's iterative (no recursion limit), the cycle detection falls out naturally (count check), and the in-degree representation is reused in module 22 (Shortest Paths) and module 23 (MST).
 
 ### When the graph is built implicitly
 
@@ -136,9 +136,9 @@ Edge cases:
 
 The leap in the checkpoint is recognising that the topological sort is over the *26 lowercase letters*, not over the words themselves.
 
-### Counting paths in a DAG (preview of module 24)
+### Counting paths in a DAG (preview of module 25)
 
-In a DAG processed in topological order, you can compute `dp[v] = sum of dp[u] for each edge u → v`. This is the simplest form of DAG DP — count paths, find longest path, etc. We'll cover it formally in module 24, but topo order is the prerequisite.
+In a DAG processed in topological order, you can compute `dp[v] = sum of dp[u] for each edge u → v`. This is the simplest form of DAG DP — count paths, find longest path, etc. We'll cover it formally in module 25, but topo order is the prerequisite.
 
 ---
 
@@ -251,7 +251,7 @@ Sources: **NC150** = NeetCode 150 · **UG** = USACO Guide curated · ⭐ = USACO
 | 1 | [Course Schedule](https://leetcode.com/problems/course-schedule/) | LC 207 | Medium | NC150 | baseline | Kahn's algorithm — your Step 1 problem; check `len(order) == n` for cycle |
 | 2 | [Course Schedule II](https://leetcode.com/problems/course-schedule-ii/) | LC 210 | Medium | NC150 | extension | Same algorithm, return the order itself instead of a boolean |
 | 3 | [Round Trip II](https://cses.fi/problemset/task/1678) | CSES | Easy | UG | extension | Directed cycle detection — print the cycle's nodes, not just a boolean; DFS with three colours |
-| 4 | [Timeline](http://www.usaco.org/index.php?page=viewproblem2&cpid=1017) | USACO Gold | Easy | UG | extension | Longest distance in a DAG — Kahn's order + dp relaxation along edges (max aggregation); preview of module 24 DAG DP |
+| 4 | [Timeline](http://www.usaco.org/index.php?page=viewproblem2&cpid=1017) | USACO Gold | Easy | UG | extension | Longest distance in a DAG — Kahn's order + dp relaxation along edges (max aggregation); preview of module 25 DAG DP |
 | 5 | [Game Routes](https://cses.fi/problemset/task/1681) | CSES | Easy | UG ⭐ | extension | Same DAG DP scaffold as problem 4, but **sum** aggregation — count paths from 1 to n; shows the aggregation operator is the only thing that changes |
 | 6 | [Alien Dictionary](https://leetcode.com/problems/alien-dictionary/) | LC 269 | Hard | NC150 | **checkpoint** | Build the graph from word pairs (compare letter-by-letter, first difference is the edge), then topo-sort the 26 letters; handle the prefix-conflict edge case |
 

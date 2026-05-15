@@ -90,7 +90,7 @@ def get_min():
     return stack[-1][1]             # O(1)
 ```
 
-This is the [augmented data structure pattern](00-patterns.md#augmented-data-structure). It reappears in module 8 (a deque whose entries are indices into a precomputed prefix-sum array) and module 9 (an LRU cache's doubly linked list nodes carry key/value).
+This is the [augmented data structure pattern](00-patterns.md#augmented-data-structure). It reappears in module 9 (a deque whose entries are indices into a precomputed prefix-sum array) and module 10 (an LRU cache's doubly linked list nodes carry key/value).
 
 ### Expression evaluation
 
@@ -102,7 +102,7 @@ Reverse Polish Notation puts operators *after* their operands: `3 4 +` means `3 
 
 ## Step 3 — Read
 
-There is no USACO Guide module for basic stack — their Gold Stacks page covers monotonic stack only (module 7's reading). Two targeted reads:
+There is no USACO Guide module for basic stack — their Gold Stacks page covers monotonic stack only (module 8's reading). Two targeted reads:
 
 1. CPH Chapter 5.2 (Stacks), p. 57 — brief, definitional, covers the bracket-matching example.
 2. The implementation of Min Stack you wrote in Step 4 is the augmented-stack reference. Study it carefully before LC 155.
@@ -210,8 +210,8 @@ Sources: **NC150** = NeetCode 150 · ⭐ = well-known
 
 ### NC150 problems handed off to other modules
 
-- *Generate Parentheses* (LC 22) → module 12 (Recursion & Backtracking). The recursive structure builds strings by adding `(` while `open < n` and `)` while `close < open` — a backtracking problem that happens to involve brackets, not a stack problem.
-- *Daily Temperatures* (LC 739), *Car Fleet* (LC 853), *Largest Rectangle in Histogram* (LC 84) → module 7 (Monotonic Stack). All three need a stack ordered by value, not just LIFO.
+- *Generate Parentheses* (LC 22) → module 13 (Recursion & Backtracking). The recursive structure builds strings by adding `(` while `open < n` and `)` while `close < open` — a backtracking problem that happens to involve brackets, not a stack problem.
+- *Daily Temperatures* (LC 739), *Car Fleet* (LC 853), *Largest Rectangle in Histogram* (LC 84) → module 8 (Monotonic Stack). All three need a stack ordered by value, not just LIFO.
 
 ---
 

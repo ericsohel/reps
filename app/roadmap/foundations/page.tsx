@@ -196,7 +196,7 @@ export default function FoundationsPage() {
             Checklist format
           </span>
           <span className="text-[11px] text-zinc-600">
-            Unlocks: Arrays & Hashing, Backtracking, Bit Manipulation, Number Theory
+            Unlocks: Arrays & Hashing, Backtracking, Bit Manipulation, Number Theory (Sorting via Arrays & Hashing)
           </span>
         </div>
       </div>
@@ -348,7 +348,7 @@ a = [int(data[idx + i]) for i in range(n)]; idx += n`}</Code>
 sys.setrecursionlimit(300_000)   # put at the top of solutions that recurse`}</Code>
       <p className="text-sm text-zinc-400 mt-4">
         Iterative rewrites are more reliable for trees with n &gt; 10⁵. We rewrite recursive solutions
-        to iterative in modules 13 (Trees) and 17 (Graph Traversal).
+        to iterative in modules 14 (Trees) and 19 (Graph Traversal).
       </p>
       <SelfTest>
         What happens if you call <InlineCode>fib(2000)</InlineCode> recursively without setting the limit?{" "}
