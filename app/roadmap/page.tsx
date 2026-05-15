@@ -250,6 +250,14 @@ export default function RoadmapPage() {
   const nextId = visibleNodes.find(n => nodeState(n.id) === "available")?.id;
   const doneCount = visibleNodes.filter(n => isModuleDone(n.id)).length;
 
+  // Group visible modules by section, preserving SECTION_NAMES order.
+  const sectionGroups = Object.keys(SECTION_NAMES)
+    .map(section => ({
+      section,
+      modules: visibleNodes.filter(n => n.section === section),
+    }))
+    .filter(g => g.modules.length > 0);
+
   // ── Recommendation engine ───────────────────────────────────────────────────
   // Picks the highest-yield action across two pools:
   //   EXPAND      — open a new module to build breadth.
@@ -282,13 +290,15 @@ export default function RoadmapPage() {
 
     if (expandCandidates.length === 0 && consolidateCandidates.length === 0) return null;
 
-    // "Current learning position" — median order of modules done so far.
+    // "Current learning position" — MAX (not median) of completed orders + 1.
+    // Max reflects how far you've actually explored via the DAG. Median
+    // understates progress whenever you've hopped ahead (e.g., did Backtracking
+    // before finishing Section 1's array techniques).
     const completedOrders = NODES
       .filter(n => isModuleDone(n.id))
-      .map(n => ORDER[n.id] || 99)
-      .sort((a, b) => a - b);
+      .map(n => ORDER[n.id] || 99);
     const currentPos = completedOrders.length > 0
-      ? completedOrders[Math.floor(completedOrders.length / 2)] + 1
+      ? Math.max(...completedOrders) + 1
       : 1;
 
     const allUnlocksPool = [...expandCandidates, ...consolidateCandidates];
@@ -329,6 +339,18 @@ export default function RoadmapPage() {
       };
     });
 
+    // Top expand candidate — used to focus the consolidate blocker signal.
+    // We only care if a consolidate-target is blocking the *thing we'd actually
+    // do next*, not every available downstream.
+    const sortedExpand = [...scoredExpand].sort((a, b) => b.score - a.score);
+    const topExpandId = sortedExpand[0]?.id;
+
+    // Learning debt: more than 2 partial (5/N) modules signals accumulated
+    // depth gap. The 3rd+ partial each adds a small global bias toward
+    // consolidate, capped at 0.15.
+    const excessPartials = Math.max(0, consolidateCandidates.length - 2);
+    const debtScore = Math.min(0.15, excessPartials * 0.05);
+
     // ── CONSOLIDATE scoring (depth) ───────────────────────────────────────────
     const scoredConsolidate: Scored[] = consolidateCandidates.map(n => {
       const total = PROBLEM_COUNTS[n.id] ?? 0;
@@ -337,11 +359,12 @@ export default function RoadmapPage() {
       const remaining = total - solved;
       const order = ORDER[n.id] || 99;
 
-      // Direct blocker: is this module a prereq of any current expand candidate?
-      // If yes, the checkpoint of that expand module likely needs this pattern.
-      const blocksExpand = expandCandidates.some(e =>
-        EDGES.some(([s, t]) => s === n.id && t === e.id),
-      );
+      // Direct blocker: is this module a prereq of the TOP expand candidate
+      // specifically (not just any available)? Tighter signal — only fires
+      // when this partial is genuinely in the way of the next planned move.
+      const blocksTopExpand = topExpandId
+        ? EDGES.some(([s, t]) => s === n.id && t === topExpandId)
+        : false;
 
       // Spaced decay: how many modules of distance since we paused here?
       // Full decay at distance >= 5 modules past current position.
@@ -369,12 +392,13 @@ export default function RoadmapPage() {
       const wouldCloseSection = sectionPeersComplete && sectionPeers.length > 1 ? 1 : 0;
 
       const contributions = [
-        { label: "blocks next checkpoint", value: 0.40 * (blocksExpand ? 1 : 0) },
+        { label: "blocks next checkpoint", value: 0.40 * (blocksTopExpand ? 1 : 0) },
         { label: "paused while ago",       value: 0.20 * decay },
         { label: "track alignment",        value: 0.10 * trackScoreFor(n) },
         { label: "few problems left",      value: 0.10 * remainingScore },
         { label: "checkpoint unsolved",    value: 0.10 * checkpointUnsolved },
         { label: "closes section",         value: 0.10 * wouldCloseSection },
+        { label: "learning debt",          value: debtScore },
       ];
       return {
         id: n.id,
@@ -383,7 +407,7 @@ export default function RoadmapPage() {
       };
     });
 
-    const bestExpand = scoredExpand.sort((a, b) => b.score - a.score)[0];
+    const bestExpand = sortedExpand[0];
     const bestConsolidate = scoredConsolidate.sort((a, b) => b.score - a.score)[0];
 
     const expandScore = bestExpand?.score ?? -Infinity;
@@ -452,9 +476,43 @@ export default function RoadmapPage() {
 
       <div className="divider" />
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-1.5">
-        {visibleNodes.map(n => {
-          const state = nodeState(n.id);
+      <div className="space-y-6">
+        {sectionGroups.map(group => {
+          const sectionDone = group.modules.filter(m => isModuleDone(m.id)).length;
+          const sectionTotal = group.modules.length;
+          const sectionPct = sectionTotal > 0 ? (sectionDone / sectionTotal) * 100 : 0;
+          const sectionComplete = sectionDone === sectionTotal && sectionTotal > 0;
+          const sectionHeaderColor = COLORS[group.section] || "#3f3f46";
+
+          return (
+            <div key={group.section}>
+              <div className="flex items-baseline justify-between gap-3 mb-2">
+                <h2
+                  className="text-xs font-bold uppercase tracking-widest"
+                  style={{ color: sectionComplete ? "#34d399" : sectionHeaderColor }}
+                >
+                  {SECTION_NAMES[group.section]}
+                </h2>
+                <span className="text-[11px] tabular-nums">
+                  <span className={sectionComplete ? "text-emerald-400 font-semibold" : "text-zinc-400"}>
+                    {sectionDone}
+                  </span>
+                  <span className="text-zinc-600"> / {sectionTotal}</span>
+                </span>
+              </div>
+              <div className="h-1 bg-zinc-800/70 rounded-full overflow-hidden mb-3">
+                <div
+                  className="h-full transition-all"
+                  style={{
+                    width: `${sectionPct}%`,
+                    backgroundColor: sectionComplete ? "#34d399" : sectionHeaderColor,
+                    opacity: sectionComplete ? 1 : 0.7,
+                  }}
+                />
+              </div>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-1.5">
+                {group.modules.map(n => {
+                  const state = nodeState(n.id);
           const num = ORDER[n.id];
           const sectionColor = COLORS[n.section];
           const prereqIds = EDGES.filter(([, t]) => t === n.id).map(([s]) => s);
@@ -591,6 +649,10 @@ export default function RoadmapPage() {
                     <span className="text-zinc-600">○</span>
                   )}
                 </div>
+              </div>
+            </div>
+          );
+                })}
               </div>
             </div>
           );
