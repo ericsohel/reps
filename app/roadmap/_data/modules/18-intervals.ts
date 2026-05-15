@@ -67,6 +67,16 @@ export const intervals: Module = {
     },
     {
       num: 6,
+      title: "My Calendar I",
+      url: "https://leetcode.com/problems/my-calendar-i/",
+      source: "LC 729",
+      difficulty: "medium",
+      list: "new",
+      role: "extension",
+      teaches: "Sorted-interval design problem — maintain a sorted structure (BST via `SortedList` or array + `bisect_right`) of booked `(start, end)` intervals. On `book(s, e)`, locate the right-neighbor with `bisect_right` and check overlap with both the right-neighbor and its predecessor. O(log n) per insert.",
+    },
+    {
+      num: 7,
       title: "Meeting Rooms II",
       url: "https://leetcode.com/problems/meeting-rooms-ii/",
       source: "LC 253",
@@ -76,7 +86,7 @@ export const intervals: Module = {
       teaches: "Sweep line with start/end events — third sub-pattern",
     },
     {
-      num: 7,
+      num: 8,
       title: "Minimum Interval to Include Each Query",
       url: "https://leetcode.com/problems/minimum-interval-to-include-each-query/",
       source: "LC 1851",

@@ -74,13 +74,13 @@ export const slidingWindow: Module = {
     },
     {
       num: 7,
-      title: "Find All Anagrams in a String",
-      url: "https://leetcode.com/problems/find-all-anagrams-in-a-string/",
-      source: "LC 438",
+      title: "Max Consecutive Ones III",
+      url: "https://leetcode.com/problems/max-consecutive-ones-iii/",
+      source: "LC 1004",
       difficulty: "medium",
-      list: "NC150",
+      list: "new",
       role: "extension",
-      teaches: "Fixed window with multi-character frequency match — slide window of size `len(p)`, compare freq dicts in O(26) per slide (or maintain a 'matches' counter for O(1)). Bridges Permutation in String to the at-most-K reduction in problem 8",
+      teaches: "Single-counter variable window — longest window where the count of zeros is `≤ k`. The window state collapses to one integer (zero count) rather than a frequency dict; cleanest at-most-k single-counter form before LC 992's full at-most-k reduction at the checkpoint.",
     },
     {
       num: 8,

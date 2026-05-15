@@ -23,13 +23,13 @@ export const trees: Module = {
   problems: [
     {
       num: 1,
-      title: "Subordinates",
-      url: "https://cses.fi/problemset/task/1674",
-      source: "CSES",
+      title: "Binary Tree Inorder Traversal",
+      url: "https://leetcode.com/problems/binary-tree-inorder-traversal/",
+      source: "LC 94",
       difficulty: "easy",
-      list: "UG",
+      list: "NC150",
       role: "baseline",
-      teaches: "General tree DFS — adjacency list, parent guard, return subtree size",
+      teaches: "Iterative in-order traversal with an explicit stack — push left chain, pop and visit, then descend the popped node's right subtree. Tests understanding of the implicit call stack from recursion. The pattern (push-left-chain, pop, go-right) generalises to LC 230 Kth Smallest in BST and to BST iterators.",
     },
     {
       num: 2,
@@ -133,13 +133,13 @@ export const trees: Module = {
     },
     {
       num: 12,
-      title: "Tree Diameter",
-      url: "https://cses.fi/problemset/task/1131",
-      source: "CSES",
+      title: "Binary Tree Right Side View",
+      url: "https://leetcode.com/problems/binary-tree-right-side-view/",
+      source: "LC 199",
       difficulty: "medium",
-      list: "UG ⭐",
+      list: "NC150",
       role: "extension",
-      teaches: "Unrooted general tree — two-pass BFS algorithm; first farthest is one endpoint, second farthest from it is the other",
+      teaches: "BFS level-order variant — emit the last node at each depth level. Two flavors: (1) standard BFS with `level[-1]` per level, or (2) DFS preorder visiting right-first with a depth-indexed result. The 'rightmost-visible' framing extends LC 102 with a directional projection.",
     },
     {
       num: 13,

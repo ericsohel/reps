@@ -1,12 +1,18 @@
 import type { Module } from "../types";
 
+// Track: cp (was "both" — re-tagged because 8 of 9 problems are quant-finance
+// canonical and quant-only in FAANG SWE interview prep terms. Reservoir
+// sampling (LC 382 Linked List Random Node) is the only standard-SWE problem
+// here. Resources (Zhou's Green Book, Joshi's Quant Job Interview Q&A) confirm
+// the quant scope. SWE-track candidates should rely on the design module for
+// randomized algorithms (Fisher-Yates, rejection sampling) — not this module.
 export const probability: Module = {
   id: "probability",
   num: 39,
   name: "Probability & Expected Value",
   label: "Probability &\nExpected Value",
   section: "2f",
-  track: "both",
+  track: "cp",
   order: 39,
   prereqIds: ["combinatorics"],
   isNew: true,

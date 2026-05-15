@@ -76,13 +76,13 @@ export const bsAnswer: Module = {
     },
     {
       num: 7,
-      title: "Magic Ship",
-      url: "https://codeforces.com/problemset/problem/1117/C",
-      source: "CF 1117C",
+      title: "Capacity To Ship Packages Within D Days",
+      url: "https://leetcode.com/problems/capacity-to-ship-packages-within-d-days/",
+      source: "LC 1011",
       difficulty: "medium",
-      list: "UG ⭐",
+      list: "NC150",
       role: "extension",
-      teaches: "Modular + cyclic-prefix feasibility — the wind pattern repeats every n days, so day T's displacement is `(T // n) · P_n + P_(T % n)`",
+      teaches: "Canonical partition-feasibility on the answer — BS on capacity `c`; the feasibility predicate is a single greedy pass that counts how many days are needed to ship all packages with capacity `c`. The most-asked BS-on-answer pattern in FAANG, equivalent to Array Division (problem 1) but on the LC framing. Minimize-the-maximum direction.",
     },
     {
       num: 8,

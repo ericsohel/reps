@@ -90,7 +90,7 @@ export const greedy: Module = {
       url: "https://leetcode.com/problems/candy/",
       source: "LC 135",
       difficulty: "hard",
-      list: "NC150",
+      list: "new",
       role: "extension",
       teaches: "Multi-pass greedy — left-pass enforces the right-neighbor constraint, right-pass enforces the left-neighbor constraint, take the max. The only problem in the module that uses two scans; callbacks to module 4's two-scan span pattern applied in a greedy context",
     },

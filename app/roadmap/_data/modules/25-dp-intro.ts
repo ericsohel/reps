@@ -27,13 +27,13 @@ export const dpIntro: Module = {
     },
     {
       num: 2,
-      title: "Climbing Stairs",
-      url: "https://leetcode.com/problems/climbing-stairs/",
-      source: "LC 70",
+      title: "Best Time to Buy and Sell Stock",
+      url: "https://leetcode.com/problems/best-time-to-buy-and-sell-stock/",
+      source: "LC 121",
       difficulty: "easy",
       list: "NC150",
       role: "extension",
-      teaches: "Fibonacci DP — counting paths instead of minimising cost; same two-predecessor structure",
+      teaches: "One-pass min-tracking — at each `prices[i]`, track `min_so_far` and the best profit so far (`prices[i] - min_so_far`). The DP framing reduces to two running scalars. Precursor to module 25's state-machine DP at LC 309: here the state is implicit (held/not-held), there it's explicit.",
     },
     {
       num: 3,

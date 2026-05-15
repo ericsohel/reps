@@ -79,7 +79,7 @@ export const twoPointers: Module = {
       url: "https://leetcode.com/problems/3sum-closest/",
       source: "LC 16",
       difficulty: "medium",
-      list: "NC150",
+      list: "new",
       role: "extension",
       teaches: "Reduce-by-fixing-one + converging with a distance-to-target objective — track the minimum |sum − target| seen, update inside the inner pointer loop. Bridges 3Sum's exact-match converging to LC 42's minimax tracking",
     },

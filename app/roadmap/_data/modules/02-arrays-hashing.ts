@@ -76,13 +76,13 @@ export const arraysHashing: Module = {
     },
     {
       num: 7,
-      title: "Don't Be Last!",
-      url: "http://www.usaco.org/index.php?page=viewproblem2&cpid=687",
-      source: "USACO Bronze",
+      title: "Top K Frequent Words",
+      url: "https://leetcode.com/problems/top-k-frequent-words/",
+      source: "LC 692",
       difficulty: "medium",
-      list: "UG ⭐",
+      list: "NC150",
       role: "combination",
-      teaches: "Pattern 2 + sort by composite key — dict aggregation followed by tuple-sort to extract a ranked answer; first time Pattern 2 feeds into downstream processing",
+      teaches: "Counter + heap with tie-breaking comparator — extends Top K Frequent (problem 6) with lexicographic tie-breaking; introduces tuple-key sort `(-count, word)` or `cmp_to_key`. Bridges to module 3's custom comparators.",
     },
     {
       num: 8,

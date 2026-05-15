@@ -67,13 +67,13 @@ export const topoSort: Module = {
     },
     {
       num: 6,
-      title: "Time is Mooney",
-      url: "http://www.usaco.org/index.php?page=viewproblem2&cpid=993",
-      source: "USACO Gold",
+      title: "Find Eventual Safe States",
+      url: "https://leetcode.com/problems/find-eventual-safe-states/",
+      source: "LC 802",
       difficulty: "medium",
-      list: "UG ⭐",
+      list: "new",
       role: "extension",
-      teaches: "DP on an implicit DAG with a time dimension — state is `dp[t][v]` (mooney collected at node v after exactly t days). The DAG structure isn't given; you must recognise that `(t, v)` forms a DAG because time only increases",
+      teaches: "3-color DFS for cycle membership — a node is 'safe' iff it cannot reach any cycle. Color nodes white/gray/black during DFS; on cycle detection (gray neighbor), propagate 'unsafe' to all gray ancestors. Alternatively reverse the graph and run topo sort: starting from out-degree-0 nodes and peeling. Both formulations are FAANG-asked.",
     },
     {
       num: 7,

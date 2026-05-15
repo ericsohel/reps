@@ -67,13 +67,13 @@ export const knapsack: Module = {
     },
     {
       num: 6,
-      title: "Perfect Squares",
-      url: "https://leetcode.com/problems/perfect-squares/",
-      source: "LC 279",
+      title: "Last Stone Weight II",
+      url: "https://leetcode.com/problems/last-stone-weight-ii/",
+      source: "LC 1049",
       difficulty: "medium",
-      list: "NC150",
+      list: "new",
       role: "extension",
-      teaches: "Unbounded knapsack on a *computed* item set (squares 1, 4, 9, 16, …) with min objective — same forward-iteration template as Coin Change. The items aren't given by the problem; you generate them up to n",
+      teaches: "Min-difference subset partition — reduce 'split stones into two piles minimizing |sum_A - sum_B|' to: find the subset sum closest to `total/2`. Standard 0/1 knapsack with target `total // 2`, returning `total - 2 * best`. Reinforces Target Sum's algebraic reduction with a new objective (min-diff vs. count).",
     },
     {
       num: 7,
