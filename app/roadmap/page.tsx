@@ -706,7 +706,17 @@ export default function RoadmapPage() {
         <ModuleModal
           moduleId={activeModule.id}
           title={activeModule.title}
-          onClose={() => setActiveModule(null)}
+          onClose={() => {
+            // Re-hydrate solved state so card completion reflects what
+            // the user just checked off in the modal.
+            try {
+              const fresh = JSON.parse(
+                localStorage.getItem("dsa-v1-problems-solved") || "{}",
+              );
+              setProblemsSolved(fresh);
+            } catch { /* ignore */ }
+            setActiveModule(null);
+          }}
         />
       )}
     </div>
