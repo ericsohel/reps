@@ -1,11 +1,10 @@
 "use client";
 
-import { useState, useTransition } from "react";
-import { syncCountersFromRoadmap, type CounterKey } from "@/app/counter-actions";
+import { useEffect, useState } from "react";
+import { MODULES_BY_ID } from "@/app/roadmap/_data";
+import type { Difficulty } from "@/app/roadmap/_data/types";
 
-interface Props {
-  initial: Record<CounterKey, number>;
-}
+type CounterKey = Difficulty;
 
 const ITEMS: {
   key: CounterKey;
@@ -37,34 +36,63 @@ const ITEMS: {
   },
 ];
 
-export function SolveCounters({ initial }: Props) {
-  const [counts, setCounts] = useState<Record<CounterKey, number>>(initial);
-  const [syncing, setSyncing] = useState(false);
-  const [, start] = useTransition();
+const STORAGE_KEY = "dsa-v1-problems-solved";
+const EMPTY: Record<CounterKey, number> = { easy: 0, medium: 0, hard: 0 };
 
-  function sync() {
-    if (
-      !confirm(
-        "Reset Easy/Medium/Hard totals to match your roadmap problem checklist? " +
-          "This overwrites the current counts.",
-      )
-    )
-      return;
-    setSyncing(true);
-    let solved: Record<string, number[]> = {};
-    try {
-      solved = JSON.parse(
-        localStorage.getItem("dsa-v1-problems-solved") || "{}",
-      );
-    } catch {
-      /* ignore */
-    }
-    start(async () => {
-      const next = await syncCountersFromRoadmap(solved);
-      setCounts(next);
-      setSyncing(false);
-    });
+// Derive Easy/Medium/Hard counts from the solved-problems map and the
+// structured module data. Single pass; idempotent.
+function computeCounts(): Record<CounterKey, number> {
+  const totals: Record<CounterKey, number> = { easy: 0, medium: 0, hard: 0 };
+  let solved: Record<string, number[]>;
+  try {
+    solved = JSON.parse(localStorage.getItem(STORAGE_KEY) || "{}");
+  } catch {
+    return totals;
   }
+  for (const [moduleId, nums] of Object.entries(solved)) {
+    const mod = MODULES_BY_ID[moduleId];
+    if (!mod?.problems) continue;
+    const diffByNum = new Map<number, Difficulty>();
+    for (const p of mod.problems) diffByNum.set(p.num, p.difficulty);
+    for (const num of nums) {
+      const d = diffByNum.get(num);
+      if (d) totals[d]++;
+    }
+  }
+  return totals;
+}
+
+export function SolveCounters() {
+  const [counts, setCounts] = useState<Record<CounterKey, number>>(EMPTY);
+
+  useEffect(() => {
+    setCounts(computeCounts());
+
+    function refresh() {
+      setCounts(computeCounts());
+    }
+
+    // The roadmap modal dispatches this event after every localStorage write.
+    window.addEventListener("roadmap-progress-changed", refresh);
+
+    // Cross-tab sync — localStorage changes in another tab fire 'storage'.
+    function onStorage(e: StorageEvent) {
+      if (e.key === STORAGE_KEY) refresh();
+    }
+    window.addEventListener("storage", onStorage);
+
+    // Catch any changes made while the tab was hidden.
+    function onVisibility() {
+      if (document.visibilityState === "visible") refresh();
+    }
+    document.addEventListener("visibilitychange", onVisibility);
+
+    return () => {
+      window.removeEventListener("roadmap-progress-changed", refresh);
+      window.removeEventListener("storage", onStorage);
+      document.removeEventListener("visibilitychange", onVisibility);
+    };
+  }, []);
 
   const total = counts.easy + counts.medium + counts.hard;
 
@@ -76,9 +104,7 @@ export function SolveCounters({ initial }: Props) {
             key={it.key}
             className={`rounded-lg border ${it.bg} ${it.glow} p-5 text-center`}
           >
-            <div
-              className={`mono text-4xl font-semibold tabular-nums ${it.text}`}
-            >
+            <div className={`mono text-4xl font-semibold tabular-nums ${it.text}`}>
               {counts[it.key]}
             </div>
             <div className="text-xs uppercase tracking-widest text-zinc-500 mt-1.5">
@@ -95,17 +121,6 @@ export function SolveCounters({ initial }: Props) {
         <span className="mono text-xl font-semibold text-zinc-100 tabular-nums">
           {total}
         </span>
-      </div>
-
-      <div className="flex justify-end">
-        <button
-          onClick={sync}
-          disabled={syncing}
-          className="text-[11px] text-zinc-600 hover:text-emerald-400 transition-colors px-2 py-1 disabled:opacity-50"
-          title="Wipe counters and reseed them from your roadmap problem checklist"
-        >
-          {syncing ? "Syncing…" : "↻ Sync from roadmap"}
-        </button>
       </div>
     </div>
   );

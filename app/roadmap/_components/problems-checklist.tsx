@@ -1,7 +1,9 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { bumpCounter, type CounterKey } from "@/app/counter-actions";
+import type { Difficulty } from "@/app/roadmap/_data/types";
+
+type CounterKey = Difficulty;
 
 export interface ProblemRow {
   num: number;
@@ -132,12 +134,8 @@ export function ProblemsChecklist({
       /* ignore */
     }
 
-    // Bump the home-page Easy/Medium/Hard counter to stay in sync.
-    // Fire-and-forget — the UI doesn't need to wait.
-    const problem = problems.find((p) => p.num === num);
-    if (problem?.difficulty) {
-      void bumpCounter(problem.difficulty, wasSolved ? -1 : 1);
-    }
+    // No DB sync needed — SolveCounters derives counts from this same
+    // localStorage state via the roadmap-progress-changed event.
   }
 
   const solvedCount = solved.size;

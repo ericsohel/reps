@@ -6,7 +6,6 @@ import { interleaveByPattern } from "@/lib/queue";
 import { ensureSchemaHealthy } from "@/lib/health";
 import { getHeatmapData } from "@/lib/heatmap";
 import { Heatmap } from "@/components/heatmap";
-import { getCounters } from "./counter-actions";
 import { SolveCounters } from "@/components/solve-counters";
 
 export const dynamic = "force-dynamic";
@@ -15,7 +14,7 @@ export default async function Home() {
   await ensureSchemaHealthy();
   const now = new Date();
 
-  const [due, heatmap, counters] = await Promise.all([
+  const [due, heatmap] = await Promise.all([
     db
       .select({
         id: problems.id,
@@ -31,7 +30,6 @@ export default async function Home() {
       .innerJoin(problems, eq(problems.id, srsState.problemId))
       .where(lte(srsState.dueAt, now)),
     getHeatmapData(),
-    getCounters(),
   ]);
 
   const ordered = interleaveByPattern(
@@ -60,7 +58,7 @@ export default async function Home() {
 
       <Heatmap data={heatmap} />
 
-      <SolveCounters initial={counters} />
+      <SolveCounters />
 
       {ordered.length === 0 ? (
         <div className="card p-12 text-center">
