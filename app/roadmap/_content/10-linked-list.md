@@ -73,7 +73,27 @@ slow.next = slow.next.next   # remove the nth from end
 
 ### Hash map for structural duplication
 
-When duplicating a structure with cross-references (LC 138: nodes have `random` pointers that can target anything in the list), build a dict `{old_node: new_node}` in one pass, then set `.next` and `.random` pointers in a second pass via dict lookups.
+When duplicating a structure with cross-references (LC 138: nodes have `random` pointers that can target *anything* in the list, including nodes that haven't been visited yet), a single pass can't work — at the moment you copy node `A` whose `random` points to node `Z`, the copy of `Z` doesn't exist yet.
+
+The fix is two passes through one shared dict `{old_node: new_node}`:
+
+```
+Original list:  A → B → C → D
+                ↑       ↓
+                └──random──┘     (A.random = D, C.random = A)
+
+Pass 1: walk the original list. For each old node, allocate a fresh
+        new node (value only, no pointers set yet). Insert into the dict.
+        dict = {A: A', B: B', C: C', D: D'}
+
+Pass 2: walk the original list again. For each old node `n`:
+        new_node = dict[n]
+        new_node.next   = dict[n.next]   if n.next   else None
+        new_node.random = dict[n.random] if n.random else None
+        # Every dict[...] succeeds because pass 1 already populated it.
+```
+
+The dict converts "follow a pointer in the old list" into "look up the corresponding new node" — turning the cross-reference problem into two independent linear walks.
 
 ### Doubly linked list + dict — LRU Cache ([atlas](00-patterns.md#augmented-data-structure))
 
@@ -112,7 +132,7 @@ def reverse_list(head):
     return prev
 ```
 
-### Detect cycle (Floyd's)
+### Detect cycle (Floyd's, phase 1)
 
 ```python
 def has_cycle(head):
@@ -125,6 +145,28 @@ def has_cycle(head):
             return True
     return False
 ```
+
+### Find cycle start (Floyd's, full algorithm)
+
+```python
+def cycle_start(head):
+    # Phase 1: detect a cycle by collision (slow=1x, fast=2x speed).
+    slow = fast = head
+    while fast and fast.next:
+        slow, fast = slow.next, fast.next.next
+        if slow is fast:
+            break
+    else:
+        return None                         # fast reached the end → no cycle
+    # Phase 2: reset one pointer to head; advance both at speed 1.
+    # They re-meet exactly at the cycle start (proof: Step 2).
+    slow = head
+    while slow is not fast:
+        slow, fast = slow.next, fast.next
+    return slow
+```
+
+Note the `while/else` — `else` runs only when the loop completed without `break`, i.e. no cycle was found. Without it, the meeting check has to be repeated awkwardly outside the loop.
 
 ### Find middle
 
@@ -171,25 +213,30 @@ def remove_nth(head, n):
 
 ## Step 5 — Problems
 
-All NC150. Linked list is the one module where USACO Guide has nothing analogous — interview prep drives the content.
+Sources: **NC150** = NeetCode 150 · **new** = NC250 / well-known interview problem. USACO Guide has no analogous section — interview prep drives the content here.
 
-| # | Problem | Source | Difficulty | Role | What it teaches |
-|---|---------|--------|-----------|------|-----------------|
-| 1 | [Reverse Linked List](https://leetcode.com/problems/reverse-linked-list/) | LC 206 | Easy | baseline | Pointer manipulation — `prev / curr / nxt` discipline |
-| 2 | [Merge Two Sorted Lists](https://leetcode.com/problems/merge-two-sorted-lists/) | LC 21 | Easy | baseline | Dummy head + merge — the subroutine reused in problems 5 and in module 16's LC 23 |
-| 3 | [Linked List Cycle](https://leetcode.com/problems/linked-list-cycle/) | LC 141 | Easy | baseline | Fast/slow pointer — detect cycle in O(1) space |
-| 4 | [Remove Nth Node From End of List](https://leetcode.com/problems/remove-nth-node-from-end-of-list/) | LC 19 | Medium | baseline | Two pointers with a gap — your Step 1 problem |
-| 5 | [Reorder List](https://leetcode.com/problems/reorder-list/) | LC 143 | Medium | combination | Find middle (fast/slow) + reverse second half (problem 1) + merge alternating (problem 2) — first multi-pattern problem |
-| 6 | [Copy List With Random Pointer](https://leetcode.com/problems/copy-list-with-random-pointer/) | LC 138 | Medium | extension | Hash map `{old → new}` for cross-referenced duplication — single-pass insufficient because of random pointers |
-| 7 | [Find The Duplicate Number](https://leetcode.com/problems/find-the-duplicate-number/) | LC 287 | Medium | extension | Floyd's on an implicit functional graph (`i → a[i]`) — cycle start = duplicate value |
-| 8 | [LRU Cache](https://leetcode.com/problems/lru-cache/) | LC 146 | Medium | combination | Doubly linked list + dict — augmented structure; implement the DLL explicitly (not `OrderedDict`) for interview |
-| 9 | [Merge K Sorted Lists](https://leetcode.com/problems/merge-k-sorted-lists/) | LC 23 | Hard | **checkpoint** | Min-heap of `(val, index, node)` tuples; combines problem 2's merge with module 16's heap |
+| # | Problem | Source | Difficulty | List | Role | What it teaches |
+|---|---------|--------|-----------|------|------|-----------------|
+| 1 | [Reverse Linked List](https://leetcode.com/problems/reverse-linked-list/) | LC 206 | Easy | NC150 | baseline | Pointer manipulation — `prev / curr / nxt` discipline; reused in problem 6 |
+| 2 | [Merge Two Sorted Lists](https://leetcode.com/problems/merge-two-sorted-lists/) | LC 21 | Easy | NC150 | baseline | Dummy head + merge — the subroutine reused in problem 6 and at the checkpoint |
+| 3 | [Linked List Cycle](https://leetcode.com/problems/linked-list-cycle/) | LC 141 | Easy | NC150 | baseline | Fast/slow pointer — detect cycle in O(1) space; phase 1 of Floyd's |
+| 4 | [Linked List Cycle II](https://leetcode.com/problems/linked-list-cycle-ii/) | LC 142 | Medium | new | extension | Floyd's *full* algorithm — phase 2 reset trick that Step 2 derives; return the cycle-start node, not just a boolean |
+| 5 | [Remove Nth Node From End of List](https://leetcode.com/problems/remove-nth-node-from-end-of-list/) | LC 19 | Medium | NC150 | extension | Two pointers with a *fixed gap* — same fast/slow chassis as problem 3 with the gap controlling distance-from-end; your Step 1 problem |
+| 6 | [Reorder List](https://leetcode.com/problems/reorder-list/) | LC 143 | Medium | NC150 | combination | Find middle (fast/slow, no gap) + reverse second half (problem 1) + merge alternating (problem 2) — three patterns in one pass |
+| 7 | [Copy List With Random Pointer](https://leetcode.com/problems/copy-list-with-random-pointer/) | LC 138 | Medium | NC150 | extension | Hash map `{old → new}` for cross-referenced duplication — single-pass insufficient because `.random` can point forward |
+| 8 | [Find The Duplicate Number](https://leetcode.com/problems/find-the-duplicate-number/) | LC 287 | Medium | NC150 | extension | Floyd's reused on an *implicit* functional graph (`i → a[i]`) — the "list" exists only conceptually; cycle start = duplicate value |
+| 9 | [LRU Cache](https://leetcode.com/problems/lru-cache/) | LC 146 | Medium | NC150 | combination | Doubly linked list + dict — the [augmented data structure](00-patterns.md#augmented-data-structure) pattern reused from module 7's Min Stack; implement the DLL explicitly (not `OrderedDict`) for interview |
+| 10 | [Merge K Sorted Lists](https://leetcode.com/problems/merge-k-sorted-lists/) | LC 23 | Hard | NC150 | **checkpoint** | Min-heap of `(val, index, node)` tuples + the merge subroutine from problem 2 |
 
-**Checkpoint:** LC 23 without hints. Two ingredients combine: the merge subroutine from problem 2 (extended from k=2 to k=n) and a min-heap (preview of module 16). The implementation detail that catches everyone in Python: `heapq` will compare tuple elements in order; when values tie, it tries to compare `ListNode` objects and raises `TypeError`. Include an integer tiebreaker: `(val, i, node)`.
+**Checkpoint:** LC 23 without hints. The synthesis is k-way merge: instead of choosing min(L[i], R[j]) at each step (binary merge), choose min across k current heads (k-way). A min-heap maintains those k heads in O(log k) per pop, giving O(N log k) total for N elements across k lists.
 
-**Also doable now:** [Add Two Numbers (LC 2)](https://leetcode.com/problems/add-two-numbers/) — simulation with carry; no new technique, useful as a quick warm-up at any point in the ladder.
+`heapq` from Foundations §3 is the stdlib primitive — no need to wait for module 16. The Python gotcha that catches everyone: `heapq` compares tuple elements in order; when two `val`s tie, Python tries to compare the next field, which is a `ListNode` — `TypeError: '<' not supported`. Include an integer tiebreaker that *is* comparable: push `(node.val, i, node)` where `i` is the list index (or any unique counter). The middle field is never tied across different pushes, so the `ListNode` comparison is never reached.
 
-**Defer to after module 16:** [Reverse Nodes In K Group (LC 25)](https://leetcode.com/problems/reverse-nodes-in-k-group/) — hard pointer manipulation across k nodes at a time; no new pattern, just demanding implementation.
+If you stall: the leap from problem 2 (k=2 merge) to k-way isn't algorithmic — it's "use a heap to scale the same idea". The merge body is otherwise identical.
+
+**Also doable now:** [Add Two Numbers (LC 2)](https://leetcode.com/problems/add-two-numbers/) — simulation with carry. No new technique; useful as a quick warm-up at any point in the ladder.
+
+**Defer:** [Reverse Nodes In K Group (LC 25)](https://leetcode.com/problems/reverse-nodes-in-k-group/) — extends problem 1's reversal to *segments* of length k, leaving the tail (length < k) in place. No new algorithmic pattern; the difficulty is purely implementation — keeping track of the segment-start-prev, the segment-end-next, and the boundary stitching as you reverse each block. Worth doing once you can write problem 1 cold and want a pointer-manipulation stretch.
 
 ---
 
@@ -199,3 +246,4 @@ All NC150. Linked list is the one module where USACO Guide has nothing analogous
 - **`fast and fast.next` vs `fast.next and fast.next.next`.** The first stops when `fast` runs off the end; the second stops one step earlier. Use the first for cycle detection and "second middle of even length"; use the second for "first middle of even length".
 - **Forgetting the dummy head.** Without a dummy, removing the head requires a special case. With a dummy, the same code handles head-removal and interior-removal uniformly.
 - **LC 23 `TypeError`.** Tuples in `heapq` compare element-wise. When two values are equal, Python tries the next field — if it's a `ListNode`, comparison fails. Push `(node.val, i, node)` with `i` as a stable tiebreaker.
+- **LC 142: returning the meeting point instead of the cycle start.** Phase 1's collision happens *inside* the cycle, not at its entrance. You still need phase 2's reset-and-converge step to find the start. Also: compare nodes by identity (`slow is fast`), not value (`slow.val == fast.val`) — duplicate values are common in test inputs.
