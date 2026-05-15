@@ -10,6 +10,7 @@ export const trees: Module = {
   prereqIds: ["backtracking", "stack"],
   resources: [
     { title: "USACO Guide — Introduction to Trees (Silver)", url: "https://usaco.guide/silver/intro-tree" },
+    { title: "CPH Book Ch. 14 — Tree Algorithms", url: "https://cses.fi/book/book.pdf" },
   ],
   problems: [
     {
@@ -44,6 +45,16 @@ export const trees: Module = {
     },
     {
       num: 4,
+      title: "Balanced Binary Tree",
+      url: "https://leetcode.com/problems/balanced-binary-tree/",
+      source: "LC 110",
+      difficulty: "easy",
+      list: "NC150",
+      role: "extension",
+      teaches: "Post-order with early-termination signal — return `-1` to flag imbalance instead of recomputing height; avoids the O(n²) naive approach",
+    },
+    {
+      num: 5,
       title: "Binary Tree Level Order Traversal",
       url: "https://leetcode.com/problems/binary-tree-level-order-traversal/",
       source: "LC 102",
@@ -53,7 +64,7 @@ export const trees: Module = {
       teaches: "BFS with the level-size snapshot trick",
     },
     {
-      num: 5,
+      num: 6,
       title: "Count Good Nodes in Binary Tree",
       url: "https://leetcode.com/problems/count-good-nodes-in-binary-tree/",
       source: "LC 1448",
@@ -63,7 +74,7 @@ export const trees: Module = {
       teaches: "State down — pass `max_so_far` to each recursive call",
     },
     {
-      num: 6,
+      num: 7,
       title: "Validate Binary Search Tree",
       url: "https://leetcode.com/problems/validate-binary-search-tree/",
       source: "LC 98",
@@ -73,7 +84,7 @@ export const trees: Module = {
       teaches: "BST range validation — pass `(lo, hi)` down, tighten at each step",
     },
     {
-      num: 7,
+      num: 8,
       title: "Lowest Common Ancestor of BST",
       url: "https://leetcode.com/problems/lowest-common-ancestor-of-a-binary-search-tree/",
       source: "LC 235",
@@ -83,7 +94,7 @@ export const trees: Module = {
       teaches: "BST navigation — first node with `min(p, q) ≤ node ≤ max(p, q)`",
     },
     {
-      num: 8,
+      num: 9,
       title: "Kth Smallest Element in a BST",
       url: "https://leetcode.com/problems/kth-smallest-element-in-a-bst/",
       source: "LC 230",
@@ -93,7 +104,17 @@ export const trees: Module = {
       teaches: "In-order = sorted; stop at the k-th yield; iterative in-order short-circuits, recursive does not",
     },
     {
-      num: 9,
+      num: 10,
+      title: "Construct Binary Tree from Preorder and Inorder Traversal",
+      url: "https://leetcode.com/problems/construct-binary-tree-from-preorder-and-inorder-traversal/",
+      source: "LC 105",
+      difficulty: "medium",
+      list: "NC150",
+      role: "extension",
+      teaches: "Tree reconstruction — preorder root splits inorder into left/right children; hash-map the inorder positions for O(1) lookup at each recursive split",
+    },
+    {
+      num: 11,
       title: "Tree Diameter",
       url: "https://cses.fi/problemset/task/1131",
       source: "CSES",
@@ -103,7 +124,7 @@ export const trees: Module = {
       teaches: "Unrooted general tree — two-pass BFS algorithm; first farthest is one endpoint, second farthest from it is the other",
     },
     {
-      num: 10,
+      num: 12,
       title: "Binary Tree Maximum Path Sum",
       url: "https://leetcode.com/problems/binary-tree-maximum-path-sum/",
       source: "LC 124",
