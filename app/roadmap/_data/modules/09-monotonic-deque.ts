@@ -2,7 +2,7 @@ import type { Module } from "../types";
 
 export const monotonicDeque: Module = {
   id: "monotonic-deque",
-  num: 9,
+  num: 10,
   name: "Monotonic Deque",
   section: "1b",
   tier: "core",

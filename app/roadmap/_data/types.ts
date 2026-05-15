@@ -4,7 +4,7 @@
 
 export type Tier = "core" | "faang-plus" | "quant";
 export const TIER_RANK: Record<Tier, number> = { "core": 0, "faang-plus": 1, "quant": 2 };
-export type Section = "0" | "1a" | "1b" | "1c" | "1d" | "2a" | "2b" | "2c" | "2d" | "2e" | "2f" | "2g" | "2h";
+export type Section = "0" | "1a" | "1b" | "1c" | "1d" | "2a" | "2b" | "2c" | "2d" | "2e" | "2f";
 export type Difficulty = "easy" | "medium" | "hard";
 export type Role = "baseline" | "extension" | "combination" | "checkpoint";
 

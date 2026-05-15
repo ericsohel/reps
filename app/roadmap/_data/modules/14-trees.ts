@@ -10,7 +10,7 @@ import type { Module } from "../types";
 
 export const trees: Module = {
   id: "trees",
-  num: 14,
+  num: 15,
   name: "Trees",
   section: "1d",
   tier: "core",

@@ -2,11 +2,11 @@ import type { Module } from "../types";
 
 export const mst: Module = {
   id: "mst",
-  num: 23,
+  num: 31,
   name: "MST",
-  section: "2c",
+  section: "2e",
   tier: "faang-plus",
-  order: 28,
+  order: 31,
   prereqIds: ["union-find", "shortest-paths"],
   isNew: true,
   resources: [

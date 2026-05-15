@@ -2,11 +2,11 @@ import type { Module } from "../types";
 
 export const dp2d: Module = {
   id: "dp-2d",
-  num: 26,
+  num: 23,
   name: "2D / Grid DP",
-  section: "2d",
+  section: "2b",
   tier: "core",
-  order: 30,
+  order: 23,
   prereqIds: ["dp-intro"],
   resources: [
     { title: "USACO Guide — Paths / Grids DP (Gold)", url: "https://usaco.guide/gold/paths-grids" },

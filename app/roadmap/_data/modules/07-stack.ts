@@ -2,7 +2,7 @@ import type { Module } from "../types";
 
 export const stack: Module = {
   id: "stack",
-  num: 7,
+  num: 8,
   name: "Stack",
   section: "1b",
   tier: "core",

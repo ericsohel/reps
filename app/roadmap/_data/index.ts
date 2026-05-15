@@ -110,13 +110,11 @@ export const SECTION_NAMES: Readonly<Record<string, string>> = {
   "1c": "Section 1C — Search & Decision",
   "1d": "Section 1D — Recursion, Trees & Heap",
   "2a": "Section 2A — Greedy & Intervals",
-  "2b": "Section 2B — DP Fundamentals",
+  "2b": "Section 2B — Dynamic Programming",
   "2c": "Section 2C — Graphs",
-  "2d": "Section 2D — DP Advanced",
-  "2e": "Section 2E — Advanced Data Structures",
-  "2f": "Section 2F — Math",
-  "2g": "Section 2G — Strings",
-  "2h": "Section 2H — Design & OOD",
+  "2d": "Section 2D — Strings & Design",
+  "2e": "Section 2E — FAANG+ Algorithms",
+  "2f": "Section 2F — Quant Math",
 };
 
 export const SECTION_COLORS: Readonly<Record<string, string>> = {
@@ -128,9 +126,7 @@ export const SECTION_COLORS: Readonly<Record<string, string>> = {
   "2a": "#2f9e44",
   "2b": "#fab005",
   "2c": "#0891b2",
-  "2d": "#c07a00",
+  "2d": "#e8590c",
   "2e": "#7048e8",
   "2f": "#c2255c",
-  "2g": "#0c8599",
-  "2h": "#e8590c",
 };

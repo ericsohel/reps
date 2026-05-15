@@ -2,7 +2,7 @@ import type { Module } from "../types";
 
 export const heap: Module = {
   id: "heap",
-  num: 16,
+  num: 17,
   name: "Heap / Priority Queue",
   section: "1d",
   tier: "core",

@@ -2,7 +2,7 @@ import type { Module } from "../types";
 
 export const slidingWindow: Module = {
   id: "sliding-window",
-  num: 6,
+  num: 7,
   name: "Sliding Window",
   section: "1b",
   tier: "core",

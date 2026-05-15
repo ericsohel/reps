@@ -2,7 +2,7 @@ import type { Module } from "../types";
 
 export const intervals: Module = {
   id: "intervals",
-  num: 18,
+  num: 19,
   name: "Intervals & Sweep Line",
   label: "Intervals &\nSweep Line",
   section: "2a",

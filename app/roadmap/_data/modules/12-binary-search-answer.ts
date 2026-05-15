@@ -2,7 +2,7 @@ import type { Module } from "../types";
 
 export const bsAnswer: Module = {
   id: "bs-answer",
-  num: 12,
+  num: 13,
   name: "Binary Search on Answer",
   label: "Binary Search\non Answer",
   section: "1c",

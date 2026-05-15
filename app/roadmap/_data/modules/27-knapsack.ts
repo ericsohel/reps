@@ -2,7 +2,7 @@ import type { Module } from "../types";
 
 export const knapsack: Module = {
   id: "knapsack",
-  num: 27,
+  num: 21,
   name: "Knapsack Family",
   section: "2b",
   tier: "core",

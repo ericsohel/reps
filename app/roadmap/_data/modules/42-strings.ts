@@ -2,12 +2,12 @@ import type { Module } from "../types";
 
 export const strings: Module = {
   id: "strings",
-  num: 42,
+  num: 29,
   name: "Strings & Palindromes",
   label: "Strings &\nPalindromes",
-  section: "2g",
+  section: "2d",
   tier: "core",
-  order: 42,
+  order: 29,
   prereqIds: ["two-pointers", "sliding-window"],
   isNew: true,
   resources: [

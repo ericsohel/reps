@@ -2,7 +2,7 @@ import type { Module } from "../types";
 
 export const backtracking: Module = {
   id: "backtracking",
-  num: 13,
+  num: 14,
   name: "Recursion & Backtracking",
   label: "Recursion &\nBacktracking",
   section: "1d",

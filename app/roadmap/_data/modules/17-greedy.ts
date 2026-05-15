@@ -2,7 +2,7 @@ import type { Module } from "../types";
 
 export const greedy: Module = {
   id: "greedy",
-  num: 17,
+  num: 18,
   name: "Greedy",
   section: "2a",
   tier: "core",

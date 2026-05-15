@@ -2,7 +2,7 @@ import type { Module } from "../types";
 
 export const binarySearch: Module = {
   id: "binary-search",
-  num: 11,
+  num: 12,
   name: "Binary Search",
   section: "1c",
   tier: "core",

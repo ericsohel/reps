@@ -2,7 +2,7 @@ import type { Module } from "../types";
 
 export const twoPointers: Module = {
   id: "two-pointers",
-  num: 5,
+  num: 6,
   name: "Two Pointers",
   section: "1b",
   tier: "core",

@@ -2,7 +2,7 @@ import type { Module } from "../types";
 
 export const monotonicStack: Module = {
   id: "monotonic-stack",
-  num: 8,
+  num: 9,
   name: "Monotonic Stack",
   section: "1b",
   tier: "core",

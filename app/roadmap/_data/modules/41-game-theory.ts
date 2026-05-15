@@ -1,13 +1,105 @@
 import type { Module } from "../types";
 
+// Tier: quant
+// Adversarial DP (minimax / "both players play optimally") is a recurring
+// Citadel HFT round and shows up at Jane Street first-round. Sprague-Grundy /
+// Nim is rarer in interviews but standard CP fare and asked at a handful of
+// quant shops as a brain teaser. The set below front-loads minimax DP (the
+// FAANG/quant-portable pattern) then closes with Nim / SG for completeness.
 export const gameTheory: Module = {
   id: "game-theory",
-  num: 41,
+  num: 43,
   name: "Game Theory",
   section: "2f",
   tier: "quant",
-  order: 41,
+  order: 43,
   prereqIds: ["combinatorics", "probability"],
   isNew: true,
-  resources: [],
+  resources: [
+    { title: "CP-Algorithms — Sprague-Grundy & Nim", url: "https://cp-algorithms.com/game_theory/sprague-grundy-nim.html" },
+    { title: "USACO Guide — Game Theory (Plat)", url: "https://usaco.guide/plat/game-theory" },
+    { title: "CPH Book Ch. 26 — Game Theory", url: "https://cses.fi/book/book.pdf" },
+  ],
+  problems: [
+    {
+      num: 1,
+      title: "Predict the Winner",
+      url: "https://leetcode.com/problems/predict-the-winner/",
+      source: "LC 486",
+      difficulty: "medium",
+      list: "new",
+      role: "baseline",
+      teaches: "**Minimax DP — the adversarial template.** `dp[l][r] = max score-difference the current player can secure on `nums[l..r]`, assuming both play optimally`. Transition: `dp[l][r] = max(nums[l] - dp[l+1][r], nums[r] - dp[l][r-1])` — the *subtraction* encodes \"opponent will maximise their own difference next\". Citadel and Jane Street first-round common; the cleanest entry to adversarial reasoning",
+    },
+    {
+      num: 2,
+      title: "Stone Game",
+      url: "https://leetcode.com/problems/stone-game/",
+      source: "LC 877",
+      difficulty: "medium",
+      list: "new",
+      role: "extension",
+      teaches: "**Parity brain teaser.** With even N piles and total stones odd, Alex can *always* force a win by choosing to take all even-indexed piles or all odd-indexed piles (whichever sum is larger). No DP needed — the answer is `true`. The lesson is interview-shaped: before writing minimax, look for a colouring / parity argument. Common Citadel / Jane Street warm-up phrased as \"can the first player always win?\"",
+    },
+    {
+      num: 3,
+      title: "Stone Game II",
+      url: "https://leetcode.com/problems/stone-game-ii/",
+      source: "LC 1140",
+      difficulty: "medium",
+      list: "new",
+      role: "extension",
+      teaches: "**Minimax with an evolving state.** `dp[i][M] = max stones the current player gets from suffix `i` with parameter `M`, taking `x in [1, 2M]`. The opponent will play optimally on `dp[i+x][max(M, x)]`, so `dp[i][M] = max over x of (suffix_sum[i] - dp[i+x][max(M, x)])`. The suffix-sum trick converts \"my score\" into \"total − opponent's score\" — the workhorse rewrite that makes every Stone Game variant tractable",
+    },
+    {
+      num: 4,
+      title: "Stone Game III",
+      url: "https://leetcode.com/problems/stone-game-iii/",
+      source: "LC 1406",
+      difficulty: "hard",
+      list: "new",
+      role: "extension",
+      teaches: "**Minimax with a fixed branching factor.** Each turn take 1, 2, or 3 stones; `dp[i] = max difference current player − opponent on suffix `i``. Transition `dp[i] = max over k=1..3 of (sum[i..i+k-1] - dp[i+k])`. Linear DP, no 2D table — the suffix-difference formulation from problem 3 collapses one dimension. Common Citadel phone-screen variant",
+    },
+    {
+      num: 5,
+      title: "Stone Game VII",
+      url: "https://leetcode.com/problems/stone-game-vii/",
+      source: "LC 1690",
+      difficulty: "medium",
+      list: "new",
+      role: "extension",
+      teaches: "**Interval-DP minimax** — `dp[l][r] = max score-difference current player can achieve on `stones[l..r]``. Removing the left end scores `prefix[r+1] - prefix[l+1]`; removing the right end scores `prefix[r] - prefix[l]`. Transition mirrors LC 486 with explicit scores: `dp[l][r] = max(score_left - dp[l+1][r], score_right - dp[l][r-1])`. The bridge between problems 1 and 4 — interval DP + adversarial rewrite, all in one",
+    },
+    {
+      num: 6,
+      title: "Nim Game I",
+      url: "https://cses.fi/problemset/task/1730",
+      source: "CSES",
+      difficulty: "medium",
+      list: "UG",
+      role: "extension",
+      teaches: "**Bouton's theorem — the canonical XOR-Nim result.** First player loses iff `a_1 XOR a_2 XOR ... XOR a_n == 0`. Proof sketch: from any nonzero XOR you can always move to a zero XOR (find the highest bit, flip it in the pile that has it); from zero XOR every move leaves nonzero. The single most cited result in combinatorial game theory and the gateway to Sprague-Grundy",
+    },
+    {
+      num: 7,
+      title: "Nim Game II (Stick Game)",
+      url: "https://cses.fi/problemset/task/1729",
+      source: "CSES",
+      difficulty: "medium",
+      list: "UG",
+      role: "extension",
+      teaches: "**Sprague-Grundy for a single-pile restricted-move game.** Compute `grundy[n] = mex({ grundy[n-k] : k in moves, k <= n })` where `mex` is the minimum excludant. The position is losing iff `grundy[n] == 0`. For a multi-pile sum the answer XORs the per-pile Grundy numbers (the Sprague-Grundy theorem). The minimal Grundy / mex implementation every CP geometry round expects",
+    },
+    {
+      num: 8,
+      title: "Cat and Mouse",
+      url: "https://leetcode.com/problems/cat-and-mouse/",
+      source: "LC 913",
+      difficulty: "hard",
+      list: "new",
+      role: "checkpoint",
+      teaches: "Before coding: the state is `(mouse_pos, cat_pos, turn)` — why does naive memoised minimax loop forever, and what backward-induction order resolves it? **Retrograde analysis** — start from terminal states (mouse caught = cat wins; mouse at hole = mouse wins; draw on cycle), then BFS backward: a state is a *win for the mover* if any successor is a *loss for the opponent*, and a *loss for the mover* if *all* successors are wins for the opponent. The synthesis problem — graph + adversarial DP + the cycle-handling trick that pure memoisation can't express",
+    },
+  ],
 };

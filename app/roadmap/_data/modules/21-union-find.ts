@@ -2,11 +2,11 @@ import type { Module } from "../types";
 
 export const unionFind: Module = {
   id: "union-find",
-  num: 21,
+  num: 27,
   name: "Union-Find / DSU",
   section: "2c",
   tier: "core",
-  order: 26,
+  order: 27,
   prereqIds: ["arrays-hashing"],
   isNew: true,
   resources: [

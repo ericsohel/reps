@@ -8,12 +8,12 @@ import type { Module } from "../types";
 // randomized algorithms (Fisher-Yates, rejection sampling) — not this module.
 export const probability: Module = {
   id: "probability",
-  num: 39,
+  num: 42,
   name: "Probability & Expected Value",
   label: "Probability &\nExpected Value",
   section: "2f",
   tier: "quant",
-  order: 39,
+  order: 42,
   prereqIds: ["combinatorics"],
   isNew: true,
   resources: [

@@ -2,7 +2,7 @@ import type { Module } from "../types";
 
 export const linkedList: Module = {
   id: "linked-list",
-  num: 10,
+  num: 11,
   name: "Linked List",
   section: "1a",
   tier: "core",
