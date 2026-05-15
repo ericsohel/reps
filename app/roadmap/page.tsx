@@ -2,175 +2,22 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import { PROBLEM_COUNTS } from "./_lib/problem-counts";
 import { ModuleModal } from "./_components/module-modal";
+import {
+  NODES,
+  EDGES,
+  ORDER,
+  PROBLEM_COUNTS,
+  SECTION_NAMES,
+  SECTION_COLORS as COLORS,
+  type DagNode,
+} from "./_data";
 
 const MODULE_PAGES: Record<string, string> = {
-  "foundations":     "/roadmap/foundations",
-  "arrays-hashing":  "/roadmap/arrays-hashing",
-  "sorting":         "/roadmap/sorting",
-  "prefix-sums":     "/roadmap/prefix-sums",
-  "two-pointers":    "/roadmap/two-pointers",
-  "sliding-window":  "/roadmap/sliding-window",
-  "stack":           "/roadmap/stack",
-  "monotonic-stack": "/roadmap/monotonic-stack",
-  "monotonic-deque": "/roadmap/monotonic-deque",
-  "linked-list":     "/roadmap/linked-list",
-  "binary-search":   "/roadmap/binary-search",
-  "bs-answer":       "/roadmap/bs-answer",
-  "backtracking":    "/roadmap/backtracking",
-  "trees":           "/roadmap/trees",
-  "tries":           "/roadmap/tries",
-  "heap":            "/roadmap/heap",
-  "greedy":          "/roadmap/greedy",
-  "intervals":       "/roadmap/intervals",
-  "graph-traversal": "/roadmap/graph-traversal",
-  "topo-sort":       "/roadmap/topo-sort",
-  "union-find":      "/roadmap/union-find",
-  "shortest-paths":  "/roadmap/shortest-paths",
-  "mst":             "/roadmap/mst",
-  "adv-graphs":      "/roadmap/adv-graphs",
-  "dp-intro":        "/roadmap/dp-intro",
-  "dp-2d":           "/roadmap/dp-2d",
+  foundations: "/roadmap/foundations",
 };
 
-const COLORS: Record<string, string> = {
-  "0":  "#6741d9",
-  "1":  "#3b5bdb",
-  "2a": "#1971c2",
-  "2b": "#2f9e44",
-  "2c": "#c07a00",
-  "2d": "#7048e8",
-  "2e": "#c2255c",
-  "2f": "#0c8599",
-};
-
-const SECTION_NAMES: Record<string, string> = {
-  "0":  "Foundations",
-  "1":  "Section 1 — Core",
-  "2a": "Section 2A — Graphs",
-  "2b": "Section 2B — Greedy & Sweep",
-  "2c": "Section 2C — Dynamic Programming",
-  "2d": "Section 2D — Advanced Data Structures",
-  "2e": "Section 2E — Math",
-  "2f": "Section 2F — Strings",
-};
-
-type Track = "both" | "interview" | "cp";
-type Kind = "topic" | "utility";
-
-interface Node {
-  id: string;
-  label: string;
-  section: string;
-  track: Track;
-  isNew?: boolean;
-  kind?: Kind;
-}
-
-const NODES: Node[] = [
-  { id: "foundations",     label: "Foundations",               section: "0",  track: "both" },
-  { id: "arrays-hashing",  label: "Arrays & Hashing",          section: "1",  track: "both" },
-  { id: "sorting",         label: "Sorting",                   section: "1",  track: "both", isNew: true },
-  { id: "prefix-sums",     label: "Prefix Sums",               section: "1",  track: "both", isNew: true },
-  { id: "two-pointers",    label: "Two Pointers",              section: "1",  track: "both" },
-  { id: "sliding-window",  label: "Sliding Window",            section: "1",  track: "both" },
-  { id: "monotonic-deque", label: "Monotonic Deque",           section: "1",  track: "both", isNew: true },
-  { id: "stack",           label: "Stack",                     section: "1",  track: "both" },
-  { id: "monotonic-stack", label: "Monotonic Stack",           section: "1",  track: "both", isNew: true },
-  { id: "linked-list",     label: "Linked List",               section: "1",  track: "both" },
-  { id: "backtracking",    label: "Recursion & Backtracking",  section: "1",  track: "both" },
-  { id: "binary-search",   label: "Binary Search",             section: "1",  track: "both" },
-  { id: "bs-answer",       label: "Binary Search on Answer",   section: "1",  track: "both", isNew: true },
-  { id: "trees",           label: "Trees",                     section: "1",  track: "both" },
-  { id: "tries",           label: "Tries",                     section: "1",  track: "both" },
-  { id: "heap",            label: "Heap / Priority Queue",     section: "1",  track: "both" },
-  { id: "graph-traversal", label: "Graph Traversal",           section: "2a", track: "both" },
-  { id: "topo-sort",       label: "Topological Sort",          section: "2a", track: "both", isNew: true },
-  { id: "union-find",      label: "Union-Find / DSU",          section: "2a", track: "both", isNew: true },
-  { id: "shortest-paths",  label: "Shortest Paths",            section: "2a", track: "both", isNew: true },
-  { id: "mst",             label: "MST",                       section: "2a", track: "cp",   isNew: true },
-  { id: "adv-graphs",      label: "Advanced Graphs",           section: "2a", track: "cp" },
-  { id: "greedy",          label: "Greedy",                    section: "2b", track: "both" },
-  { id: "intervals",       label: "Intervals & Sweep Line",    section: "2b", track: "both", isNew: true },
-  { id: "dp-intro",        label: "DP Intro / 1D",             section: "2c", track: "both" },
-  { id: "dp-2d",           label: "2D / Grid DP",              section: "2c", track: "both" },
-  { id: "knapsack",        label: "Knapsack Family",           section: "2c", track: "both", isNew: true },
-  { id: "lis-lcs",         label: "LIS / LCS",                 section: "2c", track: "both", isNew: true },
-  { id: "dp-trees",        label: "DP on Trees",               section: "2c", track: "cp",   isNew: true },
-  { id: "bit-manip",       label: "Bit Manipulation",          section: "2c", track: "both", kind: "utility" },
-  { id: "bitmask-dp",      label: "Bitmask DP",                section: "2c", track: "both", isNew: true },
-  { id: "interval-dp",     label: "Interval DP",               section: "2c", track: "both", isNew: true },
-  { id: "coord-comp",      label: "Coordinate Compression",    section: "2d", track: "both", isNew: true, kind: "utility" },
-  { id: "sparse-table",    label: "Sparse Table",              section: "2d", track: "cp",   isNew: true },
-  { id: "fenwick",         label: "Fenwick Tree (BIT)",        section: "2d", track: "both", isNew: true },
-  { id: "seg-tree",        label: "Segment Tree",              section: "2d", track: "cp",   isNew: true },
-  { id: "number-theory",   label: "Number Theory",             section: "2e", track: "both", isNew: true },
-  { id: "combinatorics",   label: "Combinatorics",             section: "2e", track: "both", isNew: true },
-  { id: "probability",     label: "Probability & Expected Value", section: "2e", track: "both", isNew: true },
-  { id: "geometry",        label: "Geometry Basics",           section: "2e", track: "interview" },
-  { id: "game-theory",     label: "Game Theory",               section: "2e", track: "cp",   isNew: true },
-  { id: "strings",         label: "Strings & Palindromes",     section: "2f", track: "interview", isNew: true },
-];
-
-const EDGES: [string, string][] = [
-  ["foundations","arrays-hashing"],["foundations","backtracking"],
-  ["foundations","bit-manip"],["foundations","number-theory"],
-  ["arrays-hashing","sorting"],
-  ["sorting","two-pointers"],["sorting","greedy"],
-  ["arrays-hashing","prefix-sums"],["arrays-hashing","two-pointers"],
-  ["arrays-hashing","stack"],["arrays-hashing","linked-list"],
-  ["arrays-hashing","binary-search"],["two-pointers","binary-search"],
-  ["arrays-hashing","union-find"],
-  ["arrays-hashing","coord-comp"],["arrays-hashing","greedy"],
-  ["arrays-hashing","geometry"],
-  ["two-pointers","sliding-window"],
-  ["sliding-window","monotonic-deque"],
-  ["stack","monotonic-stack"],
-  ["two-pointers","monotonic-stack"],
-  ["monotonic-stack","monotonic-deque"],
-  ["prefix-sums","monotonic-deque"],
-  ["binary-search","bs-answer"],
-  ["binary-search","sparse-table"],["prefix-sums","sparse-table"],
-  ["prefix-sums","fenwick"],["coord-comp","fenwick"],
-  ["fenwick","seg-tree"],
-  ["backtracking","trees"],["stack","trees"],["backtracking","dp-intro"],
-  ["trees","tries"],["trees","heap"],["linked-list","heap"],
-  ["trees","graph-traversal"],["binary-search","graph-traversal"],["trees","dp-trees"],
-  ["dp-intro","dp-trees"],
-  ["heap","shortest-paths"],
-  ["graph-traversal","topo-sort"],["graph-traversal","shortest-paths"],
-  ["topo-sort","adv-graphs"],["shortest-paths","adv-graphs"],
-  ["union-find","mst"],["shortest-paths","mst"],
-  ["greedy","intervals"],
-  ["heap","intervals"],
-  ["dp-intro","dp-2d"],["dp-intro","knapsack"],
-  ["dp-intro","lis-lcs"],["dp-intro","bitmask-dp"],
-  ["dp-intro","interval-dp"],
-  ["bit-manip","bitmask-dp"],
-  ["number-theory","combinatorics"],
-  ["combinatorics","probability"],["combinatorics","game-theory"],
-  ["probability","game-theory"],
-  ["two-pointers","strings"],["sliding-window","strings"],
-];
-
-const ORDER: Record<string, number> = {
-  "foundations": 1,   "arrays-hashing": 2,  "sorting": 3,
-  "prefix-sums": 4,   "two-pointers": 5,    "sliding-window": 6,
-  "stack": 7,         "monotonic-stack": 8, "monotonic-deque": 9,
-  "linked-list": 10,  "binary-search": 11,  "bs-answer": 12,
-  "backtracking": 13, "trees": 14,          "tries": 15,
-  "heap": 16,         "greedy": 17,         "intervals": 18,
-  "graph-traversal": 19, "topo-sort": 20,   "union-find": 21,
-  "shortest-paths": 22,  "mst": 23,         "adv-graphs": 24,
-  "dp-intro": 25,     "dp-2d": 26,          "knapsack": 27,
-  "lis-lcs": 28,      "dp-trees": 29,       "bit-manip": 30,
-  "bitmask-dp": 31,   "interval-dp": 32,    "coord-comp": 33,
-  "sparse-table": 34, "fenwick": 35,        "seg-tree": 36,
-  "number-theory": 37,"combinatorics": 38,  "probability": 39,
-  "geometry": 40,     "game-theory": 41,    "strings": 42,
-};
-
+type Node = DagNode;
 type FilterTrack = "all" | "interview" | "cp";
 
 function computeUnlocks(id: string): number {

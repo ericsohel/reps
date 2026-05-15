@@ -2,8 +2,9 @@
 
 import { useEffect, useState } from "react";
 import { getModuleContent } from "../_actions/module-content";
-import { ProblemsChecklist } from "../[module]/problems-checklist";
-import type { ProblemRow } from "../[module]/problems-checklist";
+import { ProblemsChecklist } from "./problems-checklist";
+import type { ProblemRow } from "./problems-checklist";
+import type { Resource } from "../_data/types";
 
 interface Props {
   moduleId: string;
@@ -11,12 +12,8 @@ interface Props {
   onClose: () => void;
 }
 
-function Resources({ text }: { text: string }) {
-  const links: { title: string; url: string }[] = [];
-  for (const m of text.matchAll(/\[(.+?)\]\((.+?)\)/g)) {
-    links.push({ title: m[1], url: m[2] });
-  }
-  if (!links.length) return null;
+function Resources({ items }: { items: Resource[] }) {
+  if (!items.length) return null;
 
   return (
     <div className="mb-5 border-b border-zinc-800/60 pb-5">
@@ -24,7 +21,7 @@ function Resources({ text }: { text: string }) {
         Resources
       </p>
       <div className="space-y-1">
-        {links.map((l, i) => (
+        {items.map((l, i) => (
           <a
             key={i}
             href={l.url}
@@ -42,7 +39,7 @@ function Resources({ text }: { text: string }) {
 }
 
 export function ModuleModal({ moduleId, title, onClose }: Props) {
-  const [data, setData] = useState<{ resources: string; problems: ProblemRow[] } | null>(null);
+  const [data, setData] = useState<{ resources: Resource[]; problems: ProblemRow[] } | null>(null);
 
   useEffect(() => {
     getModuleContent(moduleId).then(setData);
@@ -79,7 +76,7 @@ export function ModuleModal({ moduleId, title, onClose }: Props) {
             <p className="text-sm text-zinc-600 py-6 text-center">Loading…</p>
           ) : (
             <>
-              <Resources text={data.resources} />
+              <Resources items={data.resources} />
               {data.problems.length > 0 && (
                 <ProblemsChecklist
                   moduleId={moduleId}

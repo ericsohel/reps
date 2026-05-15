@@ -1,33 +1,18 @@
-import fs from "fs";
-import path from "path";
 import Link from "next/link";
-import { ProblemsChecklist } from "../[module]/problems-checklist";
-import type { ProblemRow } from "../[module]/problems-checklist";
+import { ProblemsChecklist } from "../_components/problems-checklist";
+import type { ProblemRow } from "../_components/problems-checklist";
+import { foundations } from "../_data/modules/01-foundations";
 
 export const metadata = { title: "Foundations — DSA Roadmap" };
 
-function parseItems(md: string): ProblemRow[] {
-  const items: ProblemRow[] = [];
-  for (const m of md.matchAll(/^### (\d+)\. (.+)$/gm)) {
-    items.push({
-      num: parseInt(m[1]),
-      title: m[2],
-      url: "",
-      isCheckpoint: false,
-      difficulty: null,
-      extraHeaders: [],
-      extraCells: [],
-    });
-  }
-  return items;
-}
-
 export default function FoundationsPage() {
-  const md = fs.readFileSync(
-    path.join(process.cwd(), "app/roadmap/_content/01-foundations.md"),
-    "utf-8",
-  );
-  const items = parseItems(md);
+  const items: ProblemRow[] = (foundations.checklist ?? []).map((c) => ({
+    num: c.num,
+    title: c.title,
+    url: "",
+    isCheckpoint: false,
+    difficulty: null,
+  }));
 
   return (
     <div className="pb-16">
