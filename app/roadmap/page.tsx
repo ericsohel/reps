@@ -128,7 +128,7 @@ const EDGES: [string, string][] = [
   ["fenwick","seg-tree"],
   ["backtracking","trees"],["stack","trees"],["backtracking","dp-intro"],
   ["trees","tries"],["trees","heap"],["linked-list","heap"],
-  ["trees","graph-traversal"],["trees","dp-trees"],
+  ["trees","graph-traversal"],["binary-search","graph-traversal"],["trees","dp-trees"],
   ["dp-intro","dp-trees"],
   ["heap","shortest-paths"],
   ["graph-traversal","topo-sort"],["graph-traversal","shortest-paths"],
