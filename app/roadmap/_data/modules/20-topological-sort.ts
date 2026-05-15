@@ -11,6 +11,8 @@ export const topoSort: Module = {
   isNew: true,
   resources: [
     { title: "USACO Guide — Topological Sort (Gold)", url: "https://usaco.guide/gold/toposort" },
+    { title: "CP-Algorithms — Topological Sort", url: "https://cp-algorithms.com/graph/topological-sort.html" },
+    { title: "CPH Book Ch. 16 — Directed Graphs", url: "https://cses.fi/book/book.pdf" },
   ],
   problems: [
     {
@@ -65,6 +67,16 @@ export const topoSort: Module = {
     },
     {
       num: 6,
+      title: "Build a Matrix With Conditions",
+      url: "https://leetcode.com/problems/build-a-matrix-with-conditions/",
+      source: "LC 2392",
+      difficulty: "hard",
+      list: "new",
+      role: "extension",
+      teaches: "Multi-dim topo — run topological sort independently on rowConditions and colConditions, then place each value at `(rowPos[v], colPos[v])`. Each axis fails its own cycle check independently",
+    },
+    {
+      num: 7,
       title: "Alien Dictionary",
       url: "https://leetcode.com/problems/alien-dictionary/",
       source: "LC 269",
