@@ -5,7 +5,7 @@ export const fenwick: Module = {
   num: 35,
   name: "Fenwick Tree (BIT)",
   section: "2d",
-  track: "both",
+  track: "cp",
   order: 35,
   prereqIds: ["prefix-sums", "coord-comp"],
   isNew: true,

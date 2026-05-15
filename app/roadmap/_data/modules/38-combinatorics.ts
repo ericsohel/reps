@@ -7,7 +7,7 @@ export const combinatorics: Module = {
   section: "2e",
   track: "both",
   order: 38,
-  prereqIds: ["number-theory"],
+  prereqIds: ["foundations"],
   isNew: true,
   resources: [],
 };

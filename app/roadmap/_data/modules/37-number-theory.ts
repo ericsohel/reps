@@ -5,7 +5,7 @@ export const numberTheory: Module = {
   num: 37,
   name: "Number Theory",
   section: "2e",
-  track: "both",
+  track: "cp",
   order: 37,
   prereqIds: ["foundations"],
   isNew: true,

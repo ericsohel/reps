@@ -6,7 +6,7 @@ export const strings: Module = {
   name: "Strings & Palindromes",
   label: "Strings &\nPalindromes",
   section: "2f",
-  track: "interview",
+  track: "cp",
   order: 42,
   prereqIds: ["two-pointers", "sliding-window"],
   isNew: true,
