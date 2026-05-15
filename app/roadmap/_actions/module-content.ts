@@ -6,6 +6,7 @@ import type { ProblemRow } from "../[module]/problems-checklist";
 import type { CounterKey } from "@/app/counter-actions";
 
 const MODULE_FILES: Record<string, string> = {
+  "foundations":     "01-foundations.md",
   "arrays-hashing":  "02-arrays-hashing.md",
   "sorting":         "03-sorting.md",
   "prefix-sums":     "04-prefix-sums.md",
@@ -39,6 +40,31 @@ function normalizeDifficulty(s: string): CounterKey | null {
   if (t === "medium" || t === "normal") return "medium";
   if (t === "hard") return "hard";
   return null;
+}
+
+// Foundations has no Step 3 — reading links are embedded as **Reading:** lines.
+function extractFoundationsResources(md: string): string {
+  const links: string[] = [];
+  for (const m of md.matchAll(/\*\*Reading:\*\*\s*(.+)/g)) {
+    links.push(m[1].trim().replace(/\.$/, ""));
+  }
+  return links.join("\n");
+}
+
+function extractFoundationsProblems(md: string): ProblemRow[] {
+  const items: ProblemRow[] = [];
+  for (const m of md.matchAll(/^### (\d+)\. (.+)$/gm)) {
+    items.push({
+      num: parseInt(m[1]),
+      title: m[2],
+      url: "",
+      isCheckpoint: false,
+      difficulty: null,
+      extraHeaders: [],
+      extraCells: [],
+    });
+  }
+  return items;
 }
 
 function extractResources(md: string): string {
@@ -112,6 +138,12 @@ export async function getModuleContent(
       "utf-8",
     );
     const content = md.replace(/^# .+\n/, "");
+    if (moduleId === "foundations") {
+      return {
+        resources: extractFoundationsResources(content),
+        problems: extractFoundationsProblems(content),
+      };
+    }
     return { resources: extractResources(content), problems: extractProblems(content) };
   } catch {
     return null;
