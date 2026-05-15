@@ -85,6 +85,16 @@ export const binarySearch: Module = {
     },
     {
       num: 8,
+      title: "Find Peak Element",
+      url: "https://leetcode.com/problems/find-peak-element/",
+      source: "LC 162",
+      difficulty: "medium",
+      list: "new",
+      role: "extension",
+      teaches: "Neighbor-comparison predicate — compare `a[mid]` vs `a[mid+1]` to determine which side ascends toward a peak; no target value, the monotonic structure is local slope",
+    },
+    {
+      num: 9,
       title: "Median of Two Sorted Arrays",
       url: "https://leetcode.com/problems/median-of-two-sorted-arrays/",
       source: "LC 4",
