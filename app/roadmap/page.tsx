@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { PROBLEM_COUNTS } from "./_lib/problem-counts";
+import { ModuleModal } from "./_components/module-modal";
 
 const MODULE_PAGES: Record<string, string> = {
   "foundations":     "/roadmap/foundations",
@@ -190,6 +191,7 @@ export default function RoadmapPage() {
   const [problemsSolved, setProblemsSolved] = useState<Record<string, number[]>>({});
   const [currentTrack, setCurrentTrack] = useState<FilterTrack>("all");
   const [hydrated, setHydrated] = useState(false);
+  const [activeModule, setActiveModule] = useState<{ id: string; title: string } | null>(null);
 
   useEffect(() => {
     const saved = JSON.parse(localStorage.getItem("dsa-v1-completed") || "[]");
@@ -548,7 +550,14 @@ export default function RoadmapPage() {
           return (
             <div
               key={n.id}
-              onClick={() => state !== "locked" && toggle(n.id)}
+              onClick={() => {
+                if (state === "locked") return;
+                if (PROBLEM_COUNTS[n.id]) {
+                  setActiveModule({ id: n.id, title: n.label });
+                } else if (MODULE_PAGES[n.id]) {
+                  window.location.href = MODULE_PAGES[n.id];
+                }
+              }}
               className={[
                 "relative flex items-center gap-3 px-3 py-2.5 rounded-lg border transition-all",
                 isRecommended
@@ -650,14 +659,14 @@ export default function RoadmapPage() {
               </div>
 
               <div className="flex items-center gap-2 flex-shrink-0">
-                {MODULE_PAGES[n.id] && (
+                {!PROBLEM_COUNTS[n.id] && MODULE_PAGES[n.id] && (
                   <Link
                     href={MODULE_PAGES[n.id]}
                     onClick={e => e.stopPropagation()}
                     className="no-underline text-[11px] text-zinc-500 hover:text-emerald-400 transition-colors px-1.5 py-0.5 rounded border border-zinc-700/60 hover:border-emerald-900/50 bg-zinc-900/60"
                     title="View module"
                   >
-                    Notes
+                    View
                   </Link>
                 )}
                 <div className="w-5 text-center text-sm">
@@ -690,6 +699,14 @@ export default function RoadmapPage() {
         <span><span className="text-zinc-700">🔒</span> locked</span>
         <span><span className="text-amber-500">★</span> not in NeetCode</span>
       </div>
+
+      {activeModule && (
+        <ModuleModal
+          moduleId={activeModule.id}
+          title={activeModule.title}
+          onClose={() => setActiveModule(null)}
+        />
+      )}
     </div>
   );
 }
