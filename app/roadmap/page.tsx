@@ -593,6 +593,10 @@ export default function RoadmapPage() {
           const isRecommended = n.id === recommendedId;
           const isReviewRec = isRecommended && recommendation?.mode === "review";
           const unlocks = unlocksOf(n.id);
+          const _solvedCount = problemsSolved[n.id]?.length ?? 0;
+          const _totalCount = PROBLEM_COUNTS[n.id] ?? 0;
+          const isFullySolved = state === "completed" && _totalCount > 0 && _solvedCount >= _totalCount;
+          const isUnlockedInProgress = state !== "completed" && state !== "locked" && _solvedCount >= UNLOCK_THRESHOLD && _totalCount > 0;
 
           return (
             <div
@@ -627,8 +631,12 @@ export default function RoadmapPage() {
                   ? "cursor-pointer border-amber-500/60 bg-gradient-to-br from-amber-950/30 via-zinc-900/40 to-zinc-900/30 shadow-[0_0_24px_rgba(251,191,36,0.18),inset_0_0_0_1px_rgba(251,191,36,0.12)] ring-1 ring-amber-500/30 hover:shadow-[0_0_32px_rgba(251,191,36,0.28),inset_0_0_0_1px_rgba(251,191,36,0.2)]"
                   : state === "locked"
                   ? "cursor-pointer border-zinc-800/30 bg-zinc-900/10 hover:bg-zinc-900/20"
+                  : isFullySolved
+                  ? "cursor-pointer border-emerald-400/80 bg-gradient-to-br from-emerald-950/40 to-emerald-900/30 ring-1 ring-emerald-500/30 hover:bg-emerald-900/35"
                   : state === "completed"
                   ? "cursor-pointer border-emerald-900/50 bg-emerald-950/20 hover:bg-emerald-950/30"
+                  : isUnlockedInProgress
+                  ? "cursor-pointer border-emerald-800/50 bg-zinc-900/20 hover:bg-zinc-900/50 hover:border-emerald-700/40"
                   : isNext
                   ? "cursor-pointer border-emerald-500/30 bg-zinc-900/40 shadow-[0_0_0_1px_rgba(52,211,153,0.08)] hover:bg-zinc-900/60"
                   : "cursor-pointer border-zinc-800/80 bg-zinc-900/20 hover:bg-zinc-900/50 hover:border-zinc-700",
@@ -647,7 +655,9 @@ export default function RoadmapPage() {
                 <div
                   className={[
                     "text-sm font-semibold truncate",
-                    state === "completed"
+                    isFullySolved
+                      ? "text-emerald-300"
+                      : state === "completed"
                       ? "text-emerald-400"
                       : state === "locked"
                       ? "text-zinc-700"
@@ -748,7 +758,9 @@ export default function RoadmapPage() {
                   </Link>
                 )}
                 <div className="w-5 text-center text-sm">
-                  {state === "completed" ? (
+                  {isFullySolved ? (
+                    <span className="text-emerald-300 text-xs font-bold">✓✓</span>
+                  ) : state === "completed" ? (
                     <span className="text-emerald-400">✓</span>
                   ) : state === "locked" ? (
                     <span className="text-zinc-700 text-xs">🔒</span>
@@ -770,8 +782,9 @@ export default function RoadmapPage() {
 
       <div className="divider" />
 
-      <div className="flex gap-6 text-xs text-zinc-600">
-        <span><span className="text-emerald-400">✓</span> completed</span>
+      <div className="flex flex-wrap gap-x-6 gap-y-1 text-xs text-zinc-600">
+        <span><span className="text-emerald-300 font-bold">✓✓</span> all solved</span>
+        <span><span className="text-emerald-400">✓</span> mastered</span>
         <span><span className="text-emerald-400">→</span> up next</span>
         <span><span className="text-zinc-500">○</span> available</span>
         <span><span className="text-zinc-700">🔒</span> locked</span>
