@@ -245,85 +245,158 @@ export default function RoadmapPage() {
   const doneCount = visibleNodes.filter(n => isModuleDone(n.id)).length;
 
   // ── Recommendation engine ───────────────────────────────────────────────────
-  // Score each available module on multiple axes; the highest score is the
-  // "highest yield" pick. Weights are tuned to favour downstream impact, but
-  // also reward momentum and contextual fit so the recommendation feels smart
-  // rather than just "biggest subtree wins".
-  const recommendation: { id: string; reasons: string[] } | null = (() => {
-    const candidates = visibleNodes.filter(n => nodeState(n.id) === "available");
-    if (candidates.length === 0) return null;
+  // Picks the highest-yield action across two pools:
+  //   EXPAND      — open a new module to build breadth.
+  //   CONSOLIDATE — return to a 5/N module to finish the checkpoint (depth).
+  // Each pool is scored independently; the higher max wins. Direct downstream
+  // blockers (the next expand module's checkpoint needs an unfinished pattern)
+  // give consolidate enough lift to override expand naturally via the weights.
+  type Mode = "expand" | "consolidate";
+  type Scored = {
+    id: string;
+    score: number;
+    contributions: { label: string; value: number }[];
+  };
 
-    const completedNodes = NODES.filter(n => isModuleDone(n.id));
-    const completedOrders = completedNodes
+  const recommendation: { id: string; reasons: string[]; mode: Mode } | null = (() => {
+    // EXPAND pool: nodes the user can newly start (not done, prereqs satisfied).
+    const expandCandidates = visibleNodes.filter(n => nodeState(n.id) === "available");
+
+    // CONSOLIDATE pool: nodes with 5 ≤ solved < total, not manually completed.
+    // These are "foundation built, depth remaining" — the checkpoint problems
+    // are typically what's still unchecked.
+    const consolidateCandidates = visibleNodes.filter(n => {
+      const total = PROBLEM_COUNTS[n.id] ?? 0;
+      const solved = problemsSolved[n.id]?.length ?? 0;
+      return total > 0
+        && solved >= REQUIRED_PROBLEMS
+        && solved < total
+        && !completed.has(n.id);
+    });
+
+    if (expandCandidates.length === 0 && consolidateCandidates.length === 0) return null;
+
+    // "Current learning position" — median order of modules done so far.
+    const completedOrders = NODES
+      .filter(n => isModuleDone(n.id))
       .map(n => ORDER[n.id] || 99)
       .sort((a, b) => a - b);
-    // "current learning position" — one module past your median completed order
     const currentPos = completedOrders.length > 0
       ? completedOrders[Math.floor(completedOrders.length / 2)] + 1
       : 1;
 
-    const maxUnlocks = Math.max(1, ...candidates.map(n => computeUnlocks(n.id)));
+    const allUnlocksPool = [...expandCandidates, ...consolidateCandidates];
+    const maxUnlocks = Math.max(1, ...allUnlocksPool.map(n => computeUnlocks(n.id)));
     const maxProblems = Math.max(1, ...Object.values(PROBLEM_COUNTS));
 
-    type Scored = {
-      id: string;
-      score: number;
-      contributions: { label: string; value: number }[];
+    const trackScoreFor = (n: Node) => {
+      const match = currentTrack !== "all" && n.track === currentTrack ? 1 : 0;
+      const neutral = currentTrack === "all" || n.track === "both" ? 0.5 : 0;
+      return Math.max(match, neutral);
     };
 
-    const scored: Scored[] = candidates.map(n => {
+    // ── EXPAND scoring (breadth) ──────────────────────────────────────────────
+    const scoredExpand: Scored[] = expandCandidates.map(n => {
       const unlocks = computeUnlocks(n.id);
       const order = ORDER[n.id] || 99;
-
       const sectionPeers = NODES.filter(x => x.section === n.section && inTrack(x));
       const sectionDone = sectionPeers.filter(x => isModuleDone(x.id)).length;
-      const sectionStarted = sectionDone > 0;
       const sectionCoherence = sectionPeers.length > 0 ? sectionDone / sectionPeers.length : 0;
-
-      const trackMatch = currentTrack !== "all" && n.track === currentTrack ? 1 : 0;
-      const trackNeutral = currentTrack === "all" || n.track === "both" ? 0.5 : 0;
-      const trackScore = Math.max(trackMatch, trackNeutral);
-
-      // proximity: ideal is one step past current position; drops off either way
-      const distance = Math.abs(order - currentPos);
-      const proximity = Math.max(0, 1 - distance / 6);
-
-      const problemCount = PROBLEM_COUNTS[n.id] || 0;
+      const proximity = Math.max(0, 1 - Math.abs(order - currentPos) / 6);
       const solvedCount = problemsSolved[n.id]?.length || 0;
-      const problemDensity = problemCount / maxProblems;
-
       const alreadyStarted = solvedCount > 0 && solvedCount < REQUIRED_PROBLEMS;
-      const aboveThreshold = solvedCount >= REQUIRED_PROBLEMS;
-
-      // Foundation/utility modules unlock disproportionately; weighted heavily.
-      const downstreamScore = unlocks / maxUnlocks;
+      const problemDensity = (PROBLEM_COUNTS[n.id] || 0) / maxProblems;
 
       const contributions = [
-        { label: "downstream impact",   value: 0.35 * downstreamScore },
-        { label: "section coherence",   value: 0.20 * sectionCoherence },
-        { label: "curriculum proximity",value: 0.15 * proximity },
-        { label: "track alignment",     value: 0.10 * trackScore },
-        { label: "problem density",     value: 0.10 * problemDensity },
-        { label: "already started",     value: alreadyStarted ? 0.15 : 0 },
-        { label: "threshold reached",   value: aboveThreshold ? -0.10 : 0 },
-        { label: "section momentum",    value: sectionStarted && sectionCoherence < 1 ? 0.05 : 0 },
+        { label: "downstream impact",    value: 0.35 * (unlocks / maxUnlocks) },
+        { label: "section coherence",    value: 0.20 * sectionCoherence },
+        { label: "curriculum proximity", value: 0.15 * proximity },
+        { label: "track alignment",      value: 0.10 * trackScoreFor(n) },
+        { label: "problem density",      value: 0.10 * problemDensity },
+        { label: "already started",      value: alreadyStarted ? 0.15 : 0 },
+        { label: "section momentum",     value: sectionDone > 0 && sectionCoherence < 1 ? 0.05 : 0 },
       ];
-      const score = contributions.reduce((s, c) => s + c.value, 0);
-      return { id: n.id, score, contributions };
+      return {
+        id: n.id,
+        score: contributions.reduce((s, c) => s + c.value, 0),
+        contributions,
+      };
     });
 
-    scored.sort((a, b) => b.score - a.score);
-    const top = scored[0];
+    // ── CONSOLIDATE scoring (depth) ───────────────────────────────────────────
+    const scoredConsolidate: Scored[] = consolidateCandidates.map(n => {
+      const total = PROBLEM_COUNTS[n.id] ?? 0;
+      const solved = problemsSolved[n.id]?.length ?? 0;
+      const solvedSet = new Set(problemsSolved[n.id] ?? []);
+      const remaining = total - solved;
+      const order = ORDER[n.id] || 99;
 
-    // Build human-readable reasons from the top 2 contributing factors
-    // (excluding penalties and trivial values).
-    const meaningful = top.contributions
+      // Direct blocker: is this module a prereq of any current expand candidate?
+      // If yes, the checkpoint of that expand module likely needs this pattern.
+      const blocksExpand = expandCandidates.some(e =>
+        EDGES.some(([s, t]) => s === n.id && t === e.id),
+      );
+
+      // Spaced decay: how many modules of distance since we paused here?
+      // Full decay at distance >= 5 modules past current position.
+      const decay = Math.max(0, Math.min(1, (currentPos - order) / 5));
+
+      // Few-problems-left sweet spot: 1–3 problems remaining is high-value.
+      // 4+ becomes a bigger commitment with diminishing returns.
+      const remainingScore = remaining <= 3
+        ? 1
+        : Math.max(0, 1 - (remaining - 3) / 5);
+
+      // Checkpoint typically = the last problem in the table. Unsolved means
+      // the leap-defining problem is still on the table.
+      const checkpointUnsolved = !solvedSet.has(total) ? 1 : 0;
+
+      // Would completing this module close out its section?
+      const sectionPeers = NODES.filter(x => x.section === n.section && inTrack(x));
+      const sectionPeersComplete = sectionPeers.every(x => {
+        if (x.id === n.id) return true; // assume this one completes
+        if (completed.has(x.id)) return true;
+        const xTotal = PROBLEM_COUNTS[x.id] ?? 0;
+        const xSolved = problemsSolved[x.id]?.length ?? 0;
+        return xTotal > 0 && xSolved >= xTotal;
+      });
+      const wouldCloseSection = sectionPeersComplete && sectionPeers.length > 1 ? 1 : 0;
+
+      const contributions = [
+        { label: "blocks next checkpoint", value: 0.40 * (blocksExpand ? 1 : 0) },
+        { label: "paused while ago",       value: 0.20 * decay },
+        { label: "track alignment",        value: 0.10 * trackScoreFor(n) },
+        { label: "few problems left",      value: 0.10 * remainingScore },
+        { label: "checkpoint unsolved",    value: 0.10 * checkpointUnsolved },
+        { label: "closes section",         value: 0.10 * wouldCloseSection },
+      ];
+      return {
+        id: n.id,
+        score: contributions.reduce((s, c) => s + c.value, 0),
+        contributions,
+      };
+    });
+
+    const bestExpand = scoredExpand.sort((a, b) => b.score - a.score)[0];
+    const bestConsolidate = scoredConsolidate.sort((a, b) => b.score - a.score)[0];
+
+    const expandScore = bestExpand?.score ?? -Infinity;
+    const consolidateScore = bestConsolidate?.score ?? -Infinity;
+
+    const winner = consolidateScore > expandScore ? bestConsolidate : bestExpand;
+    const mode: Mode = winner === bestConsolidate ? "consolidate" : "expand";
+
+    const meaningful = winner.contributions
       .filter(c => c.value > 0.04)
       .sort((a, b) => b.value - a.value)
       .slice(0, 2)
       .map(c => c.label);
 
-    return { id: top.id, reasons: meaningful.length > 0 ? meaningful : ["next available"] };
+    return {
+      id: winner.id,
+      reasons: meaningful.length > 0 ? meaningful : [mode === "consolidate" ? "finish what's started" : "next available"],
+      mode,
+    };
   })();
   const recommendedId = recommendation?.id;
 
@@ -429,8 +502,8 @@ export default function RoadmapPage() {
                 {isRecommended && recommendation && (
                   <div className="mt-1">
                     <div className="text-[10px] font-bold text-amber-400 uppercase tracking-wider flex items-center gap-1">
-                      <span>★</span>
-                      <span>Recommended</span>
+                      <span>{recommendation.mode === "consolidate" ? "↻" : "★"}</span>
+                      <span>{recommendation.mode === "consolidate" ? "Consolidate" : "Expand"}</span>
                     </div>
                     <div className="text-[9px] text-amber-600/80 mt-0.5 truncate">
                       {recommendation.reasons.join(" · ")}
