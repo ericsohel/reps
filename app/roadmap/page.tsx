@@ -42,6 +42,7 @@ const COLORS: Record<string, string> = {
   "2c": "#c07a00",
   "2d": "#7048e8",
   "2e": "#c2255c",
+  "2f": "#0c8599",
 };
 
 const SECTION_NAMES: Record<string, string> = {
@@ -52,6 +53,7 @@ const SECTION_NAMES: Record<string, string> = {
   "2c": "Section 2C — Dynamic Programming",
   "2d": "Section 2D — Advanced Data Structures",
   "2e": "Section 2E — Math",
+  "2f": "Section 2F — Strings",
 };
 
 type Track = "both" | "interview" | "cp";
@@ -98,16 +100,17 @@ const NODES: Node[] = [
   { id: "dp-trees",        label: "DP on Trees",               section: "2c", track: "cp",   isNew: true },
   { id: "bit-manip",       label: "Bit Manipulation",          section: "2c", track: "both", kind: "utility" },
   { id: "bitmask-dp",      label: "Bitmask DP",                section: "2c", track: "both", isNew: true },
-  { id: "interval-dp",     label: "Interval DP",               section: "2c", track: "cp",   isNew: true },
+  { id: "interval-dp",     label: "Interval DP",               section: "2c", track: "both", isNew: true },
   { id: "coord-comp",      label: "Coordinate Compression",    section: "2d", track: "both", isNew: true, kind: "utility" },
   { id: "sparse-table",    label: "Sparse Table",              section: "2d", track: "cp",   isNew: true },
   { id: "fenwick",         label: "Fenwick Tree (BIT)",        section: "2d", track: "both", isNew: true },
-  { id: "seg-tree",        label: "Segment Tree",              section: "2d", track: "both", isNew: true },
+  { id: "seg-tree",        label: "Segment Tree",              section: "2d", track: "cp",   isNew: true },
   { id: "number-theory",   label: "Number Theory",             section: "2e", track: "both", isNew: true },
   { id: "combinatorics",   label: "Combinatorics",             section: "2e", track: "both", isNew: true },
   { id: "probability",     label: "Probability & Expected Value", section: "2e", track: "both", isNew: true },
   { id: "geometry",        label: "Geometry Basics",           section: "2e", track: "interview" },
   { id: "game-theory",     label: "Game Theory",               section: "2e", track: "cp",   isNew: true },
+  { id: "strings",         label: "Strings & Palindromes",     section: "2f", track: "interview", isNew: true },
 ];
 
 const EDGES: [string, string][] = [
@@ -148,6 +151,7 @@ const EDGES: [string, string][] = [
   ["number-theory","combinatorics"],
   ["combinatorics","probability"],["combinatorics","game-theory"],
   ["probability","game-theory"],
+  ["two-pointers","strings"],["sliding-window","strings"],
 ];
 
 const ORDER: Record<string, number> = {
@@ -164,7 +168,7 @@ const ORDER: Record<string, number> = {
   "bitmask-dp": 31,   "interval-dp": 32,    "coord-comp": 33,
   "sparse-table": 34, "fenwick": 35,        "seg-tree": 36,
   "number-theory": 37,"combinatorics": 38,  "probability": 39,
-  "geometry": 40,     "game-theory": 41,
+  "geometry": 40,     "game-theory": 41,    "strings": 42,
 };
 
 type FilterTrack = "all" | "interview" | "cp";
@@ -479,7 +483,7 @@ export default function RoadmapPage() {
       <header className="flex items-center gap-3 flex-wrap">
         <div>
           <h1 className="text-2xl font-semibold tracking-tight">DSA Roadmap</h1>
-          <p className="text-sm text-zinc-500 mt-0.5">41 modules · prerequisite-locked learning path</p>
+          <p className="text-sm text-zinc-500 mt-0.5">42 modules · prerequisite-locked learning path</p>
         </div>
 
         <div className="ml-auto flex items-center gap-3 flex-wrap">
