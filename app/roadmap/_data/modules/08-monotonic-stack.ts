@@ -4,9 +4,9 @@ export const monotonicStack: Module = {
   id: "monotonic-stack",
   num: 8,
   name: "Monotonic Stack",
-  section: "1",
+  section: "1b",
   track: "both",
-  order: 8,
+  order: 9,
   prereqIds: ["stack", "two-pointers"],
   isNew: true,
   resources: [

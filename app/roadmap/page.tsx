@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import Link from "next/link";
 import { ModuleModal } from "./_components/module-modal";
 import {
@@ -37,9 +37,16 @@ function computeUnlocks(id: string): number {
 
 const REQUIRED_PROBLEMS = 5;
 
+// Simplified SM-2 schedule: 1d after 1st solve, 7d after 2nd+. For v1 the
+// roadmap stores only the latest lastSolvedAt per problem (no review-count
+// history), so the practical "due at" used by the engine is lastSolvedAt + 7d.
+// This is the conservative flat interval mentioned in the spec.
+const REVIEW_WINDOW_MS = 7 * 24 * 60 * 60 * 1000;
+
 export default function RoadmapPage() {
   const [completed, setCompleted] = useState<Set<string>>(new Set());
   const [problemsSolved, setProblemsSolved] = useState<Record<string, number[]>>({});
+  const [problemsSolvedAt, setProblemsSolvedAt] = useState<Record<string, Record<string, number>>>({});
   const [currentTrack, setCurrentTrack] = useState<FilterTrack>("all");
   const [hydrated, setHydrated] = useState(false);
   const [activeModule, setActiveModule] = useState<{ id: string; title: string } | null>(null);
@@ -48,10 +55,12 @@ export default function RoadmapPage() {
   useEffect(() => {
     const saved = JSON.parse(localStorage.getItem("dsa-v1-completed") || "[]");
     const solved = JSON.parse(localStorage.getItem("dsa-v1-problems-solved") || "{}");
+    const solvedAt = JSON.parse(localStorage.getItem("dsa-v1-problems-solved-at") || "{}");
     const savedTrack = (localStorage.getItem("dsa-v1-track") || "all") as FilterTrack;
     const savedLastVisited = localStorage.getItem("dsa-v1-last-visited");
     setCompleted(new Set(saved));
     setProblemsSolved(solved);
+    setProblemsSolvedAt(solvedAt);
     setCurrentTrack(savedTrack);
     setLastVisitedModule(savedLastVisited || null);
     setHydrated(true);
@@ -67,6 +76,10 @@ export default function RoadmapPage() {
           localStorage.getItem("dsa-v1-problems-solved") || "{}",
         );
         setProblemsSolved(fresh);
+        const freshAt = JSON.parse(
+          localStorage.getItem("dsa-v1-problems-solved-at") || "{}",
+        );
+        setProblemsSolvedAt(freshAt);
       } catch { /* ignore */ }
     }
     window.addEventListener("roadmap-progress-changed", onProgress);
@@ -82,6 +95,24 @@ export default function RoadmapPage() {
     return node.track === "both" || node.track === currentTrack;
   }
 
+  // Cache unlocks per node — EDGES is constant for the session.
+  const unlocksCache = useMemo(() => {
+    const m: Record<string, number> = {};
+    for (const n of NODES) m[n.id] = computeUnlocks(n.id);
+    return m;
+  }, []);
+  const unlocksOf = (id: string) => unlocksCache[id] ?? 0;
+
+  // Per-module mastery target: prereq-hubs (high downstream unlock count)
+  // require more solved problems to count as "done". Leaf modules keep the
+  // base REQUIRED_PROBLEMS threshold.
+  function masteryTarget(id: string): number {
+    const total = PROBLEM_COUNTS[id] ?? 0;
+    if (total <= 0) return 0;
+    const u = unlocksOf(id);
+    return Math.min(REQUIRED_PROBLEMS + Math.max(0, u - 3), total);
+  }
+
   // Foundations is always done — it's a reference checklist, not a gate.
   // A module is "done" if manually marked complete OR ≥ min(5, total) problems
   // solved. The min handles modules with fewer than 5 problems consistently
@@ -89,8 +120,7 @@ export default function RoadmapPage() {
   function isModuleDone(id: string): boolean {
     if (id === "foundations") return true;
     if (completed.has(id)) return true;
-    const total = PROBLEM_COUNTS[id] ?? 0;
-    const target = Math.min(REQUIRED_PROBLEMS, total);
+    const target = masteryTarget(id);
     if (target === 0) return false;
     return (problemsSolved[id]?.length ?? 0) >= target;
   }
@@ -122,9 +152,11 @@ export default function RoadmapPage() {
     if (!confirm("Reset all progress?")) return;
     setCompleted(new Set());
     setProblemsSolved({});
+    setProblemsSolvedAt({});
     setLastVisitedModule(null);
     localStorage.removeItem("dsa-v1-completed");
     localStorage.removeItem("dsa-v1-problems-solved");
+    localStorage.removeItem("dsa-v1-problems-solved-at");
     localStorage.removeItem("dsa-v1-last-visited");
   }
 
@@ -144,13 +176,13 @@ export default function RoadmapPage() {
     .filter(g => g.modules.length > 0);
 
   // ── Recommendation engine ───────────────────────────────────────────────────
-  // Picks the highest-yield action across two pools:
+  // Picks the highest-yield action across three pools:
   //   EXPAND      — open a new module to build breadth.
-  //   CONSOLIDATE — return to a 5/N module to finish the checkpoint (depth).
-  // Each pool is scored independently; the higher max wins. Direct downstream
-  // blockers (the next expand module's checkpoint needs an unfinished pattern)
-  // give consolidate enough lift to override expand naturally via the weights.
-  type Mode = "expand" | "consolidate";
+  //   CONSOLIDATE — return to a target/N module to finish the checkpoint.
+  //   REVIEW      — re-solve a decayed problem in a finished module (retention).
+  // Each pool is scored independently; the higher max wins. Pool ceilings are
+  // tuned to ~1.0-1.15 so the comparison is fair.
+  type Mode = "expand" | "consolidate" | "review";
   type Scored = {
     id: string;
     score: number;
@@ -172,14 +204,47 @@ export default function RoadmapPage() {
       if (n.id === lastVisitedModule) return false;
       const total = PROBLEM_COUNTS[n.id] ?? 0;
       if (total <= 0) return false;
-      const target = Math.min(REQUIRED_PROBLEMS, total);
+      const target = masteryTarget(n.id);
       const solved = problemsSolved[n.id]?.length ?? 0;
       return solved >= target
         && solved < total
         && !completed.has(n.id);
     });
 
-    if (expandCandidates.length === 0 && consolidateCandidates.length === 0) return null;
+    // REVIEW_DUE pool: modules that are already mastered (isModuleDone)
+    // and have at least one solved problem whose lastSolvedAt is older
+    // than the review window. Skipped when timestamps absent.
+    const now = Date.now();
+    type DueInfo = { node: Node; overdueCount: number; maxOverdueAgo: number; checkpointDue: boolean; solvedCount: number };
+    const reviewDueInfos: DueInfo[] = [];
+    for (const n of visibleNodes) {
+      if (!isModuleDone(n.id)) continue;
+      if (n.id === "foundations") continue;
+      if (n.id === lastVisitedModule) continue;
+      const solvedNums = problemsSolved[n.id] ?? [];
+      if (solvedNums.length === 0) continue;
+      const tsMap = problemsSolvedAt[n.id] ?? {};
+      let overdueCount = 0;
+      let maxOverdueAgo = 0;
+      let checkpointDue = false;
+      const total = PROBLEM_COUNTS[n.id] ?? 0;
+      for (const num of solvedNums) {
+        const ts = tsMap[String(num)];
+        if (typeof ts !== "number") continue;
+        const dueAt = ts + REVIEW_WINDOW_MS;
+        if (now > dueAt) {
+          overdueCount += 1;
+          const ago = now - dueAt;
+          if (ago > maxOverdueAgo) maxOverdueAgo = ago;
+          if (num === total) checkpointDue = true;
+        }
+      }
+      if (overdueCount > 0) {
+        reviewDueInfos.push({ node: n, overdueCount, maxOverdueAgo, checkpointDue, solvedCount: solvedNums.length });
+      }
+    }
+
+    if (expandCandidates.length === 0 && consolidateCandidates.length === 0 && reviewDueInfos.length === 0) return null;
 
     // "Current learning position" — MAX (not median) of completed orders + 1.
     // Max reflects how far you've actually explored via the DAG. Median
@@ -192,8 +257,12 @@ export default function RoadmapPage() {
       ? Math.max(...completedOrders) + 1
       : 1;
 
-    const allUnlocksPool = [...expandCandidates, ...consolidateCandidates];
-    const maxUnlocks = Math.max(1, ...allUnlocksPool.map(n => computeUnlocks(n.id)));
+    const allUnlocksPool = [
+      ...expandCandidates,
+      ...consolidateCandidates,
+      ...reviewDueInfos.map(d => d.node),
+    ];
+    const maxUnlocks = Math.max(1, ...allUnlocksPool.map(n => unlocksOf(n.id)));
     const maxProblems = Math.max(1, ...Object.values(PROBLEM_COUNTS));
 
     const trackScoreFor = (n: Node) => {
@@ -209,7 +278,7 @@ export default function RoadmapPage() {
 
     // ── EXPAND scoring (breadth) ──────────────────────────────────────────────
     const scoredExpand: Scored[] = expandCandidates.map(n => {
-      const unlocks = computeUnlocks(n.id);
+      const unlocks = unlocksOf(n.id);
       const order = ORDER[n.id] || 99;
       const distance = Math.abs(order - currentPos);
 
@@ -328,14 +397,49 @@ export default function RoadmapPage() {
       };
     });
 
+    // ── REVIEW scoring (retention) ────────────────────────────────────────────
+    // Ceiling ≈ 1.00 (0.35 + 0.20 + 0.15 + 0.10 + 0.20). Surfaces when a
+    // mastered module has solved problems that have decayed past their review
+    // window. Plain-English reasons in retrieval voice.
+    const scoredReview: Scored[] = reviewDueInfos.map(info => {
+      const { node: n, overdueCount, maxOverdueAgo, checkpointDue, solvedCount } = info;
+      const retentionDeficit = Math.min(1, maxOverdueAgo / REVIEW_WINDOW_MS);
+      const criticality = unlocksOf(n.id) / maxUnlocks;
+      const accumulatedDecay = solvedCount > 0 ? Math.min(1, overdueCount / solvedCount) : 0;
+      const contributions = [
+        { label: `${overdueCount} problem${overdueCount === 1 ? "" : "s"} decayed past review window`, value: 0.35 * retentionDeficit },
+        { label: "high-leverage module due for review",                                                 value: 0.20 * criticality },
+        { label: "matches your current track",                                                          value: 0.15 * trackScoreFor(n) },
+        { label: "checkpoint due for review",                                                           value: checkpointDue ? 0.10 : 0 },
+        { label: "retention slipping across this module",                                               value: 0.20 * accumulatedDecay },
+      ];
+      return {
+        id: n.id,
+        score: contributions.reduce((s, c) => s + c.value, 0),
+        contributions,
+      };
+    });
+
     const bestExpand = sortedExpand[0];
     const bestConsolidate = scoredConsolidate.sort((a, b) => b.score - a.score)[0];
+    const bestReview = [...scoredReview].sort((a, b) => b.score - a.score)[0];
 
     const expandScore = bestExpand?.score ?? -Infinity;
     const consolidateScore = bestConsolidate?.score ?? -Infinity;
+    const reviewScore = bestReview?.score ?? -Infinity;
 
-    const winner = consolidateScore > expandScore ? bestConsolidate : bestExpand;
-    const mode: Mode = winner === bestConsolidate ? "consolidate" : "expand";
+    let winner: Scored;
+    let mode: Mode;
+    if (reviewScore >= expandScore && reviewScore >= consolidateScore && bestReview) {
+      winner = bestReview;
+      mode = "review";
+    } else if (consolidateScore >= expandScore && bestConsolidate) {
+      winner = bestConsolidate;
+      mode = "consolidate";
+    } else {
+      winner = bestExpand;
+      mode = "expand";
+    }
 
     const meaningful = winner.contributions
       .filter(c => c.value > 0.04)
@@ -343,9 +447,15 @@ export default function RoadmapPage() {
       .slice(0, 2)
       .map(c => c.label);
 
+    const fallback = mode === "review"
+      ? "review decayed problems"
+      : mode === "consolidate"
+      ? "finish what's started"
+      : "next available";
+
     return {
       id: winner.id,
-      reasons: meaningful.length > 0 ? meaningful : [mode === "consolidate" ? "finish what's started" : "next available"],
+      reasons: meaningful.length > 0 ? meaningful : [fallback],
       mode,
     };
   })();
@@ -442,7 +552,8 @@ export default function RoadmapPage() {
             .map(p => NODES.find(x => x.id === p)?.label);
           const isNext = n.id === nextId;
           const isRecommended = n.id === recommendedId;
-          const unlocks = computeUnlocks(n.id);
+          const isReviewRec = isRecommended && recommendation?.mode === "review";
+          const unlocks = unlocksOf(n.id);
 
           return (
             <div
@@ -461,7 +572,9 @@ export default function RoadmapPage() {
               }}
               className={[
                 "relative flex items-center gap-3 px-3 py-2.5 rounded-lg border transition-all",
-                isRecommended
+                isReviewRec
+                  ? "cursor-pointer border-cyan-500/60 bg-gradient-to-br from-cyan-950/30 via-zinc-900/40 to-zinc-900/30 shadow-[0_0_24px_rgba(34,211,238,0.18),inset_0_0_0_1px_rgba(34,211,238,0.12)] ring-1 ring-cyan-500/30 hover:shadow-[0_0_32px_rgba(34,211,238,0.28),inset_0_0_0_1px_rgba(34,211,238,0.2)]"
+                  : isRecommended
                   ? "cursor-pointer border-amber-500/60 bg-gradient-to-br from-amber-950/30 via-zinc-900/40 to-zinc-900/30 shadow-[0_0_24px_rgba(251,191,36,0.18),inset_0_0_0_1px_rgba(251,191,36,0.12)] ring-1 ring-amber-500/30 hover:shadow-[0_0_32px_rgba(251,191,36,0.28),inset_0_0_0_1px_rgba(251,191,36,0.2)]"
                   : state === "locked"
                   ? "cursor-default border-zinc-800/30 bg-zinc-900/10"
@@ -474,12 +587,12 @@ export default function RoadmapPage() {
             >
               <div
                 className="text-base font-extrabold min-w-[28px] text-center tabular-nums"
-                style={{ color: state === "locked" ? "#3f3f46" : isRecommended ? "#fbbf24" : sectionColor }}
+                style={{ color: state === "locked" ? "#3f3f46" : isReviewRec ? "#22d3ee" : isRecommended ? "#fbbf24" : sectionColor }}
               >
                 {num}
               </div>
 
-              <div className={`w-px h-7 flex-shrink-0 ${isRecommended ? "bg-amber-700/40" : state === "locked" ? "bg-zinc-800/40" : "bg-zinc-800"}`} />
+              <div className={`w-px h-7 flex-shrink-0 ${isReviewRec ? "bg-cyan-700/40" : isRecommended ? "bg-amber-700/40" : state === "locked" ? "bg-zinc-800/40" : "bg-zinc-800"}`} />
 
               <div className="flex-1 min-w-0">
                 <div
@@ -495,17 +608,32 @@ export default function RoadmapPage() {
                   {n.label}
                 </div>
                 <div className={`text-[11px] mt-0.5 ${state === "locked" ? "text-zinc-700" : "text-zinc-600"}`}>{SECTION_NAMES[n.section]}</div>
-                {isRecommended && recommendation && (
-                  <div className="mt-1">
-                    <div className="text-[10px] font-bold text-amber-400 uppercase tracking-wider flex items-center gap-1">
-                      <span>{recommendation.mode === "consolidate" ? "↻" : "★"}</span>
-                      <span>{recommendation.mode === "consolidate" ? "Consolidate" : "Expand"}</span>
+                {isRecommended && recommendation && (() => {
+                  const isReview = recommendation.mode === "review";
+                  const labelColor = isReview ? "text-cyan-300" : "text-amber-400";
+                  const reasonColor = isReview ? "text-cyan-500/80" : "text-amber-600/80";
+                  const icon = isReview
+                    ? "↻"
+                    : recommendation.mode === "consolidate"
+                    ? "↻"
+                    : "★";
+                  const label = isReview
+                    ? "Review"
+                    : recommendation.mode === "consolidate"
+                    ? "Consolidate"
+                    : "Expand";
+                  return (
+                    <div className="mt-1">
+                      <div className={`text-[10px] font-bold ${labelColor} uppercase tracking-wider flex items-center gap-1`}>
+                        <span>{icon}</span>
+                        <span>{label}</span>
+                      </div>
+                      <div className={`text-[9px] ${reasonColor} mt-0.5 truncate`}>
+                        {recommendation.reasons.join(" · ")}
+                      </div>
                     </div>
-                    <div className="text-[9px] text-amber-600/80 mt-0.5 truncate">
-                      {recommendation.reasons.join(" · ")}
-                    </div>
-                  </div>
-                )}
+                  );
+                })()}
                 {isNext && !isRecommended && (
                   <div className="text-[10px] font-bold text-emerald-400 uppercase tracking-wider mt-0.5">
                     up next

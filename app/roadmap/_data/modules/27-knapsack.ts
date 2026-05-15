@@ -4,9 +4,9 @@ export const knapsack: Module = {
   id: "knapsack",
   num: 27,
   name: "Knapsack Family",
-  section: "2c",
+  section: "2b",
   track: "both",
-  order: 27,
+  order: 21,
   prereqIds: ["dp-intro"],
   isNew: true,
   resources: [

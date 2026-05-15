@@ -4,9 +4,9 @@ export const mst: Module = {
   id: "mst",
   num: 23,
   name: "MST",
-  section: "2a",
+  section: "2c",
   track: "cp",
-  order: 23,
+  order: 28,
   prereqIds: ["union-find", "shortest-paths"],
   isNew: true,
   resources: [

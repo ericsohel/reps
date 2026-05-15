@@ -4,9 +4,9 @@ export const topoSort: Module = {
   id: "topo-sort",
   num: 20,
   name: "Topological Sort",
-  section: "2a",
+  section: "2c",
   track: "both",
-  order: 20,
+  order: 25,
   prereqIds: ["graph-traversal"],
   isNew: true,
   resources: [

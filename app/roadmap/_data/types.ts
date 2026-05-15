@@ -3,7 +3,7 @@
 // NODES, EDGES, ORDER, PROBLEM_COUNTS are derived from MODULES — never edited directly.
 
 export type Track = "both" | "interview" | "cp";
-export type Section = "0" | "1" | "2a" | "2b" | "2c" | "2d" | "2e" | "2f" | "2g";
+export type Section = "0" | "1a" | "1b" | "1c" | "1d" | "2a" | "2b" | "2c" | "2d" | "2e" | "2f" | "2g" | "2h";
 export type Difficulty = "easy" | "medium" | "hard";
 export type Role = "baseline" | "extension" | "combination" | "checkpoint";
 

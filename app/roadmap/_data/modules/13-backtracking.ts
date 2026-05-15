@@ -5,9 +5,9 @@ export const backtracking: Module = {
   num: 13,
   name: "Recursion & Backtracking",
   label: "Recursion &\nBacktracking",
-  section: "1",
+  section: "1d",
   track: "both",
-  order: 13,
+  order: 14,
   prereqIds: ["foundations"],
   resources: [
     { title: "USACO Guide — Complete Search with Recursion (Bronze)", url: "https://usaco.guide/bronze/complete-rec" },

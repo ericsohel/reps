@@ -11,9 +11,9 @@ export const shortestPaths: Module = {
   id: "shortest-paths",
   num: 22,
   name: "Shortest Paths",
-  section: "2a",
+  section: "2c",
   track: "both",
-  order: 22,
+  order: 27,
   prereqIds: ["graph-traversal", "heap"],
   isNew: true,
   resources: [

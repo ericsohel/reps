@@ -4,9 +4,9 @@ export const dp2d: Module = {
   id: "dp-2d",
   num: 26,
   name: "2D / Grid DP",
-  section: "2c",
+  section: "2d",
   track: "both",
-  order: 26,
+  order: 30,
   prereqIds: ["dp-intro"],
   resources: [
     { title: "USACO Guide — Paths / Grids DP (Gold)", url: "https://usaco.guide/gold/paths-grids" },

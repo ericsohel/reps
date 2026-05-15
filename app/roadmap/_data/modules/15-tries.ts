@@ -4,9 +4,9 @@ export const tries: Module = {
   id: "tries",
   num: 15,
   name: "Tries",
-  section: "1",
+  section: "1d",
   track: "both",
-  order: 15,
+  order: 16,
   prereqIds: ["trees"],
   resources: [
     { title: "USACO Guide — String Searching / Tries (Gold)", url: "https://usaco.guide/gold/string-search" },

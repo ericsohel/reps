@@ -4,9 +4,9 @@ export const twoPointers: Module = {
   id: "two-pointers",
   num: 5,
   name: "Two Pointers",
-  section: "1",
+  section: "1b",
   track: "both",
-  order: 5,
+  order: 6,
   prereqIds: ["arrays-hashing", "sorting"],
   resources: [
     { title: "USACO Guide — Two Pointers (Silver)", url: "https://usaco.guide/silver/two-pointers" },

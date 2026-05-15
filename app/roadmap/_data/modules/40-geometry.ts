@@ -4,7 +4,7 @@ export const geometry: Module = {
   id: "geometry",
   num: 40,
   name: "Geometry Basics",
-  section: "2e",
+  section: "2f",
   track: "cp",
   order: 40,
   prereqIds: ["arrays-hashing"],

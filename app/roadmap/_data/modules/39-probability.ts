@@ -5,7 +5,7 @@ export const probability: Module = {
   num: 39,
   name: "Probability & Expected Value",
   label: "Probability &\nExpected Value",
-  section: "2e",
+  section: "2f",
   track: "both",
   order: 39,
   prereqIds: ["combinatorics"],

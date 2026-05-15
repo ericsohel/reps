@@ -4,7 +4,7 @@ export const design: Module = {
   id: "design",
   num: 43,
   name: "Design & OOD",
-  section: "2g",
+  section: "2h",
   track: "interview",
   order: 43,
   prereqIds: ["arrays-hashing", "linked-list", "heap"],

@@ -12,9 +12,9 @@ export const trees: Module = {
   id: "trees",
   num: 14,
   name: "Trees",
-  section: "1",
+  section: "1d",
   track: "both",
-  order: 14,
+  order: 15,
   prereqIds: ["backtracking", "stack"],
   resources: [
     { title: "USACO Guide — Introduction to Trees (Silver)", url: "https://usaco.guide/silver/intro-tree" },

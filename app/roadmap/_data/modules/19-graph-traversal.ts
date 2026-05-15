@@ -4,9 +4,9 @@ export const graphTraversal: Module = {
   id: "graph-traversal",
   num: 19,
   name: "Graph Traversal",
-  section: "2a",
+  section: "2c",
   track: "both",
-  order: 19,
+  order: 24,
   prereqIds: ["trees", "binary-search"],
   resources: [
     { title: "USACO Guide — Graph Traversal (Silver)", url: "https://usaco.guide/silver/graph-traversal" },

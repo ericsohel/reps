@@ -4,9 +4,9 @@ export const slidingWindow: Module = {
   id: "sliding-window",
   num: 6,
   name: "Sliding Window",
-  section: "1",
+  section: "1b",
   track: "both",
-  order: 6,
+  order: 7,
   prereqIds: ["two-pointers"],
   resources: [
     { title: "USACO Guide — Sliding Window (Gold)", url: "https://usaco.guide/gold/sliding-window" },

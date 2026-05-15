@@ -4,7 +4,7 @@ export const segTree: Module = {
   id: "seg-tree",
   num: 36,
   name: "Segment Tree",
-  section: "2d",
+  section: "2e",
   track: "cp",
   order: 36,
   prereqIds: ["fenwick"],

@@ -4,9 +4,9 @@ export const heap: Module = {
   id: "heap",
   num: 16,
   name: "Heap / Priority Queue",
-  section: "1",
+  section: "1d",
   track: "both",
-  order: 16,
+  order: 17,
   prereqIds: ["trees", "linked-list"],
   resources: [
     { title: "USACO Guide — Priority Queues (Silver)", url: "https://usaco.guide/silver/priority-queues" },

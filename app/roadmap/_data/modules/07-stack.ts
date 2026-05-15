@@ -4,9 +4,9 @@ export const stack: Module = {
   id: "stack",
   num: 7,
   name: "Stack",
-  section: "1",
+  section: "1b",
   track: "both",
-  order: 7,
+  order: 8,
   prereqIds: ["arrays-hashing"],
   resources: [
     { title: "USACO Guide — Stacks (Gold)", url: "https://usaco.guide/gold/stacks" },

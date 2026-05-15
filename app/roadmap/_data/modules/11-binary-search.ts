@@ -4,9 +4,9 @@ export const binarySearch: Module = {
   id: "binary-search",
   num: 11,
   name: "Binary Search",
-  section: "1",
+  section: "1c",
   track: "both",
-  order: 11,
+  order: 12,
   prereqIds: ["arrays-hashing", "sorting", "two-pointers"],
   resources: [
     { title: "USACO Guide — Binary Search on Sorted Array (Silver)", url: "https://usaco.guide/silver/binary-search-sorted-array" },

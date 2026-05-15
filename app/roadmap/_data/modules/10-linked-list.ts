@@ -4,9 +4,9 @@ export const linkedList: Module = {
   id: "linked-list",
   num: 10,
   name: "Linked List",
-  section: "1",
+  section: "1a",
   track: "both",
-  order: 10,
+  order: 11,
   prereqIds: ["arrays-hashing"],
   resources: [
     { title: "Wikipedia — Floyd's cycle detection, \"Tortoise and hare\" section", url: "https://en.wikipedia.org/wiki/Cycle_detection#Floyd's_tortoise_and_hare" },

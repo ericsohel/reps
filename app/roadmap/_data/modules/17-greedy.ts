@@ -4,9 +4,9 @@ export const greedy: Module = {
   id: "greedy",
   num: 17,
   name: "Greedy",
-  section: "2b",
+  section: "2a",
   track: "both",
-  order: 17,
+  order: 18,
   prereqIds: ["arrays-hashing", "sorting"],
   resources: [
     { title: "USACO Guide — Intro to Greedy (Bronze)", url: "https://usaco.guide/bronze/intro-greedy" },

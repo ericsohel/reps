@@ -5,9 +5,9 @@ export const intervals: Module = {
   num: 18,
   name: "Intervals & Sweep Line",
   label: "Intervals &\nSweep Line",
-  section: "2b",
+  section: "2a",
   track: "both",
-  order: 18,
+  order: 19,
   prereqIds: ["greedy", "heap"],
   isNew: true,
   resources: [

@@ -4,9 +4,9 @@ export const dpIntro: Module = {
   id: "dp-intro",
   num: 25,
   name: "DP Intro / 1D",
-  section: "2c",
+  section: "2b",
   track: "both",
-  order: 25,
+  order: 20,
   prereqIds: ["backtracking"],
   resources: [
     { title: "USACO Guide — Intro to DP (Gold)", url: "https://usaco.guide/gold/intro-dp" },

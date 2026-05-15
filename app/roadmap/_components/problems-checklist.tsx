@@ -128,6 +128,22 @@ export function ProblemsChecklist({
       if (next.size === 0) delete data[moduleId];
       else data[moduleId] = [...next].sort((a, b) => a - b);
       localStorage.setItem(storageKey, JSON.stringify(data));
+
+      // Parallel timestamp map: moduleId -> { problemNum -> epochMs }.
+      // Tracks last-solved time per problem for the SRS REVIEW_DUE pool.
+      const tsKey = "dsa-v1-problems-solved-at";
+      const tsAll = JSON.parse(localStorage.getItem(tsKey) || "{}") as
+        Record<string, Record<string, number>>;
+      const tsForModule = { ...(tsAll[moduleId] || {}) };
+      if (wasSolved) {
+        delete tsForModule[String(num)];
+      } else {
+        tsForModule[String(num)] = Date.now();
+      }
+      if (Object.keys(tsForModule).length === 0) delete tsAll[moduleId];
+      else tsAll[moduleId] = tsForModule;
+      localStorage.setItem(tsKey, JSON.stringify(tsAll));
+
       // Notify the roadmap page so card states update without a reload.
       window.dispatchEvent(new Event("roadmap-progress-changed"));
     } catch {

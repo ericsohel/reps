@@ -4,9 +4,9 @@ export const advGraphs: Module = {
   id: "adv-graphs",
   num: 24,
   name: "Advanced Graphs",
-  section: "2a",
+  section: "2c",
   track: "cp",
-  order: 24,
+  order: 29,
   prereqIds: ["topo-sort", "shortest-paths"],
   resources: [
     { title: "USACO Guide — SCC (Advanced)", url: "https://usaco.guide/adv/SCC" },

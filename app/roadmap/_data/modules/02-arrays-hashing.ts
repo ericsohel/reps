@@ -4,7 +4,7 @@ export const arraysHashing: Module = {
   id: "arrays-hashing",
   num: 2,
   name: "Arrays & Hashing",
-  section: "1",
+  section: "1a",
   track: "both",
   order: 2,
   prereqIds: ["foundations"],

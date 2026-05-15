@@ -4,7 +4,7 @@ export const intervalDp: Module = {
   id: "interval-dp",
   num: 32,
   name: "Interval DP",
-  section: "2c",
+  section: "2d",
   track: "cp",
   order: 32,
   prereqIds: ["dp-intro"],
