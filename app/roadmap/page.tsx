@@ -339,11 +339,7 @@ export default function RoadmapPage() {
       };
     });
 
-    // Top expand candidate — used to focus the consolidate blocker signal.
-    // We only care if a consolidate-target is blocking the *thing we'd actually
-    // do next*, not every available downstream.
     const sortedExpand = [...scoredExpand].sort((a, b) => b.score - a.score);
-    const topExpandId = sortedExpand[0]?.id;
 
     // Learning debt: more than 2 partial (5/N) modules signals accumulated
     // depth gap. The 3rd+ partial each adds a small global bias toward
@@ -359,12 +355,11 @@ export default function RoadmapPage() {
       const remaining = total - solved;
       const order = ORDER[n.id] || 99;
 
-      // Direct blocker: is this module a prereq of the TOP expand candidate
-      // specifically (not just any available)? Tighter signal — only fires
-      // when this partial is genuinely in the way of the next planned move.
-      const blocksTopExpand = topExpandId
-        ? EDGES.some(([s, t]) => s === n.id && t === topExpandId)
-        : false;
+      // NOTE: we intentionally do NOT have a "blocks top expand" signal here.
+      // Every consolidate candidate is already "done" (solved ≥ 5), so all of
+      // its dependents are already unlocked — it cannot block anything. An edge
+      // check here fires spuriously and pushes consolidate above expand when
+      // the user should simply be moving forward.
 
       // Spaced decay: how many modules of distance since we paused here?
       // Full decay at distance >= 5 modules past current position.
@@ -392,7 +387,6 @@ export default function RoadmapPage() {
       const wouldCloseSection = sectionPeersComplete && sectionPeers.length > 1 ? 1 : 0;
 
       const contributions = [
-        { label: "blocks next checkpoint", value: 0.40 * (blocksTopExpand ? 1 : 0) },
         { label: "paused while ago",       value: 0.20 * decay },
         { label: "track alignment",        value: 0.10 * trackScoreFor(n) },
         { label: "few problems left",      value: 0.10 * remainingScore },
