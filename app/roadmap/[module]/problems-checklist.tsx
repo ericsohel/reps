@@ -242,7 +242,7 @@ export function ProblemsChecklist({
                     {p.num}
                   </td>
                   <td className="px-3 py-2.5 text-[13px] align-top">
-                    <a
+                    {p.url ? <a
                       href={p.url}
                       target="_blank"
                       rel="noopener noreferrer"
@@ -254,7 +254,7 @@ export function ProblemsChecklist({
                       }`}
                     >
                       {p.title}
-                    </a>
+                    </a> : <span className={isDone ? "text-zinc-500" : "text-zinc-200"}>{p.title}</span>}
                     {p.isCheckpoint && (
                       <span className="ml-2 inline-block text-[10px] font-bold uppercase tracking-widest text-amber-500">
                         ★ checkpoint

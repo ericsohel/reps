@@ -2,6 +2,7 @@
 // skill checklist, not a problem set, so no progress badge is shown.
 // Update when a module's problem list changes.
 export const PROBLEM_COUNTS: Record<string, number> = {
+  "foundations":     8,
   "arrays-hashing":  7,
   "sorting":         7,
   "prefix-sums":     8,

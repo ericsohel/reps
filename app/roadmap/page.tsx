@@ -552,7 +552,10 @@ export default function RoadmapPage() {
               key={n.id}
               onClick={() => {
                 if (state === "locked") return;
-                if (PROBLEM_COUNTS[n.id]) {
+                // Foundations has its own dedicated checklist page
+                if (n.id === "foundations" && MODULE_PAGES[n.id]) {
+                  window.location.href = MODULE_PAGES[n.id];
+                } else if (PROBLEM_COUNTS[n.id]) {
                   setActiveModule({ id: n.id, title: n.label });
                 } else if (MODULE_PAGES[n.id]) {
                   window.location.href = MODULE_PAGES[n.id];
@@ -659,7 +662,7 @@ export default function RoadmapPage() {
               </div>
 
               <div className="flex items-center gap-2 flex-shrink-0">
-                {!PROBLEM_COUNTS[n.id] && MODULE_PAGES[n.id] && (
+                {n.id === "foundations" && MODULE_PAGES[n.id] && (
                   <Link
                     href={MODULE_PAGES[n.id]}
                     onClick={e => e.stopPropagation()}
