@@ -109,7 +109,9 @@ while lo < hi:
 return lo
 ```
 
-`feasible(x) = "can we achieve minimum ≥ x?"`. The `+ 1` in `mid` prevents an infinite loop when `lo == hi - 1`.
+`feasible(x) = "can we achieve minimum ≥ x?"`. The `+ 1` in `mid` prevents an infinite loop when `lo == hi - 1` and `feasible(mid)` is True (without it, `mid = lo`, `lo = mid` keeps `lo` unchanged).
+
+The canonical case is LC 1552 Magnetic Force Between Two Balls: place m balls at given positions to maximise the minimum pairwise distance. Binary search on the distance d; feasibility is "after sorting positions, greedily place a ball at the first viable spot — is it possible to place ≥ m of them?". The greedy choice (always take the leftmost spot ≥ last + d) is what the exchange argument from module 17 will later formalise.
 
 ### Recognising the pattern ([atlas](00-patterns.md#binary-search-on-monotonic-predicate))
 
@@ -224,20 +226,20 @@ def maximise_min(...):
 
 ## Step 5 — Problems
 
-The skill being trained is recognising the pattern and writing the feasibility check. Every problem has the same outer skeleton; the variation is in the predicate.
+The skill being trained is recognising the pattern and writing the feasibility check. Every problem has the same outer skeleton; the **feasibility shape** is what varies — and that's what each "what it teaches" cell names.
 
 Sources: **NC150** = NeetCode 150 · **UG** = USACO Guide curated · ⭐ = USACO Guide starred
 
 | # | Problem | Source | Difficulty | List | Role | What it teaches |
 |---|---------|--------|-----------|------|------|-----------------|
-| 1 | [Array Division](https://cses.fi/problemset/task/1085) | CSES | Easy | UG ⭐ | baseline | Your Step 1 problem — greedy partition feasibility |
-| 2 | [Koko Eating Bananas](https://leetcode.com/problems/koko-eating-bananas/) | LC 875 | Medium | NC150 | reskin | Same outer template, new feasibility — ceiling-division sum |
-| 3 | [Factory Machines](https://cses.fi/problemset/task/1620) | CSES | Easy | UG | extension | Throughput sum across machines — `sum(T // k_i) >= t` |
-| 4 | [The Meeting Place Cannot Be Changed](https://codeforces.com/contest/782/problem/B) | CF 782B | Medium | UG ⭐ | extension | Feasibility on sorted positions — find a common reachable point within time T |
-| 5 | [Social Distancing](http://www.usaco.org/index.php?page=viewproblem2&cpid=1038) | USACO Silver | Medium | UG | extension | **Maximise-minimum** direction — sort intervals, greedily place k cows with gap ≥ d |
-| 6 | [Maximum Median](https://codeforces.com/contest/1201/problem/C) | CF 1201C | Easy | UG | extension | Feasibility uses a prefix-sum trick — count operations to lift second-half medians above x |
-| 7 | [Magic Ship](https://codeforces.com/problemset/problem/1117/C) | CF 1117C | Medium | UG ⭐ | extension | Feasibility uses prefix sums + modular arithmetic — cyclic wind pattern over T days |
-| 8 | [Angry Cows (Gold)](http://www.usaco.org/index.php?page=viewproblem2&cpid=597) | USACO Gold | Hard | UG ⭐ | **checkpoint** | Feasibility itself is O(n log n) — chain-reaction simulation with sorting and greedy |
+| 1 | [Array Division](https://cses.fi/problemset/task/1085) | CSES | Easy | UG ⭐ | baseline | Greedy-contiguous-partition feasibility — your Step 1 problem; `parts ≤ k` if you fill each subarray up to X |
+| 2 | [Koko Eating Bananas](https://leetcode.com/problems/koko-eating-bananas/) | LC 875 | Medium | NC150 | reskin | Independent-per-element feasibility — `sum(ceil(p / k)) ≤ h`; same outer template, different feasibility shape |
+| 3 | [Minimum Number of Days to Make m Bouquets](https://leetcode.com/problems/minimum-number-of-days-to-make-m-bouquets/) | LC 1482 | Medium | new | extension | New feasibility shape: scan for **k adjacent bloomed flowers** and count m bouquets — not a sum, a structural streak |
+| 4 | [The Meeting Place Cannot Be Changed](https://codeforces.com/contest/782/problem/B) | CF 782B | Medium | UG ⭐ | extension | Interval-intersection feasibility — at time T each friend's reachable interval is `[pos_i − speed_i·T, pos_i + speed_i·T]`; T is feasible iff the intersection is non-empty |
+| 5 | [Magnetic Force Between Two Balls](https://leetcode.com/problems/magnetic-force-between-two-balls/) | LC 1552 | Medium | new | extension | **Maximise-minimum** direction — sort positions, greedily place balls at the first viable spot, check count ≥ m; the canonical flipped-template problem |
+| 6 | [Maximum Median](https://codeforces.com/contest/1201/problem/C) | CF 1201C | Easy | UG | extension | Sort + cost-over-upper-half feasibility — the USACO Guide's featured example; cost to raise the median to x is `Σ_{i ≥ n/2} max(0, x − a[i])` |
+| 7 | [Magic Ship](https://codeforces.com/problemset/problem/1117/C) | CF 1117C | Medium | UG ⭐ | extension | Modular + cyclic-prefix feasibility — the wind pattern repeats every n days, so day T's displacement is `(T // n) · P_n + P_(T % n)` |
+| 8 | [Angry Cows (Gold)](http://www.usaco.org/index.php?page=viewproblem2&cpid=597) | USACO Gold | Hard | UG ⭐ | **checkpoint** | Feasibility itself is O(n log n) — chain-reaction simulation over sorted haybales + converging two-pointer over launch positions |
 
 **Checkpoint:** USACO Gold Angry Cows without hints. The outer binary search is routine. The leap is the feasibility function — given a launch power R, can a single cow flatten all the haybales? Simulate the chain reaction: sort haybales, scan outward from each launch position, propagate by R minus the gap travelled. The greedy choice of launch position is non-obvious and requires combining BS on answer (this module) with module 5's converging-two-pointer reasoning over the sorted positions.
 
