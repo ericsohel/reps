@@ -11,39 +11,32 @@ interface Props {
   onClose: () => void;
 }
 
-function ResourceLink({ line }: { line: string }) {
-  const m = line.match(/\[(.+?)\]\((.+?)\)/);
-  if (!m) return null;
-  return (
-    <a
-      href={m[2]}
-      target="_blank"
-      rel="noopener noreferrer"
-      className="block text-sm text-zinc-300 underline decoration-zinc-700 underline-offset-2 hover:text-emerald-400 hover:decoration-emerald-700 transition-colors mb-1.5"
-    >
-      {m[1]}
-    </a>
-  );
-}
-
 function Resources({ text }: { text: string }) {
-  const lines = text.split("\n").filter(l => l.trim());
-  const links = lines.filter(l => l.match(/\[.+\]\(.+\)/));
-  const prose = lines.filter(l => !l.match(/\[.+\]\(.+\)/) && !l.startsWith("#"));
-
-  if (links.length === 0) return null;
+  const links: { title: string; url: string }[] = [];
+  for (const m of text.matchAll(/\[(.+?)\]\((.+?)\)/g)) {
+    links.push({ title: m[1], url: m[2] });
+  }
+  if (!links.length) return null;
 
   return (
-    <div className="mb-5">
-      <p className="text-[11px] font-bold uppercase tracking-widest text-zinc-500 mb-2.5">
+    <div className="mb-5 border-b border-zinc-800/60 pb-5">
+      <p className="text-[10px] font-bold uppercase tracking-widest text-zinc-600 mb-2">
         Resources
       </p>
-      {prose.length > 0 && (
-        <p className="text-xs text-zinc-500 mb-2.5 leading-relaxed">
-          {prose[0].replace(/^\d+\.\s*/, "").replace(/\*\*/g, "")}
-        </p>
-      )}
-      {links.map((l, i) => <ResourceLink key={i} line={l} />)}
+      <div className="space-y-1">
+        {links.map((l, i) => (
+          <a
+            key={i}
+            href={l.url}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex items-center gap-2 py-1 text-sm text-zinc-400 no-underline hover:text-zinc-100 transition-colors group"
+          >
+            <span className="text-zinc-700 group-hover:text-zinc-500 transition-colors text-xs">↗</span>
+            {l.title}
+          </a>
+        ))}
+      </div>
     </div>
   );
 }
@@ -56,9 +49,9 @@ export function ModuleModal({ moduleId, title, onClose }: Props) {
   }, [moduleId]);
 
   useEffect(() => {
-    const handler = (e: KeyboardEvent) => { if (e.key === "Escape") onClose(); };
-    window.addEventListener("keydown", handler);
-    return () => window.removeEventListener("keydown", handler);
+    const h = (e: KeyboardEvent) => { if (e.key === "Escape") onClose(); };
+    window.addEventListener("keydown", h);
+    return () => window.removeEventListener("keydown", h);
   }, [onClose]);
 
   return (
@@ -68,23 +61,22 @@ export function ModuleModal({ moduleId, title, onClose }: Props) {
     >
       <div className="absolute inset-0 bg-black/60 backdrop-blur-[2px]" />
       <div
-        className="relative w-full sm:max-w-xl max-h-[82vh] overflow-y-auto bg-zinc-950 border border-zinc-800 rounded-t-2xl sm:rounded-2xl"
+        className="relative w-full sm:max-w-lg max-h-[80vh] overflow-y-auto bg-zinc-950 border border-zinc-800/80 rounded-t-2xl sm:rounded-2xl"
         onMouseDown={e => e.stopPropagation()}
       >
-        {/* Header */}
-        <div className="sticky top-0 z-10 flex items-center justify-between px-5 py-3.5 bg-zinc-950 border-b border-zinc-800/60">
-          <span className="text-sm font-semibold text-zinc-100 tracking-tight">{title}</span>
+        <div className="sticky top-0 z-10 flex items-center justify-between px-4 py-3 bg-zinc-950 border-b border-zinc-800/60">
+          <span className="text-sm font-medium text-zinc-100">{title}</span>
           <button
             onClick={onClose}
-            className="text-zinc-600 hover:text-zinc-300 transition-colors text-xl leading-none w-6 h-6 flex items-center justify-center"
+            className="text-zinc-600 hover:text-zinc-300 transition-colors w-6 h-6 flex items-center justify-center rounded hover:bg-zinc-800"
           >
             ×
           </button>
         </div>
 
-        <div className="px-5 py-4">
+        <div className="px-4 py-4">
           {!data ? (
-            <p className="text-sm text-zinc-600 py-4 text-center">Loading…</p>
+            <p className="text-sm text-zinc-600 py-6 text-center">Loading…</p>
           ) : (
             <>
               <Resources text={data.resources} />

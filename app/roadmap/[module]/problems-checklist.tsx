@@ -144,141 +144,84 @@ export function ProblemsChecklist({
     ? Math.min(100, (solvedCount / target) * 100)
     : 0;
 
+  const diffColor = (d: string | null, done: boolean) => {
+    if (!d) return "";
+    if (done) return d === "easy" ? "bg-emerald-800/50" : d === "medium" ? "bg-amber-800/50" : "bg-rose-800/50";
+    return d === "easy" ? "bg-emerald-500/70" : d === "medium" ? "bg-amber-500/70" : "bg-rose-500/70";
+  };
+
   return (
-    <div className="my-5">
-      <div
-        className={`mb-4 rounded-lg border px-4 py-3 transition-colors ${
-          unlocked
-            ? "border-emerald-900/50 bg-emerald-950/25"
-            : "border-zinc-800 bg-zinc-900/40"
-        }`}
-      >
-        <div className="flex items-center justify-between gap-3 flex-wrap">
-          <div className="text-sm">
-            <strong
-              className={
-                unlocked ? "text-emerald-300" : "text-zinc-200"
-              }
-            >
-              {hydrated ? solvedCount : "—"}
-            </strong>
-            <span className="text-zinc-500"> / {total} solved</span>
-            <span className="ml-2 text-xs text-zinc-600">
-              (need {target} to unlock)
-            </span>
-            {unlocked && (
-              <span className="ml-3 inline-flex items-center gap-1 text-[11px] font-bold uppercase tracking-widest text-emerald-400">
-                ✓ Next module unlocked
-              </span>
-            )}
-          </div>
-          {hydrated && !unlocked && (
-            <span className="text-xs text-zinc-500">
-              {remaining} more to go
-            </span>
-          )}
-        </div>
-        <div className="mt-2.5 h-1 rounded-full bg-zinc-800/80 overflow-hidden">
+    <div className="my-4">
+      {/* Progress bar */}
+      <div className="flex items-center gap-3 mb-3">
+        <div className="flex-1 h-1 rounded-full bg-zinc-800/70 overflow-hidden">
           <div
-            className={`h-full transition-all duration-300 ${
-              unlocked ? "bg-emerald-500/70" : "bg-zinc-600/60"
-            }`}
+            className={`h-full transition-all duration-300 ${unlocked ? "bg-emerald-500" : "bg-zinc-600/70"}`}
             style={{ width: `${progressPct}%` }}
           />
         </div>
+        <span className="text-[11px] tabular-nums text-zinc-500 flex-shrink-0">
+          <span className={unlocked ? "text-emerald-400 font-semibold" : "text-zinc-300"}>
+            {hydrated ? solvedCount : "—"}
+          </span>
+          {" / "}{total}
+          {unlocked
+            ? <span className="ml-1.5 text-emerald-500">✓</span>
+            : <span className="ml-1.5 text-zinc-600">({remaining} left)</span>
+          }
+        </span>
       </div>
 
-      <div className="overflow-x-auto rounded-lg border border-zinc-800">
-        <table className="w-full text-sm border-collapse">
-          <thead>
-            <tr className="bg-zinc-900/40">
-              <th className="text-left px-3 py-2 w-9 text-[11px] uppercase tracking-widest text-zinc-500 font-medium border-b border-zinc-800"></th>
-              <th className="text-left px-3 py-2 w-9 text-[11px] uppercase tracking-widest text-zinc-500 font-medium border-b border-zinc-800">
-                #
-              </th>
-              <th className="text-left px-3 py-2 text-[11px] uppercase tracking-widest text-zinc-500 font-medium border-b border-zinc-800">
-                Problem
-              </th>
-              {problems[0]?.extraHeaders.map((h, i) => (
-                <th
-                  key={i}
-                  className="text-left px-3 py-2 text-[11px] uppercase tracking-widest text-zinc-500 font-medium border-b border-zinc-800"
-                >
-                  {h}
-                </th>
-              ))}
-            </tr>
-          </thead>
-          <tbody>
-            {problems.map((p) => {
-              const isDone = hydrated && solved.has(p.num);
-              return (
-                <tr
-                  key={p.num}
-                  onClick={() => toggle(p.num)}
-                  className={`cursor-pointer border-b border-zinc-800/40 last:border-b-0 transition-colors ${
-                    isDone
-                      ? "bg-emerald-950/15 hover:bg-emerald-950/30"
-                      : p.isCheckpoint
-                      ? "bg-amber-950/10 hover:bg-zinc-900/40"
-                      : "hover:bg-zinc-900/40"
-                  }`}
-                >
-                  <td className="px-3 py-2.5 align-top">
-                    <input
-                      type="checkbox"
-                      checked={isDone}
-                      onChange={() => toggle(p.num)}
-                      onClick={(e) => e.stopPropagation()}
-                      aria-label={`Mark problem ${p.num} as solved`}
-                      className="w-4 h-4 rounded border-zinc-600 bg-zinc-900 text-emerald-500 focus:ring-emerald-500 focus:ring-offset-0 cursor-pointer accent-emerald-500"
-                    />
-                  </td>
-                  <td
-                    className={`px-3 py-2.5 text-[13px] font-mono align-top ${
-                      isDone ? "text-zinc-600" : "text-zinc-400"
+      {/* Problem list */}
+      <div className="space-y-0.5">
+        {problems.map((p) => {
+          const isDone = hydrated && solved.has(p.num);
+          return (
+            <div
+              key={p.num}
+              onClick={() => toggle(p.num)}
+              className={`flex items-center gap-2.5 px-2.5 py-2 rounded-lg cursor-pointer transition-all ${
+                isDone
+                  ? "bg-emerald-950/20"
+                  : "hover:bg-zinc-900/50"
+              }`}
+            >
+              <input
+                type="checkbox"
+                checked={isDone}
+                onChange={() => toggle(p.num)}
+                onClick={(e) => e.stopPropagation()}
+                className="w-3.5 h-3.5 flex-shrink-0 rounded border-zinc-700 bg-zinc-900 cursor-pointer accent-emerald-500"
+              />
+              <span className={`text-[11px] font-mono w-4 text-right flex-shrink-0 ${isDone ? "text-zinc-600" : "text-zinc-600"}`}>
+                {p.num}
+              </span>
+              {p.difficulty && (
+                <span className={`w-1.5 h-1.5 rounded-full flex-shrink-0 ${diffColor(p.difficulty, isDone)}`} />
+              )}
+              <span className="flex-1 min-w-0">
+                {p.url ? (
+                  <a
+                    href={p.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    onClick={(e) => e.stopPropagation()}
+                    className={`text-sm no-underline transition-colors truncate block ${
+                      isDone ? "text-zinc-500 hover:text-zinc-400" : "text-zinc-200 hover:text-emerald-400"
                     }`}
                   >
-                    {p.num}
-                  </td>
-                  <td className="px-3 py-2.5 text-[13px] align-top">
-                    {p.url ? <a
-                      href={p.url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      onClick={(e) => e.stopPropagation()}
-                      className={`underline decoration-zinc-700 underline-offset-2 transition-colors ${
-                        isDone
-                          ? "text-zinc-500 hover:text-zinc-400"
-                          : "text-zinc-200 hover:text-emerald-400 hover:decoration-emerald-700"
-                      }`}
-                    >
-                      {p.title}
-                    </a> : <span className={isDone ? "text-zinc-500" : "text-zinc-200"}>{p.title}</span>}
-                    {p.isCheckpoint && (
-                      <span className="ml-2 inline-block text-[10px] font-bold uppercase tracking-widest text-amber-500">
-                        ★ checkpoint
-                      </span>
-                    )}
-                  </td>
-                  {p.extraCells.map((c, i) => (
-                    <td
-                      key={i}
-                      className={`px-3 py-2.5 text-[13px] align-top ${
-                        isDone ? "text-zinc-600" : "text-zinc-400"
-                      }`}
-                    >
-                      <InlineMd
-                        text={c}
-                        onLinkClick={(e) => e.stopPropagation()}
-                      />
-                    </td>
-                  ))}
-                </tr>
-              );
-            })}
-          </tbody>
-        </table>
+                    {p.title}
+                  </a>
+                ) : (
+                  <span className={`text-sm ${isDone ? "text-zinc-500" : "text-zinc-300"}`}>{p.title}</span>
+                )}
+              </span>
+              {p.isCheckpoint && (
+                <span className="text-[9px] font-bold text-amber-500/80 flex-shrink-0">★</span>
+              )}
+            </div>
+          );
+        })}
       </div>
     </div>
   );
