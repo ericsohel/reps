@@ -95,7 +95,28 @@ ans = 2: A[1..2] = [2,3] and A[0..3] = [1,2,3,−1].  ✓
 
 **The `freq[0] = 1` initialisation is load-bearing.** It represents the empty prefix (sum 0 before any element). Without it, you miss every subarray that starts at index 0 — silent undercount, no error message. This is not a footgun, it's the base case of the recurrence.
 
-The same divisibility variant — "count subarrays with sum divisible by k" — replaces values in the dict with `prefix % k`. Two prefixes have the same value mod k iff the subarray between them sums to a multiple of k.
+**Earliest-index variant.** When the question is *"longest subarray with property P"* instead of *"count of subarrays"*, store the first occurrence of each prefix-sum value instead of the frequency: `first[prefix] = i`. Each match at index `j` gives a candidate length `j - first[prefix - target]`; the dict is never updated after the first write, because earlier ⇒ longer. The base case becomes `first[0] = -1` (the empty prefix lives "before" index 0), so a balanced run starting at index 0 gives length `j - (-1) = j + 1`.
+
+The encoding step is often part of the trick. "Longest subarray with equal numbers of 0s and 1s" doesn't *look* like a prefix-sum problem — until you re-encode `0 → -1`, at which point it becomes "longest subarray summing to 0", which is the earliest-index machinery above with `target = 0`.
+
+**Numeric trace** with binary input `A = [0, 1, 0, 1, 1, 1]`, after encoding `0 → -1`:
+
+```
+encoded = [-1, 1, -1, 1, 1, 1]
+first = {0: -1}                              ← empty prefix lives "before" index 0
+prefix = 0, best = 0
+
+i=0: x=-1, prefix=-1.  -1 ∉ first.            first={0:-1, -1:0}
+i=1: x= 1, prefix= 0.  0 ∈ first → 1-(-1)=2.  best=2.  0 already present, no update.
+i=2: x=-1, prefix=-1. -1 ∈ first → 2-0=2.    no improvement, no update.
+i=3: x= 1, prefix= 0.  0 ∈ first → 3-(-1)=4. best=4.   no update.
+i=4: x= 1, prefix= 1.  1 ∉ first.             first[1]=4.
+i=5: x= 1, prefix= 2.  2 ∉ first.             first[2]=5.
+
+best = 4 (subarray A[0..3] = [0,1,0,1], two 0s and two 1s)
+```
+
+The same re-encoding move makes "count subarrays with sum divisible by k" work: replace the dict value with `prefix % k`, since two prefixes have equal mods iff the subarray between them sums to a multiple of k.
 
 ### 2D prefix sums
 
@@ -176,20 +197,36 @@ def product_except_self(a):
     return result
 ```
 
-### Prefix sum + dict — count subarrays summing to k
+### Prefix sum + dict — count subarrays summing to k (frequency variant)
 
 ```python
 from collections import defaultdict
 def count_subarrays(a, k):
-    # Invariant: freq[v] = number of prefix sums equal to v among indices 0..i
+    # Invariant: freq[v] = number of prefix sums equal to v among indices 0..i-1
     freq = defaultdict(int)
-    freq[0] = 1                   # empty prefix — see Step 2
+    freq[0] = 1                       # empty prefix — see Step 2
     prefix, ans = 0, 0
     for x in a:
         prefix += x
-        ans += freq[prefix - k]   # complement lookup
+        ans += freq[prefix - k]       # complement lookup BEFORE inserting current prefix
         freq[prefix] += 1
     return ans
+```
+
+### Prefix sum + dict — longest subarray with sum k (earliest-index variant)
+
+```python
+def longest_subarray(a, k):
+    # Invariant: first[v] = smallest index i such that prefix-sum-after-i == v
+    first = {0: -1}                   # empty prefix lives "before" index 0
+    prefix, best = 0, 0
+    for i, x in enumerate(a):
+        prefix += x
+        if prefix - k in first:
+            best = max(best, i - first[prefix - k])
+        if prefix not in first:       # write ONLY on first occurrence — later writes shorten the span
+            first[prefix] = i
+    return best
 ```
 
 ### 2D prefix sum
@@ -230,13 +267,13 @@ Sources: **NC150** = NeetCode 150 · **UG** = USACO Guide curated · ⭐ = USACO
 | # | Problem | Source | Difficulty | List | Role | What it teaches |
 |---|---------|--------|-----------|------|------|-----------------|
 | 1 | [Static Range Sum Queries](https://cses.fi/problemset/task/1646) | CSES | Easy | UG | baseline | Pure 1D prefix sum — implement the cold attempt from Step 1 properly |
-| 2 | [Breed Counting](http://www.usaco.org/index.php?page=viewproblem2&cpid=572) | USACO Silver | Easy | UG ⭐ | extension | One prefix array *per breed* — prefix sums generalise to "counts of anything" |
-| 3 | [Product of Array Except Self](https://leetcode.com/problems/product-of-array-except-self/) | LC 238 | Medium | NC150 | extension | Two-scan span — introduces the forward + backward sweep pattern that returns in modules 8 and 9 |
-| 4 | [Subarray Sums II](https://cses.fi/problemset/task/1661) | CSES | Easy | UG | extension | Complement lookup over prefix sums — recombines module 2's pattern with module 4's quantity |
-| 5 | [Subarray Divisibility](https://cses.fi/problemset/task/1662) | CSES | Easy | UG | extension | Same complement-lookup machinery, but the equivalence is `prefix % k` instead of equality |
-| 6 | [Forest Queries](https://cses.fi/problemset/task/1652) | CSES | Easy | UG | extension | 2D prefix sums — first time the 4-term inclusion-exclusion is needed |
-| 7 | [Haybale Stacking](https://www.spoj.com/problems/HAYBALE/) | SPOJ | Medium | UG ⭐ | extension | Difference array — the inverse direction (range updates, point queries) |
-| 8 | [Running Miles](https://codeforces.com/contest/1826/problem/D) | CF 1826D | Medium | UG ⭐ | **checkpoint** | Decompose a 3-term expression into prefix max and suffix max — combines the two-scan span (problem 3) with the "track-what's-best-so-far" framing from problems 4–5 |
+| 2 | [Breed Counting](http://www.usaco.org/index.php?page=viewproblem2&cpid=572) | USACO Silver | Easy | UG ⭐ | extension | One prefix array *per breed* — prefix sums generalise to "counts of anything", not just sums |
+| 3 | [Product of Array Except Self](https://leetcode.com/problems/product-of-array-except-self/) | LC 238 | Medium | NC150 | extension | Two-scan span — introduces the forward + backward sweep that returns in modules 8 and 9 |
+| 4 | [Subarray Sum Equals K](https://leetcode.com/problems/subarray-sum-equals-k/) | LC 560 | Medium | new | extension | Complement lookup over prefix sums (count variant) — frequency dict + the load-bearing `freq[0] = 1` init; the most-asked prefix-sum interview question |
+| 5 | [Contiguous Array](https://leetcode.com/problems/contiguous-array/) | LC 525 | Medium | new | extension | New sub-pattern: encode `0 → -1`, then "longest subarray with equal 0s/1s" becomes "longest subarray summing to 0" — earliest-index dict for a length answer, `first[0] = -1` as the base case |
+| 6 | [Forest Queries](https://cses.fi/problemset/task/1652) | CSES | Easy | UG | extension | 2D prefix sums — first time the 4-term inclusion-exclusion is needed; CSES gives larger test cases than LC 304 |
+| 7 | [Corporate Flight Bookings](https://leetcode.com/problems/corporate-flight-bookings/) | LC 1109 | Medium | new | extension | Difference array — many range updates, single point-query pass at the end; the inverse direction of prefix sums |
+| 8 | [Running Miles](https://codeforces.com/contest/1826/problem/D) | CF 1826D | Medium | UG ⭐ | **checkpoint** | Algebraic regrouping unmasks the prefix/suffix structure; then apply two-scan span (problem 3) twice — prefix-max from the left, suffix-max from the right — and combine at the pivot |
 
 **Checkpoint:** CF 1826D without hints. The problem asks you to maximise `a[i] + a[j] - i + a[k] + k` over `i ≤ j ≤ k`. The leap: rewrite the expression as `(a[i] - i) + a[j] + (a[k] + k)`. The three terms are then independent — track the maximum of `(a[i] - i)` over `i ≤ j` (prefix max from the left) and the maximum of `(a[k] + k)` over `k ≥ j` (suffix max from the right). For each candidate `j`, the answer is `prefix_max[j] + a[j] + suffix_max[j]`. The two-scan span pattern from problem 3 makes this implementation easy; the algebraic decomposition is the part you have to invent.
 
@@ -246,6 +283,8 @@ If you stall on any problem, identify which sub-pattern from Step 2 applies befo
 
 ## Common mistakes
 
-- **Off-by-one in the prefix array:** the formula `range_sum(l, r) = prefix[r+1] - prefix[l]` requires `prefix[i]` to be the sum of the *first i elements*. Some textbooks define `prefix[i]` differently — pick one convention and stay with it.
-- **2D sign errors:** the 4-term inclusion-exclusion is easy to mis-sign. Verify on a 3×3 example once and keep the formula nearby.
-- **Difference array off-by-one:** the sentinel `diff[r+1] -= v` requires `diff` to have length `n+1`, not `n`.
+- **Off-by-one in the prefix array.** The formula `range_sum(l, r) = prefix[r+1] - prefix[l]` requires `prefix[i]` to be the sum of the *first i elements*. Some textbooks define `prefix[i]` differently — pick one convention and stay with it.
+- **2D sign errors.** The 4-term inclusion-exclusion is easy to mis-sign. Verify on a 3×3 example once and keep the formula nearby.
+- **Difference array off-by-one.** The sentinel `diff[r+1] -= v` requires `diff` to have length `n+1`, not `n`. Out-of-bounds writes silently corrupt the recovery pass.
+- **Earliest-index dict: writing on every visit, not just the first.** For "longest subarray with property P", only the first occurrence of each prefix value gives a maximum-length span. Use `if prefix not in first: first[prefix] = i` or `first.setdefault(prefix, i)`. Overwriting unconditionally silently shortens the answer.
+- **Confusing the two dict conventions.** Frequency variant (LC 560-style): `freq[0] = 1`, increment on each visit. Earliest-index variant (LC 525-style): `first[0] = -1`, write only on first occurrence. Mixing them — e.g. `first[0] = 1` — is a silent off-by-one.
