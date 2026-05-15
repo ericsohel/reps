@@ -283,8 +283,11 @@ function extractResources(md: string): string {
   const section = nextH2
     ? fromStep3.slice(0, m[0].length + 1 + nextH2.index!)
     : fromStep3;
-  // Rename heading to "Resources"
-  return section.replace(/^## Step 3.*$/m, "## Resources").trim();
+  // Rename heading and strip curriculum-internal transition lines
+  return section
+    .replace(/^## Step 3.*$/m, "## Resources")
+    .replace(/^Move to Step \d+ after .*\.?\s*$/gm, "")
+    .trim();
 }
 
 // ── Step 5 problems-table extraction ─────────────────────────────────────────
