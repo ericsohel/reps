@@ -171,33 +171,9 @@ def largest_rectangle(heights):
     return ans
 ```
 
-### Sum of subarray minimums (PSE asymmetric with NSE)
+### Contribution counting — PSE + NSE with asymmetric tie-breaking
 
-```python
-def sum_subarray_mins(a):
-    MOD = 10**9 + 7
-    n = len(a)
-
-    # left[i] = distance to previous STRICTLY smaller element (use >= → leftmost-rep)
-    left = [0] * n
-    stack = []
-    for i in range(n):
-        while stack and a[stack[-1]] >= a[i]:
-            stack.pop()
-        left[i] = i - stack[-1] if stack else i + 1
-        stack.append(i)
-
-    # right[i] = distance to next smaller-or-equal element (use >)
-    right = [0] * n
-    stack = []
-    for i in range(n - 1, -1, -1):
-        while stack and a[stack[-1]] > a[i]:
-            stack.pop()
-        right[i] = stack[-1] - i if stack else n - i
-        stack.append(i)
-
-    return sum(a[i] * left[i] * right[i] for i in range(n)) % MOD
-```
+For "sum over all subarrays of f(min)" or similar — the **structure** is two monotonic-stack passes (PSE and NSE) producing per-element span arrays, then aggregation. The asymmetric tie-breaking (one side uses `>=` on pop, the other uses `>`) is the load-bearing detail — see Step 2 for the leftmost-rep proof on `[1, 2, 1]`. The implementation is left for the checkpoint.
 
 ---
 

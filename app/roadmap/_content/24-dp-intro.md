@@ -147,77 +147,67 @@ The same multiple-state pattern handles **House Robber II** (circular array): so
 
 ---
 
-## Step 4 — Code reference
+## Step 4 — Algorithm Pattern Library
 
-### Linear DP (House Robber pattern)
+DP is a *framework* more than a collection of algorithms — the per-problem code is the recurrence translated to Python. The reusable primitives here are: the two implementation styles (memoisation, tabulation) and the rolling-pair space optimisation that recurs whenever `dp[i]` depends on only `dp[i-1]` and `dp[i-2]`.
+
+### Memoisation skeleton (top-down)
 
 ```python
-def rob(nums):
-    # Invariant: dp[i] = max money from houses 0..i with house i's status decided
-    if not nums: return 0
-    if len(nums) == 1: return nums[0]
-    dp = [0] * len(nums)
-    dp[0] = nums[0]
-    dp[1] = max(nums[0], nums[1])
-    for i in range(2, len(nums)):
-        dp[i] = max(dp[i-1],          # skip house i
-                    dp[i-2] + nums[i]) # rob house i
-    return dp[-1]
+from functools import lru_cache
+
+@lru_cache(maxsize=None)
+def dp(*state):
+    if base_case(state):
+        return base_value
+    # combine subproblem results
+    return min(dp(smaller_state_1), dp(smaller_state_2), ...)
+
+answer = dp(*initial_state)
 ```
 
-Space-optimised (only need last two values):
+Use when the recursion structure is clearer than the iteration order, or when you don't visit all states (memoisation computes only what's reachable from the root call).
+
+### Tabulation skeleton (bottom-up)
 
 ```python
-prev2, prev1 = 0, 0
-for x in nums:
-    prev2, prev1 = prev1, max(prev1, prev2 + x)
+dp = [<initial>] * n
+dp[base_index] = <base value>
+for i in <some order>:
+    dp[i] = combine(dp[j] for j in dependencies(i))
+return dp[<answer index>]
+```
+
+Use when the iteration order is obvious (left-to-right for 1D linear, fill-by-length for intervals) and you need to avoid Python's recursion limit.
+
+### Rolling-pair optimisation
+
+When `dp[i]` depends only on `dp[i-1]` and `dp[i-2]`, you don't need the full array:
+
+```python
+# Invariant: prev1 = optimal answer ending at position i; prev2 = ending at i-1
+prev2, prev1 = <base for -1>, <base for 0>
+for x in sequence:
+    prev2, prev1 = prev1, <recurrence using prev1, prev2, x>
 return prev1
 ```
 
-### Interval-scan DP (Word Break)
+This collapses O(n) space to O(1). Applies to: Climbing Stairs, House Robber, Frog 1, Min Cost Climbing Stairs, and any other "depends-on-last-two" DP.
+
+### Multi-state pattern
+
+When the answer at position `i` depends on which of several mutually-exclusive states you were in at position `i-1`, carry one running value per state:
 
 ```python
-def word_break(s, word_dict):
-    # Invariant: dp[i] = True iff s[:i] can be segmented using word_dict
-    word_set = set(word_dict)
-    n = len(s)
-    dp = [False] * (n + 1)
-    dp[0] = True
-    for i in range(1, n + 1):
-        for j in range(i):
-            if dp[j] and s[j:i] in word_set:
-                dp[i] = True
-                break                    # can stop once True
-    return dp[n]
+state_a, state_b = <init_a>, <init_b>
+for x in sequence:
+    new_a = transition_a(state_a, state_b, x)
+    new_b = transition_b(state_a, state_b, x)
+    state_a, state_b = new_a, new_b
+return max(state_a, state_b)
 ```
 
-### State machine (Maximum Product Subarray)
-
-```python
-def max_product(nums):
-    # Invariant: curr_max / curr_min = max/min product of subarray ending at i
-    # Track both because a future negative can flip min to max.
-    curr_max = curr_min = result = nums[0]
-    for x in nums[1:]:
-        candidates = (x, curr_max * x, curr_min * x)
-        curr_max, curr_min = max(candidates), min(candidates)
-        result = max(result, curr_max)
-    return result
-```
-
-### Circular variant (House Robber II)
-
-```python
-def rob_circular(nums):
-    if len(nums) == 1: return nums[0]
-    # Either rob houses 0..n-2 (skip last) or 1..n-1 (skip first)
-    def rob_linear(a):
-        prev2, prev1 = 0, 0
-        for x in a:
-            prev2, prev1 = prev1, max(prev1, prev2 + x)
-        return prev1
-    return max(rob_linear(nums[:-1]), rob_linear(nums[1:]))
-```
+Used in Maximum Product Subarray (states: max ending here, min ending here), Best Time to Buy/Sell with Cooldown (states: holding, sold, rest). The number of states is bounded — usually 2 or 3.
 
 ---
 

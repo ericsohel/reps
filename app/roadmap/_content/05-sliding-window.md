@@ -196,30 +196,27 @@ def max_sum_window(a, k):
     return ans
 ```
 
-### Variable window — minimum valid window
+### Minimum-valid-window shape (when the goal is "smallest window satisfying P")
+
+Variation of the variable window above — extend until P holds, then *shrink* while P still holds to find the smallest window ending at the current right pointer. The skeleton:
 
 ```python
-from collections import Counter
-
-def min_window(s, t):
-    # Invariant: missing = number of t-character requirements still unmet by window
-    need = Counter(t)
-    missing = len(t)
-    left = 0
-    best = ""
-    for right, c in enumerate(s):
-        if need[c] > 0:
-            missing -= 1
-        need[c] -= 1
-        while missing == 0:                              # window is valid
-            if not best or right - left + 1 < len(best):
-                best = s[left:right + 1]
-            need[s[left]] += 1
-            if need[s[left]] > 0:
-                missing += 1
-            left += 1
-    return best
+# Invariant: window [left, right] either does not satisfy P, or is the smallest such
+left = 0
+best = (math.inf, ...)            # track length + identifying info
+for right in range(n):
+    # extend: update state to include element at right
+    ...
+    while window_satisfies(P):
+        if (right - left + 1, left) < best:
+            best = (right - left + 1, left)
+        # shrink: update state to remove element at left
+        ...
+        left += 1
+return best
 ```
+
+The non-trivial part for problems like LC 76 (Minimum Window Substring) is the `window_satisfies(P)` check. Maintaining a single `missing` counter (number of unmet requirements) makes the check O(1) — see the Step 2 LC 424 discussion for an analogous trick. This is the checkpoint's leap; the code is left for Step 5.
 
 ---
 
