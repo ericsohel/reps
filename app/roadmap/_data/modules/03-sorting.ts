@@ -67,13 +67,13 @@ export const sorting: Module = {
     },
     {
       num: 6,
-      title: "Counting Inversions",
+      title: "Sorting Methods",
       url: "https://cses.fi/problemset/task/1162",
       source: "CSES",
       difficulty: "medium",
       list: "UG ⭐",
       role: "combination",
-      teaches: "Mergesort + count-during-merge — `total = within-L + within-R + crossing`; the Step 4 template applied directly",
+      teaches: "Solve Method 1 only (min adjacent swaps = inversion count) — mergesort + count-during-merge, `total = within-L + within-R + crossing`. Methods 2–4 test unrelated ideas (cycle decomposition, fixed points); skip them for now.",
     },
     {
       num: 7,
