@@ -68,11 +68,12 @@ i=2 ')' : top=='[' ≠ '(' → INVALID
 
 ### When a stack is the right tool
 
-Three recurring shapes:
+Four recurring shapes:
 
-1. **Matching pairs across nesting** — closing brackets pair with the most recent unmatched open. Push on open, match-and-pop on close.
-2. **Nested context** — a new context opens (open bracket, function call, repeat count); push the *current* state, work on the new state, pop back when the context closes. This is how Decode String (LC 394) unwinds nested repetitions.
-3. **Reverse order processing** — anything that needs to process items in the opposite order of arrival. Undo, reverse, RPN evaluation.
+1. **Matching pairs across nesting** — closing brackets pair with the most recent unmatched open. Push on open, match-and-pop on close. (LC 20.)
+2. **Filtered alive set / current state** — scan items left-to-right; push when an item joins the canonical sequence, pop when local interaction with the top eliminates one. The stack at the end is the answer (Simplify Path's directory components, Asteroid Collision's surviving asteroids). The pop rule is what distinguishes these from each other: deterministic on a token (LC 71's `..`), or a `while` loop comparing the new arrival to the top (LC 735's collisions).
+3. **Nested context** — a new context opens (open bracket, function call, repeat count); push the *current* state, work on the new state, pop back when the context closes. This is how Decode String (LC 394) unwinds nested repetitions. Entries are heterogeneous — each one is a snapshot of pre-nest state, not another instance of the items being processed.
+4. **Reverse order processing** — anything that needs to process items in the opposite order of arrival. Undo, reverse, RPN evaluation.
 
 ### Augmented stacks ([atlas](00-patterns.md#augmented-data-structure))
 
@@ -102,10 +103,9 @@ Reverse Polish Notation puts operators *after* their operands: `3 4 +` means `3 
 
 ## Step 3 — Read
 
-There is no USACO Guide module for basic stack — their Gold Stacks page covers monotonic stack only (module 8's reading). Two targeted reads:
+There is no USACO Guide module for basic stack — the Gold Stacks page covers monotonic stack only (module 8's reading). This module is closer to standalone than a curated path: most of the teaching is in Step 2 above and Step 4 below.
 
-1. CPH Chapter 5.2 (Stacks), p. 57 — brief, definitional, covers the bracket-matching example.
-2. The implementation of Min Stack you wrote in Step 4 is the augmented-stack reference. Study it carefully before LC 155.
+One light external read: [CPH Chapter 5.2 (Stacks), p. 57](https://cses.fi/book/book.pdf) — brief, definitional, covers the bracket-matching example. Skip if Step 2's trace was enough.
 
 ---
 
@@ -200,13 +200,19 @@ Sources: **NC150** = NeetCode 150 · ⭐ = well-known
 | # | Problem | Source | Difficulty | List | Role | What it teaches |
 |---|---------|--------|-----------|------|------|-----------------|
 | 1 | [Valid Parentheses](https://leetcode.com/problems/valid-parentheses/) | LC 20 | Easy | NC150 | baseline | Push on open, match-and-pop on close; this was your Step 1 problem |
-| 2 | [Min Stack](https://leetcode.com/problems/min-stack/) | LC 155 | Medium | NC150 | extension | Augmented data structure — each entry carries `(value, current_min)`; first appearance of the pattern |
-| 3 | [Evaluate Reverse Polish Notation](https://leetcode.com/problems/evaluate-reverse-polish-notation/) | LC 150 | Medium | NC150 | extension | Expression evaluation — operands on stack, operator pops two |
-| 4 | [Asteroid Collision](https://leetcode.com/problems/asteroid-collision/) | LC 735 | Medium | ⭐ | extension | Simulation — each new asteroid processed against the top of the stack; tricky case logic (both survive, both die, one survives) |
-| 5 | [Decode String](https://leetcode.com/problems/decode-string/) | LC 394 | Medium | ⭐ | extension | Nested structure — push current `(string, count)` state on `[`, pop and unwind on `]` |
-| 6 | [Remove All Adjacent Duplicates In String II](https://leetcode.com/problems/remove-all-adjacent-duplicates-in-string-ii/) | LC 1209 | Medium | ⭐ | **checkpoint** | Augmented stack of `(char, run_length)` with threshold pop when `run_length == k` |
+| 2 | [Min Stack](https://leetcode.com/problems/min-stack/) | LC 155 | Medium | NC150 | extension | Augmented data structure — each entry carries `(value, current_min)`; first appearance of the pattern, reused at the checkpoint |
+| 3 | [Evaluate Reverse Polish Notation](https://leetcode.com/problems/evaluate-reverse-polish-notation/) | LC 150 | Medium | NC150 | extension | Expression evaluation — operands on stack, operator pops two; LIFO is the natural fit for postfix |
+| 4 | [Simplify Path](https://leetcode.com/problems/simplify-path/) | LC 71 | Medium | ⭐ | extension | Stack-as-current-state, cleanest form — push real segments, pop on `..`, skip on `.`; the stack at the end *is* the canonical path |
+| 5 | [Asteroid Collision](https://leetcode.com/problems/asteroid-collision/) | LC 735 | Medium | ⭐ | extension | Same shape as problem 4 but with a *while* loop comparing the new arrival to the top — three-case collision logic (top dies, new dies, both die), reused at the checkpoint |
+| 6 | [Decode String](https://leetcode.com/problems/decode-string/) | LC 394 | Medium | ⭐ | extension | Nested context — push the current `(string, count)` state on `[`, pop and unwind on `]`; entries are heterogeneous |
+| 7 | [Remove All Adjacent Duplicates In String II](https://leetcode.com/problems/remove-all-adjacent-duplicates-in-string-ii/) | LC 1209 | Medium | ⭐ | **checkpoint** | Augmented stack of `(char, run_length)` with threshold-driven pop when `run_length == k` |
 
-**Checkpoint:** LC 1209 without hints. Two ideas combine: the augmented-stack pattern from problem 2 (entries carry a count alongside the value), and a threshold-driven pop logic similar to but distinct from problem 4 (pop when the *count* hits k, not on a specific condition involving the new element). The combination is what makes it harder than either parent problem.
+**Checkpoint:** LC 1209 without hints. This is the only problem in the module that requires combining two earlier ideas, not just extending one:
+
+- **Augmentation** from problem 2 — each entry needs to carry `(char, count)`, not just `char`. Without it, you can't tell when the run hits `k` without re-scanning.
+- **Interact-with-the-top logic** from problem 5 — when the new character matches the top, you don't push; you *bump the top's count* and check if it hit the threshold. The pop rule is internal to the top entry, not a comparison to a separate value.
+
+The leap is recognising that the count must live *inside the stack* (one count per current run, isolated by run boundary) rather than as a separate variable. A single running count outside the stack collapses different runs.
 
 ### NC150 problems handed off to other modules
 
