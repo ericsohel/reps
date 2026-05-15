@@ -410,11 +410,6 @@ export default async function ModulePage({
         const resources = extractResources(content);
         const section = extractProblemsSection(content);
 
-        // Checkpoint description lives in section.after before ## Common mistakes
-        const checkpointText = section
-          ? section.after.replace(/\n## Common mistakes[\s\S]*$/, "").trim()
-          : "";
-
         return (
           <>
             {resources && (
@@ -423,20 +418,7 @@ export default async function ModulePage({
               </ReactMarkdown>
             )}
             {section && (
-              <>
-                <h2 className="text-lg font-semibold text-zinc-100 mt-10 mb-3 tracking-tight border-b border-zinc-800/60 pb-2">
-                  Problems
-                </h2>
-                <ReactMarkdown remarkPlugins={[remarkGfm]} components={mdComponents}>
-                  {section.step5Intro}
-                </ReactMarkdown>
-                <ProblemsChecklist moduleId={module} problems={section.problems} />
-                {checkpointText && (
-                  <ReactMarkdown remarkPlugins={[remarkGfm]} components={mdComponents}>
-                    {checkpointText}
-                  </ReactMarkdown>
-                )}
-              </>
+              <ProblemsChecklist moduleId={module} problems={section.problems} />
             )}
           </>
         );
