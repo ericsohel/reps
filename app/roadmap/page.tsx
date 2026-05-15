@@ -196,6 +196,7 @@ export default function RoadmapPage() {
   const [currentTrack, setCurrentTrack] = useState<FilterTrack>("all");
   const [hydrated, setHydrated] = useState(false);
   const [activeModule, setActiveModule] = useState<{ id: string; title: string } | null>(null);
+  const [lastVisitedModule, setLastVisitedModule] = useState<string | null>(null);
 
   useEffect(() => {
     const saved = JSON.parse(localStorage.getItem("dsa-v1-completed") || "[]");
@@ -308,6 +309,9 @@ export default function RoadmapPage() {
     // These are "foundation built, depth remaining" — the checkpoint problems
     // are typically what's still unchecked.
     const consolidateCandidates = visibleNodes.filter(n => {
+      // Skip the module the user just visited — don't push them back to
+      // grinding the same module they just spent a session on.
+      if (n.id === lastVisitedModule) return false;
       const total = PROBLEM_COUNTS[n.id] ?? 0;
       const solved = problemsSolved[n.id]?.length ?? 0;
       return total > 0
@@ -576,6 +580,7 @@ export default function RoadmapPage() {
                 if (state === "locked") return;
                 if (PROBLEM_COUNTS[n.id]) {
                   setActiveModule({ id: n.id, title: n.label });
+                  setLastVisitedModule(n.id);
                 } else if (MODULE_PAGES[n.id]) {
                   window.location.href = MODULE_PAGES[n.id];
                 }
