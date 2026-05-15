@@ -225,15 +225,16 @@ Sources: **NC150** = NeetCode 150 · **UG** = USACO Guide curated
 
 | # | Problem | Source | Difficulty | List | Role | What it teaches |
 |---|---------|--------|-----------|------|------|-----------------|
-| 1 | [Counting Haybales](http://www.usaco.org/index.php?page=viewproblem2&cpid=666) | USACO Silver | Easy | UG | baseline | `bisect_left` / `bisect_right` for range counting — simplest possible sorted-array binary search |
-| 2 | [Binary Search](https://leetcode.com/problems/binary-search/) | LC 704 | Easy | NC150 | baseline | Implement Template A from scratch — prove termination via the loop invariant |
+| 1 | [Binary Search](https://leetcode.com/problems/binary-search/) | LC 704 | Easy | NC150 | baseline | Implement Template A from scratch — prove termination via the loop invariant |
+| 2 | [Counting Haybales](http://www.usaco.org/index.php?page=viewproblem2&cpid=666) | USACO Silver | Easy | UG | extension | Range count via `bisect_right(end) - bisect_left(start)` — the canonical bisect application beyond raw lookup |
 | 3 | [Search a 2D Matrix](https://leetcode.com/problems/search-a-2d-matrix/) | LC 74 | Medium | NC150 | extension | Flatten 2D index `k` to `(k // n, k % n)` — same Template A on the virtual flat array |
 | 4 | [Find Minimum in Rotated Sorted Array](https://leetcode.com/problems/find-minimum-in-rotated-sorted-array/) | LC 153 | Medium | NC150 | extension | Your Step 1 problem — Template B with the `a[mid] <= a[hi]` comparison |
 | 5 | [Search in Rotated Sorted Array](https://leetcode.com/problems/search-in-rotated-sorted-array/) | LC 33 | Medium | NC150 | extension | Same rotated structure as problem 4, now searching for a target — one extra range check per branch |
 | 6 | [Time Based Key-Value Store](https://leetcode.com/problems/time-based-key-value-store/) | LC 981 | Medium | NC150 | extension | `bisect_right` embedded in a data structure design — binary search on a list of timestamps |
-| 7 | [Median of Two Sorted Arrays](https://leetcode.com/problems/median-of-two-sorted-arrays/) | LC 4 | Hard | NC150 | **checkpoint** | Binary search on the partition point of the smaller array; the partition of the larger array is then determined |
+| 7 | [Single Element in a Sorted Array](https://leetcode.com/problems/single-element-in-a-sorted-array/) | LC 540 | Medium | new | extension | New sub-pattern: a non-trivial monotonic predicate — index parity tells you which half holds the unique element. Force `mid` even with `mid -= mid & 1`, then test `a[mid] == a[mid+1]` |
+| 8 | [Median of Two Sorted Arrays](https://leetcode.com/problems/median-of-two-sorted-arrays/) | LC 4 | Hard | NC150 | **checkpoint** | Binary search on the partition point of the smaller array; the partition of the larger array is then determined |
 
-**Checkpoint:** LC 4 without hints. The O(log(min(m, n))) algorithm binary-searches for the correct partition of the smaller array. The invariant — every element left of both partitions is ≤ every element right of both partitions — defines feasibility. Boundary partitions (`lo_partition = 0` or `m`) require treating absent maxima/minima as `−∞` or `+∞`. This problem doesn't fit either template cleanly because the "answer" is a partition pair, not a single index — the search variable is the partition count for the smaller array.
+**Checkpoint:** LC 4 without hints. The O(log(min(m, n))) algorithm binary-searches for the correct partition of the smaller array. The invariant — every element left of both partitions is ≤ every element right of both partitions — defines feasibility. Boundary partitions (`lo_partition = 0` or `m`) require treating absent maxima/minima as `−∞` or `+∞`. This problem doesn't fit either template cleanly because the search variable is a partition count, not a value index — the same kind of "the predicate isn't `a[mid] == target`" reframing you practised in problem 7, taken one step further (now the *domain* of the search is also non-obvious).
 
 ---
 
