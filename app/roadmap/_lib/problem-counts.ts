@@ -5,7 +5,7 @@ export const PROBLEM_COUNTS: Record<string, number> = {
   "foundations":     7,
   "arrays-hashing":  9,
   "sorting":         7,
-  "prefix-sums":     8,
+  "prefix-sums":     9,
   "two-pointers":    7,
   "sliding-window":  7,
   "stack":           7,
