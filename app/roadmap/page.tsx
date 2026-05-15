@@ -311,26 +311,50 @@ export default function RoadmapPage() {
       return Math.max(match, neutral);
     };
 
+    // Most-recently-completed section — used for continuity bonus.
+    const lastCompletedSection = completedOrders.length > 0
+      ? NODES.find(n => (ORDER[n.id] || 99) === Math.max(...completedOrders))?.section ?? null
+      : null;
+
     // ── EXPAND scoring (breadth) ──────────────────────────────────────────────
     const scoredExpand: Scored[] = expandCandidates.map(n => {
       const unlocks = computeUnlocks(n.id);
       const order = ORDER[n.id] || 99;
+      const distance = Math.abs(order - currentPos);
+
       const sectionPeers = NODES.filter(x => x.section === n.section && inTrack(x));
       const sectionDone = sectionPeers.filter(x => isModuleDone(x.id)).length;
       const sectionCoherence = sectionPeers.length > 0 ? sectionDone / sectionPeers.length : 0;
-      const proximity = Math.max(0, 1 - Math.abs(order - currentPos) / 6);
+
+      // Tweak 1: cap downstream impact by distance. A module 12+ orders away
+      // cannot claim its full unlock bonus, preventing long-range jumps driven
+      // purely by downstream size (e.g. A&H → Backtracking leap).
+      const distancePenalty = Math.max(0, 1 - distance / 12);
+      const downstreamScore = (unlocks / maxUnlocks) * distancePenalty;
+
+      // Tweak 2: asymmetric proximity. Full credit at order = currentPos + 1
+      // (the very next module). Drops off ahead and behind, but the forward
+      // direction is favoured — being 1 ahead beats being 1 behind.
+      const forwardBias = order >= currentPos ? distance : distance * 1.5;
+      const proximity = Math.max(0, 1 - forwardBias / 6);
+
       const solvedCount = problemsSolved[n.id]?.length || 0;
       const alreadyStarted = solvedCount > 0 && solvedCount < REQUIRED_PROBLEMS;
       const problemDensity = (PROBLEM_COUNTS[n.id] || 0) / maxProblems;
 
+      // Tweak 3: section continuity. Small bonus when the candidate is in the
+      // same section as the most recently completed module.
+      const sectionContinuity = n.section === lastCompletedSection ? 0.05 : 0;
+
       const contributions = [
-        { label: "downstream impact",    value: 0.35 * (unlocks / maxUnlocks) },
+        { label: "downstream impact",    value: 0.35 * downstreamScore },
         { label: "section coherence",    value: 0.20 * sectionCoherence },
         { label: "curriculum proximity", value: 0.15 * proximity },
         { label: "track alignment",      value: 0.10 * trackScoreFor(n) },
         { label: "problem density",      value: 0.10 * problemDensity },
         { label: "already started",      value: alreadyStarted ? 0.15 : 0 },
         { label: "section momentum",     value: sectionDone > 0 && sectionCoherence < 1 ? 0.05 : 0 },
+        { label: "section continuity",   value: sectionContinuity },
       ];
       return {
         id: n.id,
