@@ -46,7 +46,19 @@ This is the [monotonic invariant pattern](00-patterns.md#monotonic-invariant) sp
 
 **Difference from module 5:** in module 5 both pointers could move in either direction (converging from both ends). Here both pointers always move *forward*, but the right pointer leads. There's no symmetric mirror logic.
 
-### Numeric trace — variable window for exact sum
+### Three variable-window shapes
+
+The same skeleton — *extend right, shrink left* — produces three different answers depending on **when you read the result** and **when you shrink**:
+
+| Goal | Shrink while ... | Read answer ... |
+|---|---|---|
+| **Exact match** (subarray sum = target, positive ints) | `sum > target` | when `sum == target` |
+| **Longest** valid window (e.g. ≤ k distinct, no duplicates) | window is *invalid* | each iteration *after* shrinking |
+| **Minimum** valid window (e.g. sum ≥ target) | window is *still valid* (greedy contraction) | each iteration *before* shrinking, inside the `while` |
+
+Same O(n) bound — each pointer crosses each index at most once — but the loop body shape and the answer-update placement are not interchangeable.
+
+### Numeric trace — exact-match (CSES 1660 shape)
 
 `a = [4, 1, 2, 1, 3, 1, 2, 1]`, target = 5:
 
@@ -64,7 +76,28 @@ right=5: sum += 1 → sum=5. ✓ found at a[3..5].
 ... continues
 ```
 
-Each element enters and leaves the window once. O(n).
+### Numeric trace — minimum-window (LC 209 shape)
+
+`a = [2, 3, 1, 2, 4, 3]`, target = 7. Find the *shortest* subarray with `sum ≥ target`:
+
+```
+left=0, sum=0, best=∞
+right=0: sum=2.  <7. extend.
+right=1: sum=5.  <7. extend.
+right=2: sum=6.  <7. extend.
+right=3: sum=8.  ≥7. shrink while still ≥7:
+           best = min(∞, 3-0+1) = 4.   sum -= a[0]=2 → sum=6. left=1.  <7, stop.
+right=4: sum=10. ≥7. shrink:
+           best = min(4, 4-1+1) = 4.   sum -= a[1]=3 → sum=7. left=2.
+           best = min(4, 4-2+1) = 3.   sum -= a[2]=1 → sum=6. left=3.  <7, stop.
+right=5: sum=9.  ≥7. shrink:
+           best = min(3, 5-3+1) = 3.   sum -= a[3]=2 → sum=7. left=4.
+           best = min(3, 5-4+1) = 2.   sum -= a[4]=4 → sum=3. left=5.  <7, stop.
+
+best = 2  (subarray [4, 3])
+```
+
+**Update *before* the shrink, inside the `while`.** Every shrink step exposes a strictly smaller valid window — if you update after, you've already destroyed the witness. Each element still enters and leaves the window at most once, so the total work is O(n) despite the inner `while`.
 
 ### Preconditions ([atlas](00-patterns.md#monotonic-invariant))
 
@@ -227,20 +260,28 @@ Sources: **NC150** = NeetCode 150 · **UG** = USACO Guide curated · ⭐ = USACO
 | # | Problem | Source | Difficulty | List | Role | What it teaches |
 |---|---------|--------|-----------|------|------|-----------------|
 | 1 | [Subarray Sums I](https://cses.fi/problemset/task/1660) | CSES | Easy | UG | baseline | Variable window on positive integers, exact match — this was your Step 1 problem |
-| 2 | [Best Time to Buy and Sell Stock](https://leetcode.com/problems/best-time-to-buy-and-sell-stock/) | LC 121 | Easy | NC150 | extension | Degenerate window — single-pass with running minimum; the "window" is really just `(running_min_index, current_index)` |
-| 3 | [Longest Substring Without Repeating Characters](https://leetcode.com/problems/longest-substring-without-repeating-characters/) | LC 3 | Medium | NC150 | extension | Variable window with a set — shrink when a duplicate is added |
-| 4 | [Longest Repeating Character Replacement](https://leetcode.com/problems/longest-repeating-character-replacement/) | LC 424 | Medium | NC150 | extension | Variable window with frequency dict — uses the stale-`max_freq` trick from Step 2 |
-| 5 | [Permutation in String](https://leetcode.com/problems/permutation-in-string/) | LC 567 | Medium | NC150 | extension | Fixed window with frequency comparison — window size is exactly `len(s1)` |
-| 6 | [Diamond Collector](http://www.usaco.org/index.php?page=viewproblem2&cpid=643) | USACO Silver | Medium | UG ⭐ | extension | Sort + variable window with `max − min ≤ K` constraint — must recognise the pattern from the problem statement |
-| 7 | [Minimum Window Substring](https://leetcode.com/problems/minimum-window-substring/) | LC 76 | Hard | NC150 | **checkpoint** | Minimum valid variable window with multi-character tracking |
+| 2 | [Minimum Size Subarray Sum](https://leetcode.com/problems/minimum-size-subarray-sum/) | LC 209 | Medium | new | extension | The **minimum-window** shape from Step 2 — extend until valid, then shrink while *still* valid; update `best` inside the `while`. Same skeleton the checkpoint extends |
+| 3 | [Longest Substring Without Repeating Characters](https://leetcode.com/problems/longest-substring-without-repeating-characters/) | LC 3 | Medium | NC150 | extension | The **longest-window** shape — extend, then shrink while *invalid*; window state is a set (or count-of-1s dict) |
+| 4 | [Longest Repeating Character Replacement](https://leetcode.com/problems/longest-repeating-character-replacement/) | LC 424 | Medium | NC150 | extension | Same longest-window shape with a frequency dict, plus the stale-`max_freq` trick from Step 2 — load-bearing because a fresh max recompute on every step would be O(26 · n) |
+| 5 | [Permutation in String](https://leetcode.com/problems/permutation-in-string/) | LC 567 | Medium | NC150 | extension | Fixed window — window size is exactly `len(s1)`, no shrink decision; compare freq dicts in O(26) per slide, or track a "matches" counter for O(1) |
+| 6 | [Diamond Collector](http://www.usaco.org/index.php?page=viewproblem2&cpid=643) | USACO Silver | Medium | UG ⭐ | extension | Sort + variable window with `max − min ≤ K` constraint — the problem statement does not say "sliding window"; you must recognise it after the sort |
+| 7 | [Minimum Window Substring](https://leetcode.com/problems/minimum-window-substring/) | LC 76 | Hard | NC150 | **checkpoint** | Minimum-window (problem 2's shape) + multi-character tracking — the "missing counter" trick replaces the freq-dict comparison |
 
-**Checkpoint:** LC 76 without hints. The leap is the "missing counter" — instead of comparing the whole frequency dict on every step, track a single integer `missing` that counts how many `t`-character requirements are still unmet. Decrement when the right character is added in sufficient quantity; increment when it's removed past its required count. The `if need[c] > 0: missing -= 1` and `if need[s[left]] > 0: missing += 1` checks are the load-bearing details — getting them wrong gives a non-O(n) algorithm.
+**Checkpoint:** LC 76 without hints. Problem 2 (LC 209) gave you the minimum-window skeleton with a single condition; the leap here is the multi-character requirement. The naive check — "does the window's freq dict cover `t`'s freq dict?" — is O(|alphabet|) per step. The leap is the **missing counter**: a single integer that counts how many `t`-character requirements are still unmet. Decrement when adding a character that brings its count up to (but not past) its required count; increment when removing a character that drops its count below required. The `if need[c] > 0: missing -= 1` and `if need[s[left]] > 0: missing += 1` checks are the load-bearing details — getting them wrong gives a non-O(n) algorithm or a wrong answer.
+
+If you stall: re-solve problem 2 from scratch first, then ask what changes when "valid" depends on multiple characters instead of a single sum.
+
+### NC150 problems handed off to other modules
+
+- *Best Time to Buy and Sell Stock* (LC 121, NC150) → module 25 (1D DP). NC150 categorises it under Sliding Window with the label "Single Pass", but the technique is a Kadane-style scan (`best_profit_so_far`, `min_price_so_far`); the "window" interpretation requires squinting. It's better taught as the entry-level 1D DP problem.
+- *Sliding Window Maximum* (LC 239, NC150) → module 9 (Monotonic Deque). The fixed-window framing is incidental; the technique is a monotonic deque keyed by index.
 
 ---
 
 ## Common mistakes
 
 - **Applying sliding window when the property is not monotonic.** With negative numbers in the array, sum is not monotonic in window extent. Use module 4's prefix-sum + dict (which doesn't require monotonicity); LC 862 in module 9 is the canonical case.
+- **Updating `best` after the shrink in the minimum-window shape.** The smallest window is the one *just before* you remove an element. Update inside the `while`, before the `sum -= a[left]; left += 1` step. Updating after gives you the answer for the window minus its leftmost element — silently off by one.
 - **Forgetting `del freq[x]` when count hits zero.** `len(freq)` reads count-of-keys, which stays inflated if you leave zero-valued keys. Either `del` on zero, or use `if freq[x] == 0: missing += 1`-style tracking that doesn't depend on dict size.
 - **Fixed-window off-by-one.** Build the initial window with `window = sum(a[:k])`, then start the slide loop at `range(k, n)`. Iterating from index 0 double-counts the first window.
-- **`while` vs `if` for shrink.** Variable-window shrinkage uses `while` (the window might be invalid for several elements). Using `if` advances `left` by at most 1 per iteration and produces wrong answers when multiple shrinks are needed.
+- **`while` vs `if` for shrink.** Variable-window shrinkage uses `while` (the window may be invalid — or in the min-window case, *still valid* — for several elements). Using `if` advances `left` by at most 1 per iteration and produces wrong answers when multiple shrinks are needed.
