@@ -57,6 +57,8 @@ const MODULE_FILES: Record<string, string> = {
   "shortest-paths":  "21-shortest-paths.md",
   "mst":             "22-mst.md",
   "adv-graphs":      "23-advanced-graphs.md",
+  "dp-intro":        "24-dp-intro.md",
+  "dp-2d":           "25-dp-2d.md",
 };
 
 function normalizeDifficulty(s: string): CounterKey | null {

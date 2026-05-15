@@ -97,6 +97,31 @@ After finding SCCs, contract each into a single node. The result is always a **D
 
 **Result:** a satisfying assignment exists iff no variable and its negation are in the same SCC. If an assignment exists, the value of each variable is determined by the relative topological position of its SCC vs its negation's SCC.
 
+**Numeric trace** — clauses `(x₁ ∨ x₂)` and `(¬x₁ ∨ ¬x₂)`:
+
+```
+Implications added:
+  (x₁ ∨ x₂)   →   ¬x₁ → x₂   and   ¬x₂ → x₁
+  (¬x₁ ∨ ¬x₂) →   x₁ → ¬x₂  and    x₂ → ¬x₁
+
+Nodes: x₁=0, x₂=1, ¬x₁=2, ¬x₂=3
+Edges: 2→1, 3→0, 0→3, 1→2
+
+SCCs after Kosaraju's:
+  Component A: {x₁=0, ¬x₂=3}
+  Component B: {¬x₁=2, x₂=1}
+
+Check each variable: x₁ in A, ¬x₁ in B → different SCCs ✓
+                     x₂ in B, ¬x₂ in A → different SCCs ✓
+
+Topological order of components: B before A (B has no incoming, A has incoming from B).
+Assignment: variable = (negation's SCC comes BEFORE variable's SCC)
+  x₁: ¬x₁ in B (earlier than A which contains x₁) → x₁ = True
+  x₂: ¬x₂ in A (later than B which contains x₂) → x₂ = False
+
+Verify: (True ∨ False) = T ✓   (¬True ∨ ¬False) = (F ∨ T) = T ✓
+```
+
 ```python
 def two_sat(n, clauses):
     # nodes: 0..n-1 = true literals, n..2n-1 = false literals
@@ -122,6 +147,24 @@ An **Eulerian circuit** visits every edge exactly once and returns to the start.
 - Eulerian path: exactly two nodes have odd degree in undirected, or exactly one node has out-degree = in-degree + 1 (start) and one has in-degree = out-degree + 1 (end) in directed.
 
 **Hierholzer's algorithm:** DFS that backtracks when stuck, building the path in reverse.
+
+**Numeric trace** on directed edges `0→1, 1→2, 2→0, 0→2` (Eulerian circuit on 4 edges):
+
+```
+Start at 0 (degree 2 in, 2 out — could start anywhere; pick 0).
+stack=[0], path=[]
+  graph[0]=[1,2]. pop 1.  stack=[0,1]
+    graph[1]=[2]. pop 2.  stack=[0,1,2]
+      graph[2]=[0]. pop 0. stack=[0,1,2,0]
+        graph[0]=[2]. pop 2. stack=[0,1,2,0,2]
+          graph[2]=[]. dead end. append 2 to path; pop stack. path=[2]
+        graph[0]=[]. append 0. path=[2,0]
+      graph[2]=[] (already used). append 2. path=[2,0,2]
+    graph[1]=[]. append 1. path=[2,0,2,1]
+  graph[0]=[]. append 0. path=[2,0,2,1,0]
+
+Reverse path: [0,1,2,0,2] — uses every edge exactly once ✓
+```
 
 ```python
 from collections import defaultdict

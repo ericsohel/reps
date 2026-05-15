@@ -24,4 +24,6 @@ export const PROBLEM_COUNTS: Record<string, number> = {
   "shortest-paths":  6,
   "mst":             6,
   "adv-graphs":      6,
+  "dp-intro":        8,
+  "dp-2d":           8,
 };

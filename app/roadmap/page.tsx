@@ -28,6 +28,8 @@ const MODULE_PAGES: Record<string, string> = {
   "shortest-paths":  "/roadmap/shortest-paths",
   "mst":             "/roadmap/mst",
   "adv-graphs":      "/roadmap/adv-graphs",
+  "dp-intro":        "/roadmap/dp-intro",
+  "dp-2d":           "/roadmap/dp-2d",
 };
 
 const COLORS: Record<string, string> = {

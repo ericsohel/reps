@@ -90,6 +90,11 @@ while heap:
 
 **Complexity:** O((n + m) log n) with a heap.
 
+**Mark on POP, not on PUSH** (same rule as Dijkstra in module 21, *opposite* to BFS in module 18). The heap can hold the same node multiple times with different edge costs — the cheapest one comes out first, so the first pop is the right one to commit. If you marked on push, a later cheaper edge to the same node would push a fresh entry that's now incorrectly ignored. The contrast:
+
+- **BFS** (unweighted): mark on push — first visit IS shortest because every edge has the same cost.
+- **Dijkstra / Prim's** (weighted): mark on pop — the heap orders by cost, so the first pop is the cheapest path/edge, but multiple entries for the same node may have been pushed earlier.
+
 ### Kruskal's vs Prim's
 
 | | Kruskal's | Prim's |
@@ -195,5 +200,4 @@ Sources: **NC150** = NeetCode 150 · **UG** = USACO Guide curated
 ## Common mistakes
 
 - **Disconnected graph.** After running Kruskal's, check `len(mst_edges) == n − 1`. If fewer, the graph was disconnected. Return "IMPOSSIBLE" (CSES) or `-1` (LC conventions).
-- **Prim's — mark on pop, not on push.** Same as Dijkstra: a node can be pushed multiple times with different costs. Only process it the first time (`if in_mst[u]: continue`). Marking on push misses cheaper paths added later.
 - **Kruskal's — 0-indexed vs 1-indexed DSU.** CSES problems are 1-indexed; initialise `parent = list(range(n + 1))`. Off-by-one here corrupts the DSU silently.

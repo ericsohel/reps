@@ -32,6 +32,8 @@ const MODULE_META = {
   "shortest-paths":  { file: "21-shortest-paths.md",      num: 21, title: "Shortest Paths" },
   "mst":             { file: "22-mst.md",                 num: 22, title: "Minimum Spanning Tree" },
   "adv-graphs":      { file: "23-advanced-graphs.md",     num: 23, title: "Advanced Graphs" },
+  "dp-intro":        { file: "24-dp-intro.md",            num: 24, title: "DP Intro / 1D" },
+  "dp-2d":           { file: "25-dp-2d.md",               num: 25, title: "2D / Grid DP" },
 } as const;
 
 type ModuleKey = keyof typeof MODULE_META;
