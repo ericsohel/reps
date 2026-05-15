@@ -11,6 +11,7 @@ export const greedy: Module = {
   resources: [
     { title: "USACO Guide — Intro to Greedy (Bronze)", url: "https://usaco.guide/bronze/intro-greedy" },
     { title: "USACO Guide — Greedy Sorting (Silver)", url: "https://usaco.guide/silver/greedy-sorting" },
+    { title: "CPH Chapter 6 — Greedy Algorithms", url: "https://cses.fi/book/book.pdf" },
   ],
   problems: [
     {
@@ -85,6 +86,16 @@ export const greedy: Module = {
     },
     {
       num: 8,
+      title: "Candy",
+      url: "https://leetcode.com/problems/candy/",
+      source: "LC 135",
+      difficulty: "hard",
+      list: "NC150",
+      role: "extension",
+      teaches: "Multi-pass greedy — left-pass enforces the right-neighbor constraint, right-pass enforces the left-neighbor constraint, take the max. The only problem in the module that uses two scans; callbacks to module 4's two-scan span pattern applied in a greedy context",
+    },
+    {
+      num: 9,
       title: "Valid Parenthesis String",
       url: "https://leetcode.com/problems/valid-parenthesis-string/",
       source: "LC 678",
