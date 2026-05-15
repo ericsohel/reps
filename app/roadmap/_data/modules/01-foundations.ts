@@ -10,6 +10,8 @@ export const foundations: Module = {
   prereqIds: [],
   resources: [
     { title: "USACO Guide — Time Complexity", url: "https://usaco.guide/bronze/time-comp" },
+    { title: "CPH Book Ch. 1 — Introduction (covers complexity + Python ops budget)", url: "https://cses.fi/book/book.pdf" },
+    { title: "Python stdlib docs (collections)", url: "https://docs.python.org/3/library/collections.html" },
   ],
   checklist: [
     { num: 1, title: "Time complexity & the Python ops budget" },

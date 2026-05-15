@@ -11,6 +11,7 @@ export const tries: Module = {
   resources: [
     { title: "USACO Guide — String Searching / Tries (Gold)", url: "https://usaco.guide/gold/string-search" },
     { title: "LeetCode editorial for LC 208 — Implement Trie", url: "https://leetcode.com/problems/implement-trie-prefix-tree/editorial/" },
+    { title: "CP-Algorithms — String Algorithms", url: "https://cp-algorithms.com/string/string-hashing.html" },
   ],
   problems: [
     {
@@ -59,7 +60,7 @@ export const tries: Module = {
       url: "https://leetcode.com/problems/maximum-xor-of-two-numbers-in-an-array/",
       source: "LC 421",
       difficulty: "medium",
-      list: "new",
+      list: "NC150",
       role: "extension",
       teaches: "Binary (XOR) trie — different alphabet (bits), different objective (maximise XOR by greedily picking opposite bits)",
     },

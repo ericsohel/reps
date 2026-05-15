@@ -10,6 +10,8 @@ export const linkedList: Module = {
   prereqIds: ["arrays-hashing"],
   resources: [
     { title: "Wikipedia — Floyd's cycle detection, \"Tortoise and hare\" section", url: "https://en.wikipedia.org/wiki/Cycle_detection#Floyd's_tortoise_and_hare" },
+    { title: "USACO Guide — Linked Lists", url: "https://usaco.guide/general/linked-lists" },
+    { title: "Python docs — collections.deque", url: "https://docs.python.org/3/library/collections.html#collections.deque" },
   ],
   problems: [
     {

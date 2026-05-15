@@ -74,6 +74,16 @@ export const slidingWindow: Module = {
     },
     {
       num: 7,
+      title: "Find All Anagrams in a String",
+      url: "https://leetcode.com/problems/find-all-anagrams-in-a-string/",
+      source: "LC 438",
+      difficulty: "medium",
+      list: "NC150",
+      role: "extension",
+      teaches: "Fixed window with multi-character frequency match — slide window of size `len(p)`, compare freq dicts in O(26) per slide (or maintain a 'matches' counter for O(1)). Bridges Permutation in String to the at-most-K reduction in problem 8",
+    },
+    {
+      num: 8,
       title: "Subarrays with K Different Integers",
       url: "https://leetcode.com/problems/subarrays-with-k-different-integers/",
       source: "LC 992",
@@ -83,7 +93,7 @@ export const slidingWindow: Module = {
       teaches: "at-most-K reduction — \"exactly K distinct\" isn't monotonic in window size; convert to `atMost(K) − atMost(K−1)`, run two variable-window passes and subtract; the first time the window pattern doubles on itself",
     },
     {
-      num: 8,
+      num: 9,
       title: "Minimum Window Substring",
       url: "https://leetcode.com/problems/minimum-window-substring/",
       source: "LC 76",

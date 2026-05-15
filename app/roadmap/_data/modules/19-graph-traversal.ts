@@ -56,6 +56,16 @@ export const graphTraversal: Module = {
     },
     {
       num: 5,
+      title: "01 Matrix",
+      url: "https://leetcode.com/problems/01-matrix/",
+      source: "LC 542",
+      difficulty: "medium",
+      list: "NC150",
+      role: "extension",
+      teaches: "Multi-source BFS — initialise the queue with ALL zero cells at distance 0, then expand outward. Each cell's distance is computed in a single sweep rather than running BFS from each cell. The 'reverse the question' trick: instead of 'distance from x to nearest 0', compute 'distance from each 0 to x'",
+    },
+    {
+      num: 6,
       title: "Building Teams",
       url: "https://cses.fi/problemset/task/1668",
       source: "CSES",
@@ -65,7 +75,7 @@ export const graphTraversal: Module = {
       teaches: "Bipartite 2-colouring via BFS — same-coloured neighbour means odd cycle",
     },
     {
-      num: 6,
+      num: 7,
       title: "Pacific Atlantic Water Flow",
       url: "https://leetcode.com/problems/pacific-atlantic-water-flow/",
       source: "LC 417",
@@ -75,7 +85,7 @@ export const graphTraversal: Module = {
       teaches: "Reverse the direction — BFS *out* from both oceans' boundaries, intersect the reachable sets",
     },
     {
-      num: 7,
+      num: 8,
       title: "Surrounded Regions",
       url: "https://leetcode.com/problems/surrounded-regions/",
       source: "LC 130",
@@ -85,7 +95,7 @@ export const graphTraversal: Module = {
       teaches: "Anchor DFS from border-touching `'O'`s, mark survivors, flip the rest",
     },
     {
-      num: 8,
+      num: 9,
       title: "Open the Lock",
       url: "https://leetcode.com/problems/open-the-lock/",
       source: "LC 752",
@@ -95,7 +105,7 @@ export const graphTraversal: Module = {
       teaches: "State-space BFS — the node is a 4-tuple of digits, not a position; 8 neighbours per state (each wheel ±1); deadends become walls in the state space. Makes the state-encoding step explicit before Word Ladder hides it inside string transforms",
     },
     {
-      num: 9,
+      num: 10,
       title: "Word Ladder",
       url: "https://leetcode.com/problems/word-ladder/",
       source: "LC 127",

@@ -12,10 +12,21 @@ export const intervals: Module = {
   isNew: true,
   resources: [
     { title: "USACO Guide — Greedy Sorting (Silver)", url: "https://usaco.guide/silver/greedy-sorting" },
+    { title: "CP-Algorithms — Sweep Line (segment intersection)", url: "https://cp-algorithms.com/geometry/intersecting_segments.html" },
   ],
   problems: [
     {
       num: 1,
+      title: "Meeting Rooms",
+      url: "https://leetcode.com/problems/meeting-rooms/",
+      source: "LC 252",
+      difficulty: "easy",
+      list: "NC150",
+      role: "baseline",
+      teaches: "Sort by start time, then linear scan checking adjacent pairs — the simplest 'do intervals overlap?' primitive. Establishes the sort-then-scan pattern before the more elaborate merge and sweep variants",
+    },
+    {
+      num: 2,
       title: "Movie Festival",
       url: "https://cses.fi/problemset/task/1629",
       source: "CSES",
@@ -25,7 +36,7 @@ export const intervals: Module = {
       teaches: "EFT greedy with exchange-argument proof — your Step 1 problem",
     },
     {
-      num: 2,
+      num: 3,
       title: "Merge Intervals",
       url: "https://leetcode.com/problems/merge-intervals/",
       source: "LC 56",
@@ -35,7 +46,7 @@ export const intervals: Module = {
       teaches: "Sort by start + extend running interval — different sort key, different sub-pattern",
     },
     {
-      num: 3,
+      num: 4,
       title: "Insert Interval",
       url: "https://leetcode.com/problems/insert-interval/",
       source: "LC 57",
@@ -45,7 +56,7 @@ export const intervals: Module = {
       teaches: "Same merge logic as LC 56 but with a pre-sorted list and one insertion — three-phase scan",
     },
     {
-      num: 4,
+      num: 5,
       title: "Non-overlapping Intervals",
       url: "https://leetcode.com/problems/non-overlapping-intervals/",
       source: "LC 435",
@@ -55,7 +66,7 @@ export const intervals: Module = {
       teaches: "Same EFT machinery as problem 1, framed as \"minimum removals = n − max non-overlapping\"",
     },
     {
-      num: 5,
+      num: 6,
       title: "Meeting Rooms II",
       url: "https://leetcode.com/problems/meeting-rooms-ii/",
       source: "LC 253",
@@ -65,7 +76,7 @@ export const intervals: Module = {
       teaches: "Sweep line with start/end events — third sub-pattern",
     },
     {
-      num: 6,
+      num: 7,
       title: "Minimum Interval to Include Each Query",
       url: "https://leetcode.com/problems/minimum-interval-to-include-each-query/",
       source: "LC 1851",

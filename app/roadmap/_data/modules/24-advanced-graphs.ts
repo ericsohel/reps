@@ -10,6 +10,8 @@ export const advGraphs: Module = {
   prereqIds: ["topo-sort", "shortest-paths"],
   resources: [
     { title: "USACO Guide — SCC (Advanced)", url: "https://usaco.guide/adv/SCC" },
+    { title: "CP-Algorithms — Bridge Searching", url: "https://cp-algorithms.com/graph/bridge-searching.html" },
+    { title: "CP-Algorithms — Articulation Points", url: "https://cp-algorithms.com/graph/cutpoints.html" },
   ],
   problems: [
     {
@@ -44,6 +46,16 @@ export const advGraphs: Module = {
     },
     {
       num: 4,
+      title: "Critical Connections in a Network",
+      url: "https://leetcode.com/problems/critical-connections-in-a-network/",
+      source: "LC 1192",
+      difficulty: "hard",
+      list: "new",
+      role: "extension",
+      teaches: "Tarjan's bridges algorithm — DFS computing `disc[u]` (discovery time) and `low[u]` (lowest discovery reachable). Edge `(u,v)` is a bridge iff `low[v] > disc[u]`. Same DFS structure as SCC but the invariant is different",
+    },
+    {
+      num: 5,
       title: "Giant Pizza",
       url: "https://cses.fi/problemset/task/1684",
       source: "CSES",
@@ -53,7 +65,7 @@ export const advGraphs: Module = {
       teaches: "2-SAT — implication graph, SCC, variable assignment from topological position",
     },
     {
-      num: 5,
+      num: 6,
       title: "Reconstruct Itinerary",
       url: "https://leetcode.com/problems/reconstruct-itinerary/",
       source: "LC 332",
@@ -63,7 +75,7 @@ export const advGraphs: Module = {
       teaches: "Eulerian path via Hierholzer's — the itinerary visits every flight once",
     },
     {
-      num: 6,
+      num: 7,
       title: "Proving Equivalences",
       url: "https://open.kattis.com/problems/equivalences",
       source: "Kattis",

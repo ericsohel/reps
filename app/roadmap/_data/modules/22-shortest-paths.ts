@@ -68,6 +68,16 @@ export const shortestPaths: Module = {
     },
     {
       num: 6,
+      title: "Minimum Obstacles to Remove to Reach Corner of Grid",
+      url: "https://leetcode.com/problems/minimum-obstacle-removal-to-reach-corner-of-grid/",
+      source: "LC 2290",
+      difficulty: "hard",
+      list: "new",
+      role: "extension",
+      teaches: "0-1 BFS — when edge weights are only 0 or 1, replace the heap with a deque: push to front for 0-weight edges, push to back for 1-weight edges. O(V+E) instead of O(E log V). The natural bridge between BFS and Dijkstra",
+    },
+    {
+      num: 7,
       title: "Swim in Rising Water",
       url: "https://leetcode.com/problems/swim-in-rising-water/",
       source: "LC 778",

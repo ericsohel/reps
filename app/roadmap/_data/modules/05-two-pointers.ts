@@ -10,6 +10,7 @@ export const twoPointers: Module = {
   prereqIds: ["arrays-hashing", "sorting"],
   resources: [
     { title: "USACO Guide — Two Pointers (Silver)", url: "https://usaco.guide/silver/two-pointers" },
+    { title: "CPH Book Ch. 8 — Range Queries (covers two-pointer)", url: "https://cses.fi/book/book.pdf" },
   ],
   problems: [
     {
@@ -74,6 +75,16 @@ export const twoPointers: Module = {
     },
     {
       num: 7,
+      title: "3Sum Closest",
+      url: "https://leetcode.com/problems/3sum-closest/",
+      source: "LC 16",
+      difficulty: "medium",
+      list: "NC150",
+      role: "extension",
+      teaches: "Reduce-by-fixing-one + converging with a distance-to-target objective — track the minimum |sum − target| seen, update inside the inner pointer loop. Bridges 3Sum's exact-match converging to LC 42's minimax tracking",
+    },
+    {
+      num: 8,
       title: "Trapping Rain Water",
       url: "https://leetcode.com/problems/trapping-rain-water/",
       source: "LC 42",

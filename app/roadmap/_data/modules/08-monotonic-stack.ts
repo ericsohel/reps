@@ -11,6 +11,7 @@ export const monotonicStack: Module = {
   isNew: true,
   resources: [
     { title: "USACO Guide — Stacks (Gold)", url: "https://usaco.guide/gold/stacks" },
+    { title: "USACO Guide — Monotonic Stack (Platinum)", url: "https://usaco.guide/plat/monotonic-stack" },
   ],
   problems: [
     {

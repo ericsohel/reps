@@ -10,6 +10,8 @@ export const stack: Module = {
   prereqIds: ["arrays-hashing"],
   resources: [
     { title: "USACO Guide — Stacks (Gold)", url: "https://usaco.guide/gold/stacks" },
+    { title: "CP-Algorithms — Stack with minimum", url: "https://cp-algorithms.com/data_structures/stack_queue_modification.html" },
+    { title: "CPH Book Ch. 4 — Data Structures", url: "https://cses.fi/book/book.pdf" },
   ],
   problems: [
     {

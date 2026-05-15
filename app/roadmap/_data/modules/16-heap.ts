@@ -10,6 +10,8 @@ export const heap: Module = {
   prereqIds: ["trees", "linked-list"],
   resources: [
     { title: "USACO Guide — Priority Queues (Silver)", url: "https://usaco.guide/silver/priority-queues" },
+    { title: "Python heapq documentation", url: "https://docs.python.org/3/library/heapq.html" },
+    { title: "CPH Book Ch. 4 — Data Structures (covers heap)", url: "https://cses.fi/book/book.pdf" },
   ],
   problems: [
     {

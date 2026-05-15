@@ -11,6 +11,7 @@ export const backtracking: Module = {
   prereqIds: ["foundations"],
   resources: [
     { title: "USACO Guide — Complete Search with Recursion (Bronze)", url: "https://usaco.guide/bronze/complete-rec" },
+    { title: "CP-Algorithms — Generating subsets / combinations", url: "https://cp-algorithms.com/combinatorics/generating_combinations.html" },
   ],
   problems: [
     {
@@ -45,6 +46,16 @@ export const backtracking: Module = {
     },
     {
       num: 4,
+      title: "Letter Combinations of a Phone Number",
+      url: "https://leetcode.com/problems/letter-combinations-of-a-phone-number/",
+      source: "LC 17",
+      difficulty: "medium",
+      list: "NC150",
+      role: "extension",
+      teaches: "Index-based recursion — at depth `i`, iterate over the letters mapped to digits[i] and recurse on i+1. Build a partial string, backtrack by removing the last character. The canonical recursive-enumeration shape distinct from combinations/permutations",
+    },
+    {
+      num: 5,
       title: "Creating Strings I",
       url: "https://cses.fi/problemset/task/1622",
       source: "CSES",
@@ -54,7 +65,7 @@ export const backtracking: Module = {
       teaches: "Permutations with duplicates — introduces the `i > start` skip rule",
     },
     {
-      num: 5,
+      num: 6,
       title: "Combination Sum",
       url: "https://leetcode.com/problems/combination-sum/",
       source: "LC 39",
@@ -64,7 +75,7 @@ export const backtracking: Module = {
       teaches: "Accumulate-with-reuse plus sorted+break pruning",
     },
     {
-      num: 6,
+      num: 7,
       title: "Generate Parentheses",
       url: "https://leetcode.com/problems/generate-parentheses/",
       source: "LC 22",
@@ -74,17 +85,27 @@ export const backtracking: Module = {
       teaches: "Count-constrained recursion — `open < n` to add `(`, `close < open` to add `)`",
     },
     {
-      num: 7,
+      num: 8,
       title: "Combination Sum II",
       url: "https://leetcode.com/problems/combination-sum-ii/",
       source: "LC 40",
       difficulty: "medium",
       list: "NC150",
       role: "extension",
-      teaches: "Skip rule from problem 4 + no-reuse (pass `i+1`)",
+      teaches: "Skip rule from problem 5 + no-reuse (pass `i+1`)",
     },
     {
-      num: 8,
+      num: 9,
+      title: "Palindrome Partitioning",
+      url: "https://leetcode.com/problems/palindrome-partitioning/",
+      source: "LC 131",
+      difficulty: "medium",
+      list: "NC150",
+      role: "extension",
+      teaches: "Backtracking with state validation — at each step, try every prefix that's a palindrome and recurse on the suffix. Combines partition enumeration with a per-cut check; the validity test gates the recursion",
+    },
+    {
+      num: 10,
       title: "Word Search",
       url: "https://leetcode.com/problems/word-search/",
       source: "LC 79",
@@ -94,7 +115,7 @@ export const backtracking: Module = {
       teaches: "Grid backtracking — mark with `#`, recurse 4 directions, restore on return",
     },
     {
-      num: 9,
+      num: 11,
       title: "Livestock Lineup",
       url: "http://www.usaco.org/index.php?page=viewproblem2&cpid=965",
       source: "USACO Bronze",
@@ -104,7 +125,7 @@ export const backtracking: Module = {
       teaches: "Permutation backtracking in a problem statement that doesn't name the pattern — must identify it",
     },
     {
-      num: 10,
+      num: 12,
       title: "Partition to K Equal Sum Subsets",
       url: "https://leetcode.com/problems/partition-to-k-equal-sum-subsets/",
       source: "LC 698",
@@ -114,7 +135,7 @@ export const backtracking: Module = {
       teaches: "Bucket-filling backtracking — place each item into one of k buckets that must each sum to `total/k`. Prune by sorting descending (place hardest items first), skipping symmetric empty-bucket states, and bailing when a bucket overflows. Distinct mechanic from constraint-placement (N-Queens) and target-accumulation (Combination Sum)",
     },
     {
-      num: 11,
+      num: 13,
       title: "N-Queens",
       url: "https://leetcode.com/problems/n-queens/",
       source: "LC 51",

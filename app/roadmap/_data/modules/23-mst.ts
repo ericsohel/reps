@@ -11,6 +11,8 @@ export const mst: Module = {
   isNew: true,
   resources: [
     { title: "USACO Guide — MST (Gold)", url: "https://usaco.guide/gold/mst" },
+    { title: "CP-Algorithms — Kruskal's Algorithm", url: "https://cp-algorithms.com/graph/mst_kruskal.html" },
+    { title: "CP-Algorithms — Prim's Algorithm", url: "https://cp-algorithms.com/graph/mst_prim.html" },
   ],
   problems: [
     {
@@ -65,6 +67,16 @@ export const mst: Module = {
     },
     {
       num: 6,
+      title: "Find Critical and Pseudo-Critical Edges in Minimum Spanning Tree",
+      url: "https://leetcode.com/problems/find-critical-and-pseudo-critical-edges-in-minimum-spanning-tree/",
+      source: "LC 1489",
+      difficulty: "hard",
+      list: "NC150",
+      role: "extension",
+      teaches: "Kruskal's + edge-classification — compute baseline MST weight, then for each edge: (a) force-exclude it and check if MST weight rises (critical), (b) force-include it and check if MST weight stays the same (pseudo-critical). Teaches the 'perturb the input' technique on MST",
+    },
+    {
+      num: 7,
       title: "Portals",
       url: "http://www.usaco.org/index.php?page=viewproblem2&cpid=1138",
       source: "USACO Gold",

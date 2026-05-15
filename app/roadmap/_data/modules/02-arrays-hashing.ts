@@ -10,6 +10,8 @@ export const arraysHashing: Module = {
   prereqIds: ["foundations"],
   resources: [
     { title: "USACO Guide — Intro to Sets & Maps (Bronze)", url: "https://usaco.guide/bronze/intro-sets" },
+    { title: "CP-Algorithms — Hash Tables", url: "https://cp-algorithms.com/data_structures/hash_table.html" },
+    { title: "CPH Book Ch. 4 — Data Structures", url: "https://cses.fi/book/book.pdf" },
   ],
   problems: [
     {

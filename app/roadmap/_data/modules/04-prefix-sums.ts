@@ -12,6 +12,7 @@ export const prefixSums: Module = {
   resources: [
     { title: "USACO Guide — Prefix Sums (Silver)", url: "https://usaco.guide/silver/prefix-sums" },
     { title: "USACO Guide — More Prefix Sums (Silver)", url: "https://usaco.guide/silver/more-prefix-sums" },
+    { title: "CPH Book Ch. 9 — Range Queries", url: "https://cses.fi/book/book.pdf" },
   ],
   problems: [
     {
@@ -76,6 +77,16 @@ export const prefixSums: Module = {
     },
     {
       num: 7,
+      title: "Range Sum Query 2D - Immutable",
+      url: "https://leetcode.com/problems/range-sum-query-2d-immutable/",
+      source: "LC 304",
+      difficulty: "medium",
+      list: "NC150",
+      role: "extension",
+      teaches: "2D prefix sum baseline — O(MN) preprocessing, O(1) per rectangle query via 4-term inclusion-exclusion. The clean introduction before Forest Queries pushes it on larger CSES constraints",
+    },
+    {
+      num: 8,
       title: "Forest Queries",
       url: "https://cses.fi/problemset/task/1652",
       source: "CSES",
@@ -85,7 +96,7 @@ export const prefixSums: Module = {
       teaches: "2D prefix sums — first time the 4-term inclusion-exclusion is needed; CSES gives larger test cases than LC 304",
     },
     {
-      num: 8,
+      num: 9,
       title: "Corporate Flight Bookings",
       url: "https://leetcode.com/problems/corporate-flight-bookings/",
       source: "LC 1109",
@@ -95,7 +106,7 @@ export const prefixSums: Module = {
       teaches: "Difference array — many range updates, single point-query pass at the end; the inverse direction of prefix sums",
     },
     {
-      num: 9,
+      num: 10,
       title: "Running Miles",
       url: "https://codeforces.com/contest/1826/problem/D",
       source: "CF 1826D",

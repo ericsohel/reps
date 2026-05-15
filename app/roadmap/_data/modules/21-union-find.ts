@@ -10,7 +10,7 @@ export const unionFind: Module = {
   prereqIds: ["arrays-hashing"],
   isNew: true,
   resources: [
-    { title: "USACO Guide — Disjoint Set Union (Gold)", url: "https://usaco.guide/gold/dsu" },
+    { title: "USACO Guide — DSU (Silver)", url: "https://usaco.guide/silver/dsu" },
     { title: "CP-Algorithms — Disjoint Set Union", url: "https://cp-algorithms.com/data_structures/disjoint_set_union.html" },
   ],
   problems: [
@@ -69,7 +69,7 @@ export const unionFind: Module = {
       title: "Mootube",
       url: "http://www.usaco.org/index.php?page=viewproblem2&cpid=789",
       source: "USACO Gold",
-      difficulty: "easy",
+      difficulty: "medium",
       list: "UG ⭐",
       role: "extension",
       teaches: "Offline DSU — sort queries and edges by weight, sweep with unions; preview of Kruskal's-style technique used in module 23",
