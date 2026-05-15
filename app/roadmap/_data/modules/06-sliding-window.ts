@@ -9,7 +9,7 @@ export const slidingWindow: Module = {
   order: 6,
   prereqIds: ["two-pointers"],
   resources: [
-    { title: "USACO Guide — Two Pointers (Silver)", url: "https://usaco.guide/silver/two-pointers" },
+    { title: "USACO Guide — Sliding Window (Gold)", url: "https://usaco.guide/gold/sliding-window" },
   ],
   problems: [
     {
