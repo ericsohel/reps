@@ -272,6 +272,21 @@ const mdComponents: Components = {
   },
 };
 
+// ── Step 3 resources extraction ──────────────────────────────────────────────
+
+function extractResources(md: string): string {
+  const m = md.match(/^## Step 3.*$/m);
+  if (!m || m.index === undefined) return "";
+  const fromStep3 = md.slice(m.index);
+  // Stop at next ## heading
+  const nextH2 = fromStep3.slice(m[0].length + 1).match(/^## /m);
+  const section = nextH2
+    ? fromStep3.slice(0, m[0].length + 1 + nextH2.index!)
+    : fromStep3;
+  // Rename heading to "Resources"
+  return section.replace(/^## Step 3.*$/m, "## Resources").trim();
+}
+
 // ── Step 5 problems-table extraction ─────────────────────────────────────────
 
 function extractProblemsSection(md: string): {
@@ -392,26 +407,37 @@ export default async function ModulePage({
       <div className="divider mb-0" />
 
       {(() => {
+        const resources = extractResources(content);
         const section = extractProblemsSection(content);
-        if (!section) {
-          return (
-            <ReactMarkdown remarkPlugins={[remarkGfm]} components={mdComponents}>
-              {content}
-            </ReactMarkdown>
-          );
-        }
+
+        // Checkpoint description lives in section.after before ## Common mistakes
+        const checkpointText = section
+          ? section.after.replace(/\n## Common mistakes[\s\S]*$/, "").trim()
+          : "";
+
         return (
           <>
-            <ReactMarkdown remarkPlugins={[remarkGfm]} components={mdComponents}>
-              {section.before}
-            </ReactMarkdown>
-            <ReactMarkdown remarkPlugins={[remarkGfm]} components={mdComponents}>
-              {section.step5Intro}
-            </ReactMarkdown>
-            <ProblemsChecklist moduleId={module} problems={section.problems} />
-            <ReactMarkdown remarkPlugins={[remarkGfm]} components={mdComponents}>
-              {section.after}
-            </ReactMarkdown>
+            {resources && (
+              <ReactMarkdown remarkPlugins={[remarkGfm]} components={mdComponents}>
+                {resources}
+              </ReactMarkdown>
+            )}
+            {section && (
+              <>
+                <h2 className="text-lg font-semibold text-zinc-100 mt-10 mb-3 tracking-tight border-b border-zinc-800/60 pb-2">
+                  Problems
+                </h2>
+                <ReactMarkdown remarkPlugins={[remarkGfm]} components={mdComponents}>
+                  {section.step5Intro}
+                </ReactMarkdown>
+                <ProblemsChecklist moduleId={module} problems={section.problems} />
+                {checkpointText && (
+                  <ReactMarkdown remarkPlugins={[remarkGfm]} components={mdComponents}>
+                    {checkpointText}
+                  </ReactMarkdown>
+                )}
+              </>
+            )}
           </>
         );
       })()}
