@@ -20,4 +20,8 @@ export const PROBLEM_COUNTS: Record<string, number> = {
   "intervals":       6,
   "graph-traversal": 8,
   "topo-sort":       6,
+  "union-find":      6,
+  "shortest-paths":  6,
+  "mst":             6,
+  "adv-graphs":      6,
 };

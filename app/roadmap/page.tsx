@@ -24,6 +24,10 @@ const MODULE_PAGES: Record<string, string> = {
   "intervals":       "/roadmap/intervals",
   "graph-traversal": "/roadmap/graph-traversal",
   "topo-sort":       "/roadmap/topo-sort",
+  "union-find":      "/roadmap/union-find",
+  "shortest-paths":  "/roadmap/shortest-paths",
+  "mst":             "/roadmap/mst",
+  "adv-graphs":      "/roadmap/adv-graphs",
 };
 
 const COLORS: Record<string, string> = {

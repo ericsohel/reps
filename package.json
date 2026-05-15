@@ -3,9 +3,12 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
+    "predev": "bash scripts/sync-modules.sh",
     "dev": "next dev",
+    "prebuild": "bash scripts/sync-modules.sh",
     "build": "next build",
     "start": "next start",
+    "sync-modules": "bash scripts/sync-modules.sh",
     "db:push": "drizzle-kit push",
     "db:studio": "drizzle-kit studio",
     "test": "tsx lib/fsrs.test.ts"

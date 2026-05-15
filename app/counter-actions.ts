@@ -53,6 +53,10 @@ const MODULE_FILES: Record<string, string> = {
   "intervals":       "17-intervals.md",
   "graph-traversal": "18-graph-traversal.md",
   "topo-sort":       "19-topological-sort.md",
+  "union-find":      "20-union-find.md",
+  "shortest-paths":  "21-shortest-paths.md",
+  "mst":             "22-mst.md",
+  "adv-graphs":      "23-advanced-graphs.md",
 };
 
 function normalizeDifficulty(s: string): CounterKey | null {

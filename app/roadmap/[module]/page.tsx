@@ -28,6 +28,10 @@ const MODULE_META = {
   "intervals":       { file: "17-intervals.md",          num: 17, title: "Intervals & Sweep Line" },
   "graph-traversal": { file: "18-graph-traversal.md",    num: 18, title: "Graph Traversal" },
   "topo-sort":       { file: "19-topological-sort.md",   num: 19, title: "Topological Sort" },
+  "union-find":      { file: "20-union-find.md",          num: 20, title: "Union-Find / DSU" },
+  "shortest-paths":  { file: "21-shortest-paths.md",      num: 21, title: "Shortest Paths" },
+  "mst":             { file: "22-mst.md",                 num: 22, title: "Minimum Spanning Tree" },
+  "adv-graphs":      { file: "23-advanced-graphs.md",     num: 23, title: "Advanced Graphs" },
 } as const;
 
 type ModuleKey = keyof typeof MODULE_META;
