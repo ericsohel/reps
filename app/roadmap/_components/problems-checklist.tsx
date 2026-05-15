@@ -94,10 +94,12 @@ export function ProblemsChecklist({
   moduleId,
   problems,
   hideProgress = false,
+  readOnly = false,
 }: {
   moduleId: string;
   problems: ProblemRow[];
   hideProgress?: boolean;
+  readOnly?: boolean;
 }) {
   // Always use the main key. isModuleDone("foundations") is hardcoded
   // true so foundations problem counts never affect unlock logic.
@@ -117,6 +119,7 @@ export function ProblemsChecklist({
   }, [moduleId]);
 
   function toggle(num: number) {
+    if (readOnly) return;
     const wasSolved = solved.has(num);
     const next = new Set(solved);
     if (wasSolved) next.delete(num);
@@ -198,19 +201,24 @@ export function ProblemsChecklist({
           return (
             <div
               key={p.num}
-              onClick={() => toggle(p.num)}
-              className={`flex items-center gap-2.5 px-2.5 py-2 rounded-lg cursor-pointer transition-all ${
-                isDone
-                  ? "bg-emerald-950/20"
-                  : "hover:bg-zinc-900/50"
+              onClick={readOnly ? undefined : () => toggle(p.num)}
+              className={`flex items-center gap-2.5 px-2.5 py-2 rounded-lg transition-all ${
+                readOnly
+                  ? "cursor-default opacity-60"
+                  : isDone
+                    ? "bg-emerald-950/20 cursor-pointer"
+                    : "hover:bg-zinc-900/50 cursor-pointer"
               }`}
             >
               <input
                 type="checkbox"
                 checked={isDone}
-                onChange={() => toggle(p.num)}
+                disabled={readOnly}
+                onChange={readOnly ? undefined : () => toggle(p.num)}
                 onClick={(e) => e.stopPropagation()}
-                className="w-3.5 h-3.5 flex-shrink-0 rounded border-zinc-700 bg-zinc-900 cursor-pointer accent-emerald-500"
+                className={`w-3.5 h-3.5 flex-shrink-0 rounded border-zinc-700 bg-zinc-900 ${
+                  readOnly ? "cursor-not-allowed" : "cursor-pointer"
+                } accent-emerald-500`}
               />
               <span className={`text-[11px] font-mono w-4 text-right flex-shrink-0 ${isDone ? "text-zinc-600" : "text-zinc-600"}`}>
                 {p.num}

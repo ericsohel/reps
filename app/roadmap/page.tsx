@@ -36,6 +36,7 @@ function computeUnlocks(id: string): number {
 }
 
 const REQUIRED_PROBLEMS = 5;
+const UNLOCK_THRESHOLD = 3;
 
 // Simplified SM-2 schedule: 1d after 1st solve, 7d after 2nd+. For v1 the
 // roadmap stores only the latest lastSolvedAt per problem (no review-count
@@ -49,8 +50,14 @@ export default function RoadmapPage() {
   const [problemsSolvedAt, setProblemsSolvedAt] = useState<Record<string, Record<string, number>>>({});
   const [currentTrack, setCurrentTrack] = useState<FilterTrack>("all");
   const [hydrated, setHydrated] = useState(false);
-  const [activeModule, setActiveModule] = useState<{ id: string; title: string } | null>(null);
+  const [activeModule, setActiveModule] = useState<{
+    id: string;
+    title: string;
+    previewMode?: boolean;
+    unmetPrereqs?: string[];
+  } | null>(null);
   const [lastVisitedModule, setLastVisitedModule] = useState<string | null>(null);
+  const [showBanner, setShowBanner] = useState(false);
 
   useEffect(() => {
     const saved = JSON.parse(localStorage.getItem("dsa-v1-completed") || "[]");
@@ -63,8 +70,14 @@ export default function RoadmapPage() {
     setProblemsSolvedAt(solvedAt);
     setCurrentTrack(savedTrack);
     setLastVisitedModule(savedLastVisited || null);
+    setShowBanner(localStorage.getItem("dsa-v1-gating-v2-seen") !== "1");
     setHydrated(true);
   }, []);
+
+  function dismissBanner() {
+    localStorage.setItem("dsa-v1-gating-v2-seen", "1");
+    setShowBanner(false);
+  }
 
   // Re-sync solved state whenever a problem is toggled in the modal.
   // ProblemsChecklist dispatches "roadmap-progress-changed" after every
@@ -108,9 +121,14 @@ export default function RoadmapPage() {
   // base REQUIRED_PROBLEMS threshold.
   function masteryTarget(id: string): number {
     const total = PROBLEM_COUNTS[id] ?? 0;
-    if (total <= 0) return 0;
-    const u = unlocksOf(id);
-    return Math.min(REQUIRED_PROBLEMS + Math.max(0, u - 3), total);
+    if (total === 0) return 0;
+    // Interview track: low bar, prioritize breadth.
+    // CP track and default: scale with downstream count.
+    if (currentTrack === "interview") {
+      return Math.min(UNLOCK_THRESHOLD, total);
+    }
+    const unlocks = unlocksOf(id);
+    return Math.min(REQUIRED_PROBLEMS + Math.max(0, unlocks - 3), total);
   }
 
   // Foundations is always done — it's a reference checklist, not a gate.
@@ -125,10 +143,19 @@ export default function RoadmapPage() {
     return (problemsSolved[id]?.length ?? 0) >= target;
   }
 
+  function isModuleUnlocking(id: string): boolean {
+    if (id === "foundations") return true;
+    if (completed.has(id)) return true;
+    const total = PROBLEM_COUNTS[id] ?? 0;
+    if (total === 0) return false;
+    const threshold = Math.min(UNLOCK_THRESHOLD, total);
+    return (problemsSolved[id]?.length ?? 0) >= threshold;
+  }
+
   function nodeState(id: string): "completed" | "available" | "locked" {
     if (isModuleDone(id)) return "completed";
     const prereqs = EDGES.filter(([, t]) => t === id).map(([s]) => s);
-    return prereqs.every(p => isModuleDone(p)) ? "available" : "locked";
+    return prereqs.every(p => isModuleUnlocking(p)) ? "available" : "locked";
   }
 
   function toggle(id: string) {
@@ -505,6 +532,24 @@ export default function RoadmapPage() {
         </div>
       </header>
 
+      {showBanner && (
+        <div className="border border-amber-700/40 bg-amber-950/20 rounded-lg px-4 py-3 flex items-start gap-3">
+          <span className="text-amber-400 text-sm flex-shrink-0">●</span>
+          <div className="flex-1 text-xs text-zinc-400 leading-relaxed">
+            <strong className="text-zinc-200">Prerequisites loosened.</strong>{" "}
+            Modules now unlock after 3 problems solved, not the full mastery target.
+            Your in-progress modules and the recommendation engine still track mastery —
+            just the gating relaxed.
+          </div>
+          <button
+            onClick={dismissBanner}
+            className="text-zinc-600 hover:text-zinc-300 text-xs flex-shrink-0"
+          >
+            Dismiss
+          </button>
+        </div>
+      )}
+
       <div className="divider" />
 
       <div className="space-y-6">
@@ -559,9 +604,15 @@ export default function RoadmapPage() {
             <div
               key={n.id}
               onClick={() => {
-                if (state === "locked") return;
                 if (PROBLEM_COUNTS[n.id]) {
-                  setActiveModule({ id: n.id, title: n.label });
+                  const isLocked = state === "locked";
+                  const unmet = isLocked
+                    ? EDGES.filter(([, t]) => t === n.id)
+                        .map(([s]) => s)
+                        .filter(p => !isModuleUnlocking(p))
+                        .map(p => NODES.find(x => x.id === p)?.label.replace("\n", " ") ?? p)
+                    : undefined;
+                  setActiveModule({ id: n.id, title: n.label, previewMode: isLocked, unmetPrereqs: unmet });
                   setLastVisitedModule(n.id);
                   localStorage.setItem("dsa-v1-last-visited", n.id);
                 } else if (MODULE_PAGES[n.id]) {
@@ -577,7 +628,7 @@ export default function RoadmapPage() {
                   : isRecommended
                   ? "cursor-pointer border-amber-500/60 bg-gradient-to-br from-amber-950/30 via-zinc-900/40 to-zinc-900/30 shadow-[0_0_24px_rgba(251,191,36,0.18),inset_0_0_0_1px_rgba(251,191,36,0.12)] ring-1 ring-amber-500/30 hover:shadow-[0_0_32px_rgba(251,191,36,0.28),inset_0_0_0_1px_rgba(251,191,36,0.2)]"
                   : state === "locked"
-                  ? "cursor-default border-zinc-800/30 bg-zinc-900/10"
+                  ? "cursor-pointer border-zinc-800/30 bg-zinc-900/10 hover:bg-zinc-900/20"
                   : state === "completed"
                   ? "cursor-pointer border-emerald-900/50 bg-emerald-950/20 hover:bg-emerald-950/30"
                   : isNext
@@ -733,6 +784,8 @@ export default function RoadmapPage() {
         <ModuleModal
           moduleId={activeModule.id}
           title={activeModule.title}
+          previewMode={activeModule.previewMode}
+          unmetPrereqs={activeModule.unmetPrereqs}
           onClose={() => setActiveModule(null)}
         />
       )}

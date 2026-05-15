@@ -10,6 +10,8 @@ interface Props {
   moduleId: string;
   title: string;
   onClose: () => void;
+  previewMode?: boolean;
+  unmetPrereqs?: string[];
 }
 
 function Resources({ items }: { items: Resource[] }) {
@@ -38,7 +40,7 @@ function Resources({ items }: { items: Resource[] }) {
   );
 }
 
-export function ModuleModal({ moduleId, title, onClose }: Props) {
+export function ModuleModal({ moduleId, title, onClose, previewMode = false, unmetPrereqs }: Props) {
   const [data, setData] = useState<{ resources: Resource[]; problems: ProblemRow[] } | null>(null);
 
   useEffect(() => {
@@ -76,12 +78,34 @@ export function ModuleModal({ moduleId, title, onClose }: Props) {
             <p className="text-sm text-zinc-600 py-6 text-center">Loading…</p>
           ) : (
             <>
+              {previewMode && (
+                <div className="mb-5 border border-amber-700/40 bg-amber-950/20 rounded-md px-3.5 py-3">
+                  <div className="flex items-start gap-2.5">
+                    <span className="text-amber-400 text-[10px] font-bold uppercase tracking-widest flex-shrink-0 leading-5">Locked</span>
+                    <div className="text-xs text-zinc-400 leading-relaxed">
+                      <strong className="text-zinc-200">Preview only.</strong>{" "}
+                      Finish the prerequisites to start solving:
+                      {unmetPrereqs && unmetPrereqs.length > 0 && (
+                        <span className="block mt-1 text-zinc-300">
+                          {unmetPrereqs.map((p, i) => (
+                            <span key={p}>
+                              {i > 0 && ", "}
+                              <span className="font-medium">{p}</span>
+                            </span>
+                          ))}
+                        </span>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              )}
               <Resources items={data.resources} />
               {data.problems.length > 0 && (
                 <ProblemsChecklist
                   moduleId={moduleId}
                   problems={data.problems}
                   hideProgress={moduleId === "foundations"}
+                  readOnly={previewMode}
                 />
               )}
             </>
