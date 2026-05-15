@@ -11,6 +11,9 @@ export const shortestPaths: Module = {
   isNew: true,
   resources: [
     { title: "USACO Guide — Shortest Paths (Gold)", url: "https://usaco.guide/gold/shortest-paths" },
+    { title: "CP-Algorithms — Dijkstra's Algorithm", url: "https://cp-algorithms.com/graph/dijkstra.html" },
+    { title: "CP-Algorithms — Bellman-Ford", url: "https://cp-algorithms.com/graph/bellman_ford.html" },
+    { title: "CPH Book Ch. 13 — Shortest Paths", url: "https://cses.fi/book/book.pdf" },
   ],
   problems: [
     {
