@@ -34,6 +34,16 @@ export const linkedList: Module = {
     },
     {
       num: 3,
+      title: "Add Two Numbers",
+      url: "https://leetcode.com/problems/add-two-numbers/",
+      source: "LC 2",
+      difficulty: "medium",
+      list: "NC150",
+      role: "extension",
+      teaches: "Dummy head from problem 2 + a `carry` variable that survives across nodes — first appearance of two-pointer traversal with arithmetic state; remember the final carry node when one list is longer or both end with a carry",
+    },
+    {
+      num: 4,
       title: "Linked List Cycle",
       url: "https://leetcode.com/problems/linked-list-cycle/",
       source: "LC 141",
@@ -43,7 +53,7 @@ export const linkedList: Module = {
       teaches: "Fast/slow pointer — detect cycle in O(1) space; phase 1 of Floyd's",
     },
     {
-      num: 4,
+      num: 5,
       title: "Linked List Cycle II",
       url: "https://leetcode.com/problems/linked-list-cycle-ii/",
       source: "LC 142",
@@ -53,17 +63,17 @@ export const linkedList: Module = {
       teaches: "Floyd's *full* algorithm — phase 2 reset trick that Step 2 derives; return the cycle-start node, not just a boolean",
     },
     {
-      num: 5,
+      num: 6,
       title: "Remove Nth Node From End of List",
       url: "https://leetcode.com/problems/remove-nth-node-from-end-of-list/",
       source: "LC 19",
       difficulty: "medium",
       list: "NC150",
       role: "extension",
-      teaches: "Two pointers with a *fixed gap* — same fast/slow chassis as problem 3 with the gap controlling distance-from-end; your Step 1 problem",
+      teaches: "Two pointers with a *fixed gap* — same fast/slow chassis as problem 4 with the gap controlling distance-from-end; your Step 1 problem",
     },
     {
-      num: 6,
+      num: 7,
       title: "Reorder List",
       url: "https://leetcode.com/problems/reorder-list/",
       source: "LC 143",
@@ -73,7 +83,7 @@ export const linkedList: Module = {
       teaches: "Find middle (fast/slow, no gap) + reverse second half (problem 1) + merge alternating (problem 2) — three patterns in one pass",
     },
     {
-      num: 7,
+      num: 8,
       title: "Copy List With Random Pointer",
       url: "https://leetcode.com/problems/copy-list-with-random-pointer/",
       source: "LC 138",
@@ -83,7 +93,7 @@ export const linkedList: Module = {
       teaches: "Hash map `{old → new}` for cross-referenced duplication — single-pass insufficient because `.random` can point forward",
     },
     {
-      num: 8,
+      num: 9,
       title: "Find The Duplicate Number",
       url: "https://leetcode.com/problems/find-the-duplicate-number/",
       source: "LC 287",
@@ -93,7 +103,7 @@ export const linkedList: Module = {
       teaches: "Floyd's reused on an *implicit* functional graph (`i → a[i]`) — the \"list\" exists only conceptually; cycle start = duplicate value",
     },
     {
-      num: 9,
+      num: 10,
       title: "LRU Cache",
       url: "https://leetcode.com/problems/lru-cache/",
       source: "LC 146",
@@ -103,7 +113,7 @@ export const linkedList: Module = {
       teaches: "Doubly linked list + dict — the [augmented data structure](00-patterns.md#augmented-data-structure) pattern reused from module 7's Min Stack; implement the DLL explicitly (not `OrderedDict`) for interview",
     },
     {
-      num: 10,
+      num: 11,
       title: "Merge K Sorted Lists",
       url: "https://leetcode.com/problems/merge-k-sorted-lists/",
       source: "LC 23",
