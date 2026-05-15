@@ -91,6 +91,36 @@ LC 1438 needs *both* the running window max and the running window min. Maintain
 
 This is the [two-scan span pattern](00-patterns.md#two-scan-span) interleaved in a single sweep — two complementary monotonic structures advancing together.
 
+### Deque over a DP recurrence
+
+When a recurrence has the shape `dp[i] = f(a[i], aggregate(dp[i-k..i-1]))` where `aggregate` is `max`, `min`, or another monotone combinator over a sliding window of previous DP entries, the deque pattern transplants directly — but the deque now slides over an array that is **computed as you go**, not a precomputed input.
+
+The mechanics are identical to LC 239: indices into `dp` are stored in decreasing (or increasing) order of `dp` value; front-pop on window expiry; back-pop dominated indices on append. The new twist is the **read-then-write ordering**: you must consult the deque to compute `dp[i]`, then push `dp[i]` afterward. Pushing first would let `dp[i]` participate in computing itself.
+
+**Numeric trace** for `dp[i] = nums[i] + max(dp[i-k..i-1])` with `nums = [10, -5, -2, 4, 0, 3]`, k = 2, base case `dp[0] = nums[0]`:
+
+```
+dp[0] = 10.                                                       push 0.   dq=[0]
+i=1: front-pop while dq[0] < i-k = -1:  none.
+     dp[1] = -5 + dp[dq[0]=0] = -5 + 10 = 5.
+     back-pop while dp[dq[-1]] ≤ 5:     dp[0]=10 > 5, keep.       push 1.   dq=[0, 1]
+i=2: front-pop while dq[0] < 0:          none.
+     dp[2] = -2 + dp[dq[0]=0] = -2 + 10 = 8.
+     back-pop while dp[dq[-1]] ≤ 8:     dp[1]=5 ≤ 8 → pop.        push 2.   dq=[0, 2]
+i=3: front-pop while dq[0] < 1:          dq[0]=0 < 1 → pop.                  dq=[2]
+     dp[3] = 4 + dp[2] = 4 + 8 = 12.
+     back-pop while dp[dq[-1]] ≤ 12:    dp[2]=8 ≤ 12 → pop.       push 3.   dq=[3]
+i=4: front-pop while dq[0] < 2:          dq[0]=3 not < 2, keep.
+     dp[4] = 0 + dp[3] = 12.
+     back-pop while dp[dq[-1]] ≤ 12:    dp[3]=12 ≤ 12 → pop.      push 4.   dq=[4]
+i=5: front-pop while dq[0] < 3:          dq[0]=4 not < 3, keep.
+     dp[5] = 3 + dp[4] = 15.            (answer)
+```
+
+Total work remains O(n) — each `dp` value enters and leaves the deque at most once. The naive O(n·k) transition collapses to O(n).
+
+This is the LC 1696 pattern, and it returns whenever a DP transition reads a max/min over a fixed-width lookback.
+
 ### Deque over prefix sums ([atlas](00-patterns.md#augmented-data-structure))
 
 When the array contains **negative numbers**, the sliding-window monotonic-invariant precondition breaks down: extending right does not reliably grow the sum. The fix: compute prefix sums and use a monotonic deque over the *prefix array*. The deque is an [augmented structure](00-patterns.md#augmented-data-structure) — its entries are indices into a precomputed prefix-sum array, not raw values.
@@ -164,6 +194,29 @@ def longest_subarray(a, limit):
     return ans
 ```
 
+### Deque-optimised DP
+
+```python
+from collections import deque
+
+def deque_dp(nums, k):
+    # Recurrence:  dp[i] = nums[i] + max(dp[i-k..i-1]);  dp[0] = nums[0].
+    # Invariant: dq holds indices into dp in strictly decreasing order of dp value,
+    #            all within the lookback window [i-k, i-1].
+    n = len(nums)
+    dp = [0] * n
+    dp[0] = nums[0]
+    dq = deque([0])
+    for i in range(1, n):
+        while dq and dq[0] < i - k:                # front: expire out-of-window indices
+            dq.popleft()
+        dp[i] = nums[i] + dp[dq[0]]                # READ before WRITE — strict ordering
+        while dq and dp[dq[-1]] <= dp[i]:          # back: drop dominated dp values
+            dq.pop()
+        dq.append(i)
+    return dp[-1]
+```
+
 ### Deque over prefix sums — shortest subarray with sum ≥ k
 
 ```python
@@ -199,19 +252,23 @@ Sources: **NC150** = NeetCode 150 · **UG** = USACO Guide curated
 
 | # | Problem | Source | Difficulty | List | Role | What it teaches |
 |---|---------|--------|-----------|------|------|-----------------|
-| 1 | [Sliding Window Maximum](https://leetcode.com/problems/sliding-window-maximum/) | LC 239 | Hard | NC150 | baseline | Fixed-window decreasing deque — your Step 1 problem |
+| 1 | [Sliding Window Maximum](https://leetcode.com/problems/sliding-window-maximum/) | LC 239 | Hard | NC150 | baseline | Fixed-window decreasing deque — your Step 1 problem; the canonical interview application |
 | 2 | [Max Subarray Sum II](https://cses.fi/problemset/task/1644) | CSES | Medium | UG | extension | Fixed-window deque over prefix sums — max subarray sum with length in `[a, b]`; reduces to "max of P[i] over a sliding window of size b−a+1" |
-| 3 | [Longest Continuous Subarray With Absolute Diff ≤ Limit](https://leetcode.com/problems/longest-continuous-subarray-with-absolute-diff-leq-limit/) | LC 1438 | Medium | ⭐ | extension | Two deques simultaneously — max-deque and min-deque tracked together (two-scan span variant) |
-| 4 | [Maximum Number of Robots Within Budget](https://leetcode.com/problems/maximum-number-of-robots-within-budget/) | LC 2398 | Hard | ⭐ | extension | Sliding-window max (deque) combined with a running cost sum; constraint check on `max_charge + window_size × sum_costs` |
-| 5 | [Shortest Subarray with Sum at Least K](https://leetcode.com/problems/shortest-subarray-with-sum-at-least-k/) | LC 862 | Hard | ⭐ | **checkpoint** | Deque over prefix sums — the only working approach when the array contains negatives |
+| 3 | [Longest Continuous Subarray With Absolute Diff ≤ Limit](https://leetcode.com/problems/longest-continuous-subarray-with-absolute-diff-leq-limit/) | LC 1438 | Medium | new | extension | Two deques simultaneously — max-deque and min-deque tracked together; the two-scan span pattern interleaved in one sweep |
+| 4 | [Jump Game VI](https://leetcode.com/problems/jump-game-vi/) | LC 1696 | Medium | new | extension | New sub-pattern: **deque over a DP recurrence**. `dp[i] = nums[i] + max(dp[i-k..i-1])`; the deque slides over an array computed as you go — strict read-before-write |
+| 5 | [Maximum Number of Robots Within Budget](https://leetcode.com/problems/maximum-number-of-robots-within-budget/) | LC 2398 | Hard | new | combination | Deque-max combined with a running cost sum inside a variable window from module 6; cost formula `max_charge + window_size × sum_costs` drives the shrink decision |
+| 6 | [Shortest Subarray with Sum at Least K](https://leetcode.com/problems/shortest-subarray-with-sum-at-least-k/) | LC 862 | Hard | new | **checkpoint** | Deque over prefix sums when the array contains negatives — module 6's sliding window precondition breaks; module 4's prefix sums are the repair |
 
-**Checkpoint:** LC 862 without hints. Two things must combine without hand-holding: (1) recognise that negatives break module 6's sliding window — extending right doesn't necessarily grow the sum, so the monotonic invariant fails; (2) repair by computing prefix sums and running the deque pattern over the *prefix array*. The front-pop and back-pop rules look similar to LC 239 but the meanings are different (front-pop records valid subarrays; back-pop discards useless start points). Step 2's exposition is the load-bearing teaching for this leap.
+**Checkpoint:** LC 862 without hints. Two things must combine without hand-holding: (1) recognise that negatives break module 6's sliding window — extending right doesn't necessarily grow the sum, so the monotonic invariant fails; (2) repair by computing prefix sums and running the deque pattern over the *prefix array*. The front-pop and back-pop rules look similar to LC 239 but the meanings are different (front-pop **records** valid subarrays and discards their starts as "no longer the shortest"; back-pop discards useless future start points). Step 2's exposition is the load-bearing teaching for this leap.
+
+If you stall: re-solve problem 4 (LC 1696) first. The "deque over a computed array" framing — and the strict read-then-write ordering — transfers directly; the only change here is *which* computed array (prefix sums) and *what* front-pop means.
 
 ---
 
 ## Common mistakes
 
-- **Storing values instead of indices.** Front-pop needs to compare an index to the window boundary (`dq[0] < i - k + 1`). Always store indices; look up values via `a[dq[-1]]` or `prefix[dq[0]]`.
+- **Storing values instead of indices.** Front-pop needs to compare an index to the window boundary (`dq[0] < i - k + 1`). Always store indices; look up values via `a[dq[-1]]` or `prefix[dq[0]]` or `dp[dq[0]]`.
 - **`<` vs `<=` in back-pop.** Use `<=` (pop on equal). Keeping equal values inflates the deque and produces wrong window boundaries when the front-pop check triggers on an equal-value index that is actually older than necessary.
 - **Two-deque variable window — front-pop condition.** When advancing `left`, only `popleft` from a deque if its `dq[0] == left` (the front index is exactly the one being expired). Unconditionally popping front breaks the invariant.
+- **Deque-DP: pushing before reading.** Compute `dp[i]` from the deque's front *before* pushing index `i`. Pushing first lets `dp[i]` participate in its own max — `dp[i]` reads itself and gets `dp[i] = nums[i] + dp[i]`, which is wrong for any `nums[i] ≠ 0`.
 - **LC 862 loop range.** The prefix array has length `n+1`. The deque loop must run `for j in range(n+1)`, not `range(n)`. Stopping at n misses subarrays ending at the last index.
