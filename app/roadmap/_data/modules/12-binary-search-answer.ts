@@ -86,6 +86,16 @@ export const bsAnswer: Module = {
     },
     {
       num: 8,
+      title: "Kth Smallest Element in a Sorted Matrix",
+      url: "https://leetcode.com/problems/kth-smallest-element-in-a-sorted-matrix/",
+      source: "LC 378",
+      difficulty: "medium",
+      list: "new",
+      role: "extension",
+      teaches: "New feasibility shape: BS on the answer value x, feasibility = count cells ≤ x ≥ k (row-wise linear scan). Flips the question — instead of 'is X achievable?' ask 'how many items satisfy ≤ x?' and find the smallest x where that count reaches k",
+    },
+    {
+      num: 9,
       title: "Angry Cows (Gold)",
       url: "http://www.usaco.org/index.php?page=viewproblem2&cpid=597",
       source: "USACO Gold",
