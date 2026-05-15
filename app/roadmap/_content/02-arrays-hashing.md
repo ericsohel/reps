@@ -187,9 +187,8 @@ Hash structures are only valid when:
 This module is a curated path through the USACO Guide's Intro Sets & Maps page — that page covers ~60% of the techniques here.
 
 1. [USACO Guide — Intro to Sets & Maps (Bronze)](https://usaco.guide/bronze/intro-sets) — load-bearing. Work through the page including their examples.
-2. [CPH Book](https://cses.fi/book/book.pdf) Chapter 4 (Data Structures), pp. 39–48 — language-agnostic treatment; covers sorted maps and the distinction between ordered/unordered containers.
 
-Move to Step 4 after both.
+Move to Step 4 after reading.
 
 ---
 
@@ -268,14 +267,19 @@ Sources: **NC150** = NeetCode 150 · **UG** = USACO Guide curated · ⭐ = USACO
 | 5 | [Valid Sudoku](https://leetcode.com/problems/valid-sudoku/) | LC 36 | Medium | NC150 | extension | Pattern 1 multi-tracked — encode each constraint as `(track, value)` in one set (or maintain 27 separate sets). The encoding step is what scales the pattern across 27 parallel constraints |
 | 6 | [Top K Frequent Elements](https://leetcode.com/problems/top-k-frequent-elements/) | LC 347 | Medium | NC150 | extension | Pattern 2 + frequency buckets — invert Counter into a `count → values` array and walk from the top; O(n) without sorting |
 | 7 | [Don't Be Last!](http://www.usaco.org/index.php?page=viewproblem2&cpid=687) | USACO Bronze | Medium | UG ⭐ | combination | Pattern 2 + sort by composite key — dict aggregation followed by tuple-sort to extract a ranked answer; first time Pattern 2 feeds into downstream processing |
-| 8 | [Longest Consecutive Sequence](https://leetcode.com/problems/longest-consecutive-sequence/) | LC 128 | Medium | NC150 | **checkpoint** | Pattern 5 — set-guided iteration; only walk chains from their minimum |
+| 8 | [Cities and States](http://www.usaco.org/index.php?page=viewproblem2&cpid=667) | USACO Silver | Medium | UG | combination | Pattern 3 + Pattern 4 together — complement is a derived tuple key `(state, city[:2])` rather than a number; teaches that "complement" generalises beyond arithmetic and foreshadows module 4's prefix-sum complement |
+| 9 | [Longest Consecutive Sequence](https://leetcode.com/problems/longest-consecutive-sequence/) | LC 128 | Medium | NC150 | **checkpoint** | Pattern 5 — set-guided iteration; only walk chains from their minimum |
 
 **Checkpoint:** LC 128 without hints. After building the set, the question is which elements to walk from. The naive approach (walk from every element) is O(n²). The leap: only start a chain from x if `x - 1 not in s` — i.e., x is a minimum. This gates the inner walk so each element is visited at most once across all chains. The gate is exactly Pattern 5's structure; the inner walk is Pattern 1. Together they give O(n).
 
 ### NC150 problems handed off to other modules
 
 - *Product of Array Except Self* (LC 238, NC150) → module 4 (Prefix Sums). It's a forward-and-backward prefix product problem, not a hash problem; NC150 misfiles it.
-- *Encode and Decode Strings* (LC 271, NC150) — no first-class home in this roadmap. It's a string-serialization design problem (pick an encoding that's parseable in reverse); no hashing or other module's technique applies. Solve it directly when you encounter it.
+- *Encode and Decode Strings* (LC 271, NC150) → module 42 (Strings & Palindromes). String serialization belongs with string techniques.
+- *Subarray Sum Equals K* (LC 560, NC150) → module 4 (Prefix Sums). Complement lookup applied to running prefix sums — same P3 mechanic but the quantity being tracked is a prefix sum, not a raw value.
+- *Sort Colors* (LC 75, NC150) → module 3 (Sorting). Dutch flag partitioning.
+- *Best Time to Buy and Sell Stock II* (LC 122, NC150) → module 17 (Greedy). Greedy accumulation of positive differences.
+- *Majority Element* (LC 169, NC150) and *Majority Element II* (LC 229, NC150) → Section 2E (Math). The Boyer–Moore voting algorithm relies on a cancellation argument that is mathematical in character, not a hash-table pattern. Deferred from this module.
 
 ---
 

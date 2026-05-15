@@ -3,7 +3,7 @@
 // Update when a module's problem list changes.
 export const PROBLEM_COUNTS: Record<string, number> = {
   "foundations":     7,
-  "arrays-hashing":  8,
+  "arrays-hashing":  9,
   "sorting":         7,
   "prefix-sums":     8,
   "two-pointers":    7,
