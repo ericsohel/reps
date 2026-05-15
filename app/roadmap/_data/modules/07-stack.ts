@@ -9,7 +9,7 @@ export const stack: Module = {
   order: 7,
   prereqIds: ["arrays-hashing"],
   resources: [
-    { title: "CPH Chapter 5.2 (Stacks), p. 57", url: "https://cses.fi/book/book.pdf" },
+    { title: "USACO Guide — Stacks (Gold)", url: "https://usaco.guide/gold/stacks" },
   ],
   problems: [
     {
