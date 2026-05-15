@@ -49,9 +49,11 @@ export default function RoadmapPage() {
     const saved = JSON.parse(localStorage.getItem("dsa-v1-completed") || "[]");
     const solved = JSON.parse(localStorage.getItem("dsa-v1-problems-solved") || "{}");
     const savedTrack = (localStorage.getItem("dsa-v1-track") || "all") as FilterTrack;
+    const savedLastVisited = localStorage.getItem("dsa-v1-last-visited");
     setCompleted(new Set(saved));
     setProblemsSolved(solved);
     setCurrentTrack(savedTrack);
+    setLastVisitedModule(savedLastVisited || null);
     setHydrated(true);
   }, []);
 
@@ -81,11 +83,16 @@ export default function RoadmapPage() {
   }
 
   // Foundations is always done — it's a reference checklist, not a gate.
-  // A module is "done" if manually marked complete OR ≥5 problems solved.
+  // A module is "done" if manually marked complete OR ≥ min(5, total) problems
+  // solved. The min handles modules with fewer than 5 problems consistently
+  // with problems-checklist.tsx (which uses the same threshold for unlocking).
   function isModuleDone(id: string): boolean {
     if (id === "foundations") return true;
     if (completed.has(id)) return true;
-    return (problemsSolved[id]?.length ?? 0) >= REQUIRED_PROBLEMS;
+    const total = PROBLEM_COUNTS[id] ?? 0;
+    const target = Math.min(REQUIRED_PROBLEMS, total);
+    if (target === 0) return false;
+    return (problemsSolved[id]?.length ?? 0) >= target;
   }
 
   function nodeState(id: string): "completed" | "available" | "locked" {
@@ -115,8 +122,10 @@ export default function RoadmapPage() {
     if (!confirm("Reset all progress?")) return;
     setCompleted(new Set());
     setProblemsSolved({});
+    setLastVisitedModule(null);
     localStorage.removeItem("dsa-v1-completed");
     localStorage.removeItem("dsa-v1-problems-solved");
+    localStorage.removeItem("dsa-v1-last-visited");
   }
 
   const visibleNodes = NODES
@@ -152,17 +161,20 @@ export default function RoadmapPage() {
     // EXPAND pool: nodes the user can newly start (not done, prereqs satisfied).
     const expandCandidates = visibleNodes.filter(n => nodeState(n.id) === "available");
 
-    // CONSOLIDATE pool: nodes with 5 ≤ solved < total, not manually completed.
-    // These are "foundation built, depth remaining" — the checkpoint problems
-    // are typically what's still unchecked.
+    // CONSOLIDATE pool: nodes with min(5,total) ≤ solved < total, not manually
+    // completed. These are "foundation built, depth remaining" — the
+    // checkpoint problems are typically what's still unchecked. Foundations
+    // is a reference checklist, not a consolidate target.
     const consolidateCandidates = visibleNodes.filter(n => {
+      if (n.id === "foundations") return false;
       // Skip the module the user just visited — don't push them back to
       // grinding the same module they just spent a session on.
       if (n.id === lastVisitedModule) return false;
       const total = PROBLEM_COUNTS[n.id] ?? 0;
+      if (total <= 0) return false;
+      const target = Math.min(REQUIRED_PROBLEMS, total);
       const solved = problemsSolved[n.id]?.length ?? 0;
-      return total > 0
-        && solved >= REQUIRED_PROBLEMS
+      return solved >= target
         && solved < total
         && !completed.has(n.id);
     });
@@ -244,13 +256,18 @@ export default function RoadmapPage() {
 
     const sortedExpand = [...scoredExpand].sort((a, b) => b.score - a.score);
 
-    // Learning debt: more than 2 partial (5/N) modules signals accumulated
-    // depth gap. The 3rd+ partial each adds a small global bias toward
-    // consolidate, capped at 0.15.
+    // Learning debt: 3+ partial modules signals accumulated depth gap. Each
+    // partial past 2 adds 0.10 to the global consolidate score, capped at
+    // 0.30. Tuned so 4+ partials reliably tilts toward consolidate when the
+    // top expand candidate is mid-strength.
     const excessPartials = Math.max(0, consolidateCandidates.length - 2);
-    const debtScore = Math.min(0.15, excessPartials * 0.05);
+    const debtScore = Math.min(0.30, excessPartials * 0.10);
 
     // ── CONSOLIDATE scoring (depth) ───────────────────────────────────────────
+    // Weights tuned to give consolidate a max of ~1.15, matching expand's
+    // ceiling so the comparison is fair. Consolidate wins when there's a
+    // specific high-value depth signal (1-2 left, checkpoint unsolved,
+    // section nearly closed) or when learning debt has accumulated.
     const scoredConsolidate: Scored[] = consolidateCandidates.map(n => {
       const total = PROBLEM_COUNTS[n.id] ?? 0;
       const solved = problemsSolved[n.id]?.length ?? 0;
@@ -259,42 +276,49 @@ export default function RoadmapPage() {
       const order = ORDER[n.id] || 99;
 
       // NOTE: we intentionally do NOT have a "blocks top expand" signal here.
-      // Every consolidate candidate is already "done" (solved ≥ 5), so all of
-      // its dependents are already unlocked — it cannot block anything. An edge
-      // check here fires spuriously and pushes consolidate above expand when
-      // the user should simply be moving forward.
+      // Every consolidate candidate is already "done" (solved ≥ target), so
+      // all of its dependents are already unlocked — it cannot block anything.
 
       // Spaced decay: how many modules of distance since we paused here?
-      // Full decay at distance >= 5 modules past current position.
+      // Full decay at distance ≥ 5 modules past current position. Partials
+      // ahead of currentPos (skipped-ahead) get decay 0 — recent activity.
       const decay = Math.max(0, Math.min(1, (currentPos - order) / 5));
 
-      // Few-problems-left sweet spot: 1–3 problems remaining is high-value.
-      // 4+ becomes a bigger commitment with diminishing returns.
-      const remainingScore = remaining <= 3
+      // Few-problems-left curve. 1-2 remaining is the "almost done" sweet
+      // spot — easiest payoff per unit of effort. 3 is medium-good; 4+ tails
+      // off because the commitment grows.
+      const remainingScore = remaining <= 2
         ? 1
-        : Math.max(0, 1 - (remaining - 3) / 5);
+        : Math.max(0, 1 - (remaining - 2) / 6);
 
       // Checkpoint typically = the last problem in the table. Unsolved means
       // the leap-defining problem is still on the table.
       const checkpointUnsolved = !solvedSet.has(total) ? 1 : 0;
 
-      // Would completing this module close out its section?
+      // Would completing this module close out its section? Use the
+      // module-done threshold for peers (min(5, total)) — consistent with
+      // how the rest of the app defines "done". Previously this checked
+      // strict full-solve which fired far less often than it should.
       const sectionPeers = NODES.filter(x => x.section === n.section && inTrack(x));
-      const sectionPeersComplete = sectionPeers.every(x => {
-        if (x.id === n.id) return true; // assume this one completes
-        if (completed.has(x.id)) return true;
-        const xTotal = PROBLEM_COUNTS[x.id] ?? 0;
-        const xSolved = problemsSolved[x.id]?.length ?? 0;
-        return xTotal > 0 && xSolved >= xTotal;
-      });
+      const peerIsDone = (xId: string) => {
+        if (xId === "foundations") return true;
+        if (completed.has(xId)) return true;
+        const xTotal = PROBLEM_COUNTS[xId] ?? 0;
+        if (xTotal === 0) return false;
+        const xTarget = Math.min(REQUIRED_PROBLEMS, xTotal);
+        return (problemsSolved[xId]?.length ?? 0) >= xTarget;
+      };
+      const sectionPeersComplete = sectionPeers.every(x =>
+        x.id === n.id ? true : peerIsDone(x.id),
+      );
       const wouldCloseSection = sectionPeersComplete && sectionPeers.length > 1 ? 1 : 0;
 
       const contributions = [
         { label: "paused while ago",       value: 0.20 * decay },
         { label: "track alignment",        value: 0.10 * trackScoreFor(n) },
-        { label: "few problems left",      value: 0.10 * remainingScore },
-        { label: "checkpoint unsolved",    value: 0.10 * checkpointUnsolved },
-        { label: "closes section",         value: 0.10 * wouldCloseSection },
+        { label: "few problems left",      value: 0.25 * remainingScore },
+        { label: "checkpoint unsolved",    value: 0.15 * checkpointUnsolved },
+        { label: "closes section",         value: 0.15 * wouldCloseSection },
         { label: "learning debt",          value: debtScore },
       ];
       return {
@@ -428,7 +452,10 @@ export default function RoadmapPage() {
                 if (PROBLEM_COUNTS[n.id]) {
                   setActiveModule({ id: n.id, title: n.label });
                   setLastVisitedModule(n.id);
+                  localStorage.setItem("dsa-v1-last-visited", n.id);
                 } else if (MODULE_PAGES[n.id]) {
+                  setLastVisitedModule(n.id);
+                  localStorage.setItem("dsa-v1-last-visited", n.id);
                   window.location.href = MODULE_PAGES[n.id];
                 }
               }}
