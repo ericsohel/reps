@@ -86,13 +86,13 @@ export const arraysHashing: Module = {
     },
     {
       num: 8,
-      title: "Cities and States",
-      url: "http://www.usaco.org/index.php?page=viewproblem2&cpid=667",
-      source: "USACO Silver",
+      title: "Encode and Decode Strings",
+      url: "https://leetcode.com/problems/encode-and-decode-strings/",
+      source: "LC 271",
       difficulty: "medium",
-      list: "UG",
+      list: "NC150",
       role: "combination",
-      teaches: "Pattern 3 + Pattern 4 together — complement is a derived tuple key `(state, city[:2])` rather than a number; teaches that \"complement\" generalises beyond arithmetic and foreshadows module 4's prefix-sum complement",
+      teaches: "Design a self-delimiting serialization — length-prefix encoding (`f\"{len(s)}#{s}\"`) sidesteps the impossible \"pick a safe separator\" trap. Canonical Meta/Google/Apple ask; teaches that hashing-module problems sometimes demand designing your own key/format, not just looking one up.",
     },
     {
       num: 9,

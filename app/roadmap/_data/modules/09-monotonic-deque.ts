@@ -56,16 +56,6 @@ export const monotonicDeque: Module = {
     },
     {
       num: 5,
-      title: "Maximum Number of Robots Within Budget",
-      url: "https://leetcode.com/problems/maximum-number-of-robots-within-budget/",
-      source: "LC 2398",
-      difficulty: "hard",
-      list: "new",
-      role: "combination",
-      teaches: "Deque-max combined with a running cost sum inside a variable window from module 6; cost formula `max_charge + window_size × sum_costs` drives the shrink decision",
-    },
-    {
-      num: 6,
       title: "Shortest Subarray with Sum at Least K",
       url: "https://leetcode.com/problems/shortest-subarray-with-sum-at-least-k/",
       source: "LC 862",
@@ -75,7 +65,7 @@ export const monotonicDeque: Module = {
       teaches: "Deque over prefix sums when the array contains negatives — module 6's sliding window precondition breaks; module 4's prefix sums are the repair",
     },
     {
-      num: 7,
+      num: 6,
       title: "Sliding Window Maximum",
       url: "https://leetcode.com/problems/sliding-window-maximum/",
       source: "LC 239",

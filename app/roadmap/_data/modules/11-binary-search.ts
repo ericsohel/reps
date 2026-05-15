@@ -26,6 +26,16 @@ export const binarySearch: Module = {
     },
     {
       num: 2,
+      title: "Find First and Last Position of Element in Sorted Array",
+      url: "https://leetcode.com/problems/find-first-and-last-position-of-element-in-sorted-array/",
+      source: "LC 34",
+      difficulty: "medium",
+      list: "new",
+      role: "extension",
+      teaches: "**Lower-bound / upper-bound** — two biased binary searches, one for the leftmost and one for the rightmost occurrence. The foundation every later `bisect` call relies on; Meta top-50 question (asked with curveball variants — count of element, count of unique elements)",
+    },
+    {
+      num: 3,
       title: "First Bad Version",
       url: "https://leetcode.com/problems/first-bad-version/",
       source: "LC 278",
@@ -35,7 +45,7 @@ export const binarySearch: Module = {
       teaches: "Binary search on a monotonic predicate (`isBadVersion`) rather than a sorted array value — same Template B, but the comparison is `if isBad(mid)` instead of `if a[mid] < target`. The bridge to BS-on-answer (module 12)",
     },
     {
-      num: 3,
+      num: 4,
       title: "Counting Haybales",
       url: "http://www.usaco.org/index.php?page=viewproblem2&cpid=666",
       source: "USACO Silver",
@@ -45,7 +55,7 @@ export const binarySearch: Module = {
       teaches: "Range count via `bisect_right(end) - bisect_left(start)` — the canonical bisect application beyond raw lookup",
     },
     {
-      num: 4,
+      num: 5,
       title: "Search a 2D Matrix",
       url: "https://leetcode.com/problems/search-a-2d-matrix/",
       source: "LC 74",
@@ -55,7 +65,7 @@ export const binarySearch: Module = {
       teaches: "Flatten 2D index `k` to `(k // n, k % n)` — same Template A on the virtual flat array",
     },
     {
-      num: 5,
+      num: 6,
       title: "Find Minimum in Rotated Sorted Array",
       url: "https://leetcode.com/problems/find-minimum-in-rotated-sorted-array/",
       source: "LC 153",
@@ -65,17 +75,17 @@ export const binarySearch: Module = {
       teaches: "Your Step 1 problem — Template B with the `a[mid] <= a[hi]` comparison",
     },
     {
-      num: 6,
+      num: 7,
       title: "Search in Rotated Sorted Array",
       url: "https://leetcode.com/problems/search-in-rotated-sorted-array/",
       source: "LC 33",
       difficulty: "medium",
       list: "NC150",
       role: "extension",
-      teaches: "Same rotated structure as problem 5, now searching for a target — one extra range check per branch",
+      teaches: "Same rotated structure as problem 6, now searching for a target — one extra range check per branch",
     },
     {
-      num: 7,
+      num: 8,
       title: "Time Based Key-Value Store",
       url: "https://leetcode.com/problems/time-based-key-value-store/",
       source: "LC 981",
@@ -85,7 +95,7 @@ export const binarySearch: Module = {
       teaches: "`bisect_right` embedded in a data structure design — binary search on a list of timestamps",
     },
     {
-      num: 8,
+      num: 9,
       title: "Single Element in a Sorted Array",
       url: "https://leetcode.com/problems/single-element-in-a-sorted-array/",
       source: "LC 540",
@@ -95,7 +105,7 @@ export const binarySearch: Module = {
       teaches: "New sub-pattern: a non-trivial monotonic predicate — index parity tells you which half holds the unique element. Force `mid` even with `mid -= mid & 1`, then test `a[mid] == a[mid+1]`",
     },
     {
-      num: 9,
+      num: 10,
       title: "Find Peak Element",
       url: "https://leetcode.com/problems/find-peak-element/",
       source: "LC 162",
@@ -105,7 +115,7 @@ export const binarySearch: Module = {
       teaches: "Neighbor-comparison predicate — compare `a[mid]` vs `a[mid+1]` to determine which side ascends toward a peak; no target value, the monotonic structure is local slope",
     },
     {
-      num: 10,
+      num: 11,
       title: "Median of Two Sorted Arrays",
       url: "https://leetcode.com/problems/median-of-two-sorted-arrays/",
       source: "LC 4",

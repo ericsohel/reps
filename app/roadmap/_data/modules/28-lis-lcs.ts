@@ -46,6 +46,16 @@ export const lisLcs: Module = {
     },
     {
       num: 4,
+      title: "Longest Palindromic Substring",
+      url: "https://leetcode.com/problems/longest-palindromic-substring/",
+      source: "LC 5",
+      difficulty: "medium",
+      list: "NC150",
+      role: "extension",
+      teaches: "Subsequence vs **substring** contrast with problem 3 — characters must now be contiguous. Two canonical solutions: (1) 2D DP `dp[i][j]` = is `s[i..j]` a palindrome, filled by increasing length; (2) expand-around-center, O(n) space, 2n−1 centers. The expand approach is the FAANG-preferred answer; the DP framing connects it back to the table-based LCS family.",
+    },
+    {
+      num: 5,
       title: "Number of Longest Increasing Subsequences",
       url: "https://leetcode.com/problems/number-of-longest-increasing-subsequences/",
       source: "LC 673",
@@ -55,7 +65,7 @@ export const lisLcs: Module = {
       teaches: "Parallel count array — alongside `length[i]`, maintain `count[i]` = number of LIS ending at index `i`. When extending from `j`: if `length[j]+1 > length[i]`, reset count; if equal, accumulate. The final answer sums `count[i]` over all `i` achieving the max length.",
     },
     {
-      num: 5,
+      num: 6,
       title: "Longest String Chain",
       url: "https://leetcode.com/problems/longest-string-chain/",
       source: "LC 1048",
@@ -65,7 +75,7 @@ export const lisLcs: Module = {
       teaches: "DAG/dict-keyed LIS — sort words by length, then `dp[word] = max(dp[pred]+1)` over all predecessors (words formed by deleting one character). The predecessor check (`word[:i] + word[i+1:]`) is the problem-specific logic; the DP skeleton is pure LIS on a partial order.",
     },
     {
-      num: 6,
+      num: 7,
       title: "Towers",
       url: "https://cses.fi/problemset/task/1145",
       source: "CSES",
@@ -75,14 +85,14 @@ export const lisLcs: Module = {
       teaches: "Dilworth's theorem — min # piles needed to cover an array equals LIS length. Greedy proof: place each element on the leftmost pile whose top is strictly greater; otherwise start a new pile. The pile count at any step equals the number of elements in the current LIS tails array. This patience-sort intuition is the engine behind the checkpoint.",
     },
     {
-      num: 7,
+      num: 8,
       title: "Russian Doll Envelopes",
       url: "https://leetcode.com/problems/russian-doll-envelopes/",
       source: "LC 354",
       difficulty: "hard",
       list: "NC150",
       role: "checkpoint",
-      teaches: "Before reading: 1D LIS handles one increasing axis. With two strict-increase constraints, what sort lets you drop one axis? Width ASC, height DESC. DESC on ties stops equal-width envelopes from chaining, so an O(n log n) LIS on heights alone is exact. The sort is the leap; problem 6's patience-sort is the implementation.",
+      teaches: "Before reading: 1D LIS handles one increasing axis. With two strict-increase constraints, what sort lets you drop one axis? Width ASC, height DESC. DESC on ties stops equal-width envelopes from chaining, so an O(n log n) LIS on heights alone is exact. The sort is the leap; problem 7's patience-sort is the implementation.",
     },
   ],
 };

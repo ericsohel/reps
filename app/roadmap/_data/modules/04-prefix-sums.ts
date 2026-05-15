@@ -87,13 +87,13 @@ export const prefixSums: Module = {
     },
     {
       num: 8,
-      title: "Maximum Sum Circular Subarray",
-      url: "https://leetcode.com/problems/maximum-sum-circular-subarray/",
-      source: "LC 918",
+      title: "Count Number of Nice Subarrays",
+      url: "https://leetcode.com/problems/count-number-of-nice-subarrays/",
+      source: "LC 1248",
       difficulty: "medium",
       list: "new",
       role: "extension",
-      teaches: "Circular array prefix-sum insight — the maximum subarray in a circular array is either (a) the standard Kadane result on the linear array, OR (b) `total - kadane_min(arr)` (i.e., the array wraps around the minimum subarray). Two-direction prefix reasoning.",
+      teaches: "Encode-then-reduce — map `odd → 1`, `even → 0` and the problem collapses to LC 560 (subarrays summing to k). Stacks two ideas from earlier in the module: the `0 → -1` encoding trick from LC 525, plus the freq-dict complement from LC 560. Canonical Meta ask.",
     },
     {
       num: 9,

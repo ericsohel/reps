@@ -15,13 +15,13 @@ export const dp2d: Module = {
   problems: [
     {
       num: 1,
-      title: "Grid Paths",
-      url: "https://cses.fi/problemset/task/1638",
-      source: "CSES",
-      difficulty: "easy",
-      list: "UG ⭐",
+      title: "Unique Paths",
+      url: "https://leetcode.com/problems/unique-paths/",
+      source: "LC 62",
+      difficulty: "medium",
+      list: "NC150",
       role: "baseline",
-      teaches: "Your Step 1 problem — 2D grid DP with blocked cells; `dp[i][j] = dp[i-1][j] + dp[i][j-1]` when cell is open, 0 when blocked",
+      teaches: "Your Step 1 problem — 2D grid DP counting paths from top-left to bottom-right with only right/down moves. Recurrence `dp[i][j] = dp[i-1][j] + dp[i][j-1]`, base row/col all 1s. The cleanest possible introduction to 2D state; every other problem in this module reuses this scaffold.",
     },
     {
       num: 2,
@@ -65,13 +65,13 @@ export const dp2d: Module = {
     },
     {
       num: 6,
-      title: "Distinct Subsequences",
-      url: "https://leetcode.com/problems/distinct-subsequences/",
-      source: "LC 115",
+      title: "Regular Expression Matching",
+      url: "https://leetcode.com/problems/regular-expression-matching/",
+      source: "LC 10",
       difficulty: "hard",
       list: "NC150",
       role: "extension",
-      teaches: "Same two-string 2D state, counting instead of optimising; only deletion direction matters",
+      teaches: "Meta-canonical two-string 2D DP with a non-trivial transition. `dp[i][j]` = does `s[:i]` match `p[:j]`? The `*` case branches on **zero occurrences** (`dp[i][j-2]`) **or one-more occurrence** (`dp[i-1][j]` if `s[i-1]` matches `p[j-2]`). The transition table — not the recurrence — is the entire problem.",
     },
     {
       num: 7,

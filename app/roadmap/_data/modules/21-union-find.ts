@@ -66,6 +66,16 @@ export const unionFind: Module = {
     },
     {
       num: 6,
+      title: "Number of Islands II",
+      url: "https://leetcode.com/problems/number-of-islands-ii/",
+      source: "LC 305",
+      difficulty: "hard",
+      list: "new",
+      role: "extension",
+      teaches: "Online/dynamic DSU on a grid — add land cells one at a time, union with up-to-4 land neighbors, and decrement the component count for each successful union. The FAANG-canonical answer to 'why DSU and not BFS?' — BFS would re-traverse on every query.",
+    },
+    {
+      num: 7,
       title: "Mootube",
       url: "http://www.usaco.org/index.php?page=viewproblem2&cpid=789",
       source: "USACO Gold",
@@ -75,7 +85,7 @@ export const unionFind: Module = {
       teaches: "Offline DSU — sort queries and edges by weight, sweep with unions; preview of Kruskal's-style technique used in module 23",
     },
     {
-      num: 7,
+      num: 8,
       title: "Wormhole Sort",
       url: "http://www.usaco.org/index.php?page=viewproblem2&cpid=992",
       source: "USACO Silver",

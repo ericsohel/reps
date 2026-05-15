@@ -33,7 +33,7 @@ export const dpIntro: Module = {
       difficulty: "easy",
       list: "NC150",
       role: "extension",
-      teaches: "One-pass min-tracking — at each `prices[i]`, track `min_so_far` and the best profit so far (`prices[i] - min_so_far`). The DP framing reduces to two running scalars. Precursor to module 25's state-machine DP at LC 309: here the state is implicit (held/not-held), there it's explicit.",
+      teaches: "One-pass min-tracking — at each `prices[i]`, track `min_so_far` and the best profit so far (`prices[i] - min_so_far`). The DP framing reduces to two running scalars. Precursor to this module's state-machine DP at LC 309: here the state is implicit (held/not-held), there it's explicit.",
     },
     {
       num: 3,

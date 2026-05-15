@@ -46,16 +46,6 @@ export const greedy: Module = {
     },
     {
       num: 4,
-      title: "Partition Labels",
-      url: "https://leetcode.com/problems/partition-labels/",
-      source: "LC 763",
-      difficulty: "medium",
-      list: "NC150",
-      role: "extension",
-      teaches: "One-pass with `last_occurrence` lookup; close a partition when the running max-last-index equals the current index",
-    },
-    {
-      num: 5,
       title: "Jump Game II",
       url: "https://leetcode.com/problems/jump-game-ii/",
       source: "LC 45",
@@ -63,6 +53,16 @@ export const greedy: Module = {
       list: "NC150",
       role: "extension",
       teaches: "Extends LC 55 with BFS-style level counting — track current jump's reach AND next jump's reach",
+    },
+    {
+      num: 5,
+      title: "Partition Labels",
+      url: "https://leetcode.com/problems/partition-labels/",
+      source: "LC 763",
+      difficulty: "medium",
+      list: "NC150",
+      role: "extension",
+      teaches: "One-pass with `last_occurrence` lookup; close a partition when the running max-last-index equals the current index",
     },
     {
       num: 6,

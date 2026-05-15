@@ -22,7 +22,7 @@ export const tries: Module = {
       difficulty: "medium",
       list: "NC150",
       role: "baseline",
-      teaches: "The three core operations — your Step 1 problem",
+      teaches: "Your Step 1 problem — the three core operations (`insert`, `search`, `startsWith`) over a 26-ary children map plus an `isEnd` flag. Establishes the node shape and walk-the-chars-down pattern every later problem reuses.",
     },
     {
       num: 2,
@@ -32,7 +32,7 @@ export const tries: Module = {
       difficulty: "medium",
       list: "NC150",
       role: "extension",
-      teaches: "Wildcard `'.'` matching via DFS on the trie",
+      teaches: "Wildcard `'.'` matching via DFS on the trie — on a literal char descend the one matching child; on `'.'` fan out into every child. First problem where the trie walk branches.",
     },
     {
       num: 3,
@@ -42,7 +42,7 @@ export const tries: Module = {
       difficulty: "medium",
       list: "new",
       role: "extension",
-      teaches: "Autocomplete — at each prefix, collect up to 3 lexicographically smallest completions",
+      teaches: "Autocomplete — at each prefix, collect up to 3 lexicographically smallest completions. Heavy Amazon frequency. Two-pointer/binary-search alternative exists but the trie + DFS-with-early-stop solution is the one interviewers expect once the module is named.",
     },
     {
       num: 4,

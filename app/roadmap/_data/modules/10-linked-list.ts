@@ -22,7 +22,7 @@ export const linkedList: Module = {
       difficulty: "easy",
       list: "NC150",
       role: "baseline",
-      teaches: "Pointer manipulation — `prev / curr / nxt` discipline; reused in problem 6",
+      teaches: "Pointer manipulation — `prev / curr / nxt` discipline; reused in problems 7 and 11",
     },
     {
       num: 2,
@@ -116,6 +116,16 @@ export const linkedList: Module = {
     },
     {
       num: 11,
+      title: "Reverse Nodes in k-Group",
+      url: "https://leetcode.com/problems/reverse-nodes-in-k-group/",
+      source: "LC 25",
+      difficulty: "hard",
+      list: "NC150",
+      role: "extension",
+      teaches: "Segmented reversal — count k ahead to confirm a full group exists, reverse that segment using problem 1's `prev/curr/nxt` discipline, then splice the reversed head/tail back into the surrounding list. Tail-pointer bookkeeping across segments is the bug surface; a Google/Meta favourite that pushes pointer manipulation to its limit",
+    },
+    {
+      num: 12,
       title: "Merge K Sorted Lists",
       url: "https://leetcode.com/problems/merge-k-sorted-lists/",
       source: "LC 23",

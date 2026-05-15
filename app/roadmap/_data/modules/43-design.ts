@@ -68,6 +68,16 @@ export const design: Module = {
     },
     {
       num: 6,
+      title: "Design Tic-Tac-Toe",
+      url: "https://leetcode.com/problems/design-tic-tac-toe/",
+      source: "LC 348",
+      difficulty: "medium",
+      list: "new",
+      role: "extension",
+      teaches: "**Per-line counter arrays for O(1)-per-move win check** — instead of scanning the board, maintain `rows[n]`, `cols[n]`, plus two scalars for the diagonals. Each move increments (player 1) or decrements (player 2) the four counters touching its cell; an `abs(counter) == n` on any of them ends the game. Replaces the obvious `O(n²)` post-move scan with `O(1)` bookkeeping — the canonical \"design state to amortise the query\" Meta problem",
+    },
+    {
+      num: 7,
       title: "Random Pick with Weight",
       url: "https://leetcode.com/problems/random-pick-with-weight/",
       source: "LC 528",
@@ -77,7 +87,7 @@ export const design: Module = {
       teaches: "**Prefix sums + binary search** — build `pref[i] = w[0] + ... + w[i]` once; on `pickIndex`, draw `r` uniformly from `[1, pref[-1]]` and return `bisect_left(pref, r)`. Reframes [module 4](04-prefix-sums.md) and [module 11](11-binary-search.md) primitives as a constructor-plus-method design; the only problem in the roadmap that asks you to *justify* a sampling distribution",
     },
     {
-      num: 7,
+      num: 8,
       title: "LFU Cache",
       url: "https://leetcode.com/problems/lfu-cache/",
       source: "LC 460",
@@ -87,7 +97,7 @@ export const design: Module = {
       teaches: "**LRU plus a second hashmap mapping frequency → ordered set of keys at that frequency, plus a `min_freq` tracker** — `get`/`put` bump a key's frequency, moving it from `freq[f]` to `freq[f+1]`. Eviction pops the least-recently-used key from `freq[min_freq]`. Maintaining `min_freq` correctly on insert (reset to 1) and on bump (increment only when the old `freq[min_freq]` empties) is the bug surface — this is what makes it Hard relative to problem 3",
     },
     {
-      num: 8,
+      num: 9,
       title: "Design In-Memory File System",
       url: "https://leetcode.com/problems/design-in-memory-file-system/",
       source: "LC 588",

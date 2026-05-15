@@ -66,6 +66,16 @@ export const monotonicStack: Module = {
     },
     {
       num: 6,
+      title: "Remove K Digits",
+      url: "https://leetcode.com/problems/remove-k-digits/",
+      source: "LC 402",
+      difficulty: "medium",
+      list: "new",
+      role: "extension",
+      teaches: "New sub-pattern: **greedy lexicographic build with a removal budget**. Increasing monotonic stack — while top > incoming and `k > 0`, pop and decrement `k`; strip leading zeros at the end. The first appearance of \"pop = use a removal\" rather than \"pop = answer a query\"; same template solves LC 316 / LC 1081 (smallest subsequence) at FAANG screens",
+    },
+    {
+      num: 7,
       title: "Largest Rectangle in Histogram",
       url: "https://leetcode.com/problems/largest-rectangle-in-histogram/",
       source: "LC 84",
@@ -75,7 +85,7 @@ export const monotonicStack: Module = {
       teaches: "Canonical PSE + NSE with the sentinel-flush trick; computes `height[i] × span[i]` at pop time",
     },
     {
-      num: 7,
+      num: 8,
       title: "Sum of Subarray Minimums",
       url: "https://leetcode.com/problems/sum-of-subarray-minimums/",
       source: "LC 907",
