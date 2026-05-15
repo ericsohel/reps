@@ -212,8 +212,10 @@ export default function RoadmapPage() {
     return node.track === "both" || node.track === currentTrack;
   }
 
+  // Foundations is always done — it's a reference checklist, not a gate.
   // A module is "done" if manually marked complete OR ≥5 problems solved.
   function isModuleDone(id: string): boolean {
+    if (id === "foundations") return true;
     if (completed.has(id)) return true;
     return (problemsSolved[id]?.length ?? 0) >= REQUIRED_PROBLEMS;
   }

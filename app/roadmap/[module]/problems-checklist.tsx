@@ -90,24 +90,30 @@ function InlineMd({
 export function ProblemsChecklist({
   moduleId,
   problems,
+  hideProgress = false,
 }: {
   moduleId: string;
   problems: ProblemRow[];
+  hideProgress?: boolean;
 }) {
+  // Reference checklists (e.g. foundations) use a separate key so they
+  // don't affect the unlock logic which reads dsa-v1-problems-solved.
+  const storageKey = hideProgress
+    ? "dsa-v1-ref-solved"
+    : "dsa-v1-problems-solved";
+
   const [solved, setSolved] = useState<Set<number>>(new Set());
   const [hydrated, setHydrated] = useState(false);
 
   useEffect(() => {
     try {
-      const data = JSON.parse(
-        localStorage.getItem("dsa-v1-problems-solved") || "{}",
-      );
+      const data = JSON.parse(localStorage.getItem(storageKey) || "{}");
       setSolved(new Set(data[moduleId] || []));
     } catch {
       /* ignore */
     }
     setHydrated(true);
-  }, [moduleId]);
+  }, [moduleId, storageKey]);
 
   function toggle(num: number) {
     const wasSolved = solved.has(num);
@@ -117,12 +123,10 @@ export function ProblemsChecklist({
     setSolved(next);
 
     try {
-      const data = JSON.parse(
-        localStorage.getItem("dsa-v1-problems-solved") || "{}",
-      );
+      const data = JSON.parse(localStorage.getItem(storageKey) || "{}");
       if (next.size === 0) delete data[moduleId];
       else data[moduleId] = [...next].sort((a, b) => a - b);
-      localStorage.setItem("dsa-v1-problems-solved", JSON.stringify(data));
+      localStorage.setItem(storageKey, JSON.stringify(data));
     } catch {
       /* ignore */
     }
@@ -152,8 +156,8 @@ export function ProblemsChecklist({
 
   return (
     <div className="my-4">
-      {/* Progress bar */}
-      <div className="flex items-center gap-3 mb-3">
+      {/* Progress bar — hidden for reference checklists */}
+      {!hideProgress && <div className="flex items-center gap-3 mb-3">
         <div className="flex-1 h-1 rounded-full bg-zinc-800/70 overflow-hidden">
           <div
             className={`h-full transition-all duration-300 ${unlocked ? "bg-emerald-500" : "bg-zinc-600/70"}`}
@@ -170,7 +174,7 @@ export function ProblemsChecklist({
             : <span className="ml-1.5 text-zinc-600">({remaining} left)</span>
           }
         </span>
-      </div>
+      </div>}
 
       {/* Problem list */}
       <div className="space-y-0.5">

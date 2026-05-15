@@ -81,7 +81,11 @@ export function ModuleModal({ moduleId, title, onClose }: Props) {
             <>
               <Resources text={data.resources} />
               {data.problems.length > 0 && (
-                <ProblemsChecklist moduleId={moduleId} problems={data.problems} />
+                <ProblemsChecklist
+                  moduleId={moduleId}
+                  problems={data.problems}
+                  hideProgress={moduleId === "foundations"}
+                />
               )}
             </>
           )}

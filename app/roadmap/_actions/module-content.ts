@@ -46,7 +46,11 @@ function normalizeDifficulty(s: string): CounterKey | null {
 function extractFoundationsResources(md: string): string {
   const links: string[] = [];
   for (const m of md.matchAll(/\*\*Reading:\*\*\s*(.+)/g)) {
-    links.push(m[1].trim().replace(/\.$/, ""));
+    const line = m[1].trim().replace(/\.$/, "");
+    // Only keep USACO Guide links — the others are stdlib/CPH references
+    if (line.includes("usaco.guide")) {
+      links.push(line);
+    }
   }
   return links.join("\n");
 }
