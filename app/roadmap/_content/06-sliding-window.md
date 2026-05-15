@@ -155,8 +155,7 @@ The over-estimate doesn't break correctness because the answer is the *maximum* 
 
 This module is a curated path through the second half of the USACO Guide's Two Pointers page (the same-direction examples).
 
-1. [USACO Guide — Two Pointers (Silver)](https://usaco.guide/silver/two-pointers) — the CF Books / sliding-window section onward. Skip the converging part (that was module 5's reading).
-2. CPH Chapter 8.1, pp. 79–81 — the subarray examples at the bottom of the section cover the variable-window pattern.
+1. [USACO Guide — Two Pointers (Silver)](https://usaco.guide/silver/two-pointers) — the same-direction / sliding-window section. Skip the converging part (that was module 5's reading).
 
 ---
 
@@ -265,16 +264,22 @@ Sources: **NC150** = NeetCode 150 · **UG** = USACO Guide curated · ⭐ = USACO
 | 4 | [Longest Repeating Character Replacement](https://leetcode.com/problems/longest-repeating-character-replacement/) | LC 424 | Medium | NC150 | extension | Same longest-window shape with a frequency dict, plus the stale-`max_freq` trick from Step 2 — load-bearing because a fresh max recompute on every step would be O(26 · n) |
 | 5 | [Permutation in String](https://leetcode.com/problems/permutation-in-string/) | LC 567 | Medium | NC150 | extension | Fixed window — window size is exactly `len(s1)`, no shrink decision; compare freq dicts in O(26) per slide, or track a "matches" counter for O(1) |
 | 6 | [Diamond Collector](http://www.usaco.org/index.php?page=viewproblem2&cpid=643) | USACO Silver | Medium | UG ⭐ | extension | Sort + variable window with `max − min ≤ K` constraint — the problem statement does not say "sliding window"; you must recognise it after the sort |
-| 7 | [Minimum Window Substring](https://leetcode.com/problems/minimum-window-substring/) | LC 76 | Hard | NC150 | **checkpoint** | Minimum-window (problem 2's shape) + multi-character tracking — the "missing counter" trick replaces the freq-dict comparison |
+| 7 | [Subarrays with K Different Integers](https://leetcode.com/problems/subarrays-with-k-different-integers/) | LC 992 | Hard | new | combination | at-most-K reduction — "exactly K distinct" isn't monotonic in window size; convert to `atMost(K) − atMost(K−1)`, run two variable-window passes and subtract; the first time the window pattern doubles on itself |
+| 8 | [Minimum Window Substring](https://leetcode.com/problems/minimum-window-substring/) | LC 76 | Hard | NC150 | **checkpoint** | Minimum-window (problem 2's shape) + multi-character tracking — the "missing counter" trick replaces the freq-dict comparison |
 
 **Checkpoint:** LC 76 without hints. Problem 2 (LC 209) gave you the minimum-window skeleton with a single condition; the leap here is the multi-character requirement. The naive check — "does the window's freq dict cover `t`'s freq dict?" — is O(|alphabet|) per step. The leap is the **missing counter**: a single integer that counts how many `t`-character requirements are still unmet. Decrement when adding a character that brings its count up to (but not past) its required count; increment when removing a character that drops its count below required. The `if need[c] > 0: missing -= 1` and `if need[s[left]] > 0: missing += 1` checks are the load-bearing details — getting them wrong gives a non-O(n) algorithm or a wrong answer.
 
-If you stall: re-solve problem 2 from scratch first, then ask what changes when "valid" depends on multiple characters instead of a single sum.
+If you stall: re-solve problem 7 from scratch first (what makes "exactly K" hard?), then ask what changes when "valid" depends on multiple characters instead of a single sum.
 
-### NC150 problems handed off to other modules
+### Problems handed off to other modules
 
 - *Best Time to Buy and Sell Stock* (LC 121, NC150) → module 25 (1D DP). NC150 categorises it under Sliding Window with the label "Single Pass", but the technique is a Kadane-style scan (`best_profit_so_far`, `min_price_so_far`); the "window" interpretation requires squinting. It's better taught as the entry-level 1D DP problem.
 - *Sliding Window Maximum* (LC 239, NC150) → module 9 (Monotonic Deque). The fixed-window framing is incidental; the technique is a monotonic deque keyed by index.
+- *Shortest Subarray with Sum at Least K* (LC 862) → module 9 (Monotonic Deque). Negative numbers break the monotonic precondition — sum is not monotonic in window extent, so the variable-window approach fails. The correct technique is prefix sums + monotonic deque, which lives in module 9.
+- *Jump Game VI* (LC 1696) → module 9 (Monotonic Deque). A DP recurrence with a sliding-window max — the deque is the load-bearing structure, not the window itself.
+- *Find K Closest Elements* (LC 658, NC150) → module 11 (Binary Search). The canonical solution binary-searches for the window's left boundary, then expands. NC150 miscategorises it as sliding window.
+- *Contains Duplicate II* (LC 219, NC150) — too thin to own a module slot. Fixed window with a set: `if a[right] in window: return True; window.add(a[right]); if len(window) > k: window.remove(a[right-k])`. Solve directly.
+- *Find All Anagrams in a String* (LC 438) — direct reskin of problem 5 (LC 567): same fixed-window freq-dict technique, different framing. Solve it after LC 567 if you want extra reps; it adds no new mechanic.
 
 ---
 

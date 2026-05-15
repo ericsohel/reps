@@ -7,7 +7,7 @@ export const PROBLEM_COUNTS: Record<string, number> = {
   "sorting":         7,
   "prefix-sums":     9,
   "two-pointers":    7,
-  "sliding-window":  7,
+  "sliding-window":  8,
   "stack":           7,
   "monotonic-stack": 7,
   "monotonic-deque": 6,
