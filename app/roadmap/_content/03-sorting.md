@@ -156,12 +156,11 @@ final  [0, 0, 1, 2, 2]
 
 ## Step 3 — Read
 
-The USACO Guide has no dedicated sorting page — sorting is treated as assumed from Bronze onward. Two reads, both optional:
+1. [USACO Guide — Intro to Sorting (Bronze)](https://usaco.guide/bronze/intro-sorting) — built-in sort, `key=` idioms, and basic sorted-array techniques. Work through their examples.
+2. [USACO Guide — Sorting with Custom Comparators (Silver)](https://usaco.guide/silver/sorting-custom) — load-bearing for the `cmp_to_key` content in Step 2. Covers the string-concatenation comparator in detail.
+3. [CPH Book](https://cses.fi/book/book.pdf) Chapter 3 (Sorting, pp. 25–31) — mergesort derivation, custom comparators, and counting sort. The C++ syntax doesn't matter; the inversion-count derivation and stability proof do.
 
-1. [CPH Book](https://cses.fi/book/book.pdf) Chapter 4 (Sorting, pp. 39–48) — covers mergesort, custom comparators, and counting sort. The C++ syntax doesn't matter; the inversion-count derivation does.
-2. [LeetCode Editorial — LC 912 Sort an Array](https://leetcode.com/problems/sort-an-array/editorial/) — Python translations of mergesort, quicksort, and counting sort as a worked alternative to the Step 4 templates.
-
-If both Step 2 traces (mergesort, inversion count) made sense, skip ahead — these reads are backup.
+If the Step 2 traces (mergesort, inversion count) made sense, reads 1 and 2 are confirmation — read 3 for the formal derivation.
 
 ---
 
