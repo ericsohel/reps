@@ -30,7 +30,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
               reps
             </Link>
             <NavLink href="/">Today</NavLink>
-            <NavLink href="/roadmap">Roadmap</NavLink>
             <NavLink href="/process">Process</NavLink>
             <NavLink href="/leaks">Leaks</NavLink>
             <NavLink href="/companies">Companies</NavLink>
