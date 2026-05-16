@@ -167,10 +167,28 @@ export default function RoadmapPage() {
     return (problemsSolved[id]?.length ?? 0) >= threshold;
   }
 
+  // Layer-based gating: a module is unlocked iff EVERY module in EVERY earlier
+  // chunk is at the unlock threshold (3+ solved). This enforces the rule
+  // "completing all of layer N unlocks all of layer N+1" — the user can't skip
+  // ahead past unfinished layers. The per-module prereqIds are still respected
+  // implicitly because chunks are topologically ordered.
+  const moduleChunkIndex = useMemo(() => {
+    const m: Record<string, number> = {};
+    CHUNKS.forEach((c, i) => c.moduleIds.forEach((id) => { m[id] = i; }));
+    return m;
+  }, []);
+
   function nodeState(id: string): "completed" | "available" | "locked" {
     if (isModuleDone(id)) return "completed";
-    const prereqs = EDGES.filter(([, t]) => t === id).map(([s]) => s);
-    return prereqs.every(p => isModuleUnlocking(p)) ? "available" : "locked";
+    const myLayer = moduleChunkIndex[id] ?? 0;
+    if (myLayer === 0) return "available";  // layer 0 always available
+    // Every module in every earlier chunk must be at unlock threshold.
+    for (let i = 0; i < myLayer; i++) {
+      for (const earlierId of CHUNKS[i].moduleIds) {
+        if (!isModuleUnlocking(earlierId)) return "locked";
+      }
+    }
+    return "available";
   }
 
   function toggle(id: string) {
@@ -616,10 +634,18 @@ export default function RoadmapPage() {
                   const state = nodeState(n.id);
           const num = ORDER[n.id];
           const sectionColor = COLORS[n.section];
-          const prereqIds = EDGES.filter(([, t]) => t === n.id).map(([s]) => s);
-          const missing = prereqIds
-            .filter(p => !isModuleDone(p))
-            .map(p => NODES.find(x => x.id === p)?.label);
+          // Layer-based "missing": for a locked module, the user needs to finish
+          // unfinished modules in the LATEST earlier chunk (most actionable hint).
+          const myLayer = moduleChunkIndex[n.id] ?? 0;
+          let missing: (string | undefined)[] = [];
+          if (state === "locked") {
+            for (let li = myLayer - 1; li >= 0; li--) {
+              const unfinished = CHUNKS[li].moduleIds
+                .filter((id) => !isModuleUnlocking(id))
+                .map((id) => NODES.find((x) => x.id === id)?.label.replace("\n", " "));
+              if (unfinished.length > 0) { missing = unfinished; break; }
+            }
+          }
           const isNext = n.id === nextId;
           const isRecommended = n.id === recommendedId;
           const isReviewRec = isRecommended && recommendation?.mode === "review";
@@ -635,12 +661,17 @@ export default function RoadmapPage() {
               onClick={() => {
                 if (PROBLEM_COUNTS[n.id]) {
                   const isLocked = state === "locked";
-                  const unmet = isLocked
-                    ? EDGES.filter(([, t]) => t === n.id)
-                        .map(([s]) => s)
-                        .filter(p => !isModuleUnlocking(p))
-                        .map(p => ({ id: p, label: NODES.find(x => x.id === p)?.label.replace("\n", " ") ?? p }))
-                    : undefined;
+                  // For the modal: pass the unfinished modules in the latest
+                  // earlier chunk (same hint shown on the card).
+                  let unmet: { id: string; label: string }[] | undefined;
+                  if (isLocked) {
+                    for (let li = myLayer - 1; li >= 0; li--) {
+                      const unfinished = CHUNKS[li].moduleIds
+                        .filter((id) => !isModuleUnlocking(id))
+                        .map((id) => ({ id, label: NODES.find((x) => x.id === id)?.label.replace("\n", " ") ?? id }));
+                      if (unfinished.length > 0) { unmet = unfinished; break; }
+                    }
+                  }
                   const target = masteryTarget(n.id);
                   const markKnown = !isLocked && nodeState(n.id) !== "locked"
                     ? () => { toggle(n.id); setActiveModule(null); }
