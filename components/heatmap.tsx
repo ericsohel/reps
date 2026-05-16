@@ -1,4 +1,53 @@
+"use client";
+
+import { useState, useEffect } from "react";
 import type { HeatmapData, MonthBlock, DayCell } from "@/lib/heatmap";
+
+// Read localStorage and count roadmap problems solved today (local calendar day).
+function countRoadmapSolvesToday(): number {
+  try {
+    const raw = localStorage.getItem("dsa-v1-problems-solved-at");
+    if (!raw) return 0;
+    const solvedAt: Record<string, Record<string, number>> = JSON.parse(raw);
+    const now = new Date();
+    const todayStr = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}-${String(now.getDate()).padStart(2, "0")}`;
+    const startOfDay = new Date(todayStr).getTime();
+    const startOfTomorrow = startOfDay + 86_400_000;
+    let count = 0;
+    for (const moduleMap of Object.values(solvedAt)) {
+      for (const ts of Object.values(moduleMap)) {
+        if (typeof ts === "number" && ts >= startOfDay && ts < startOfTomorrow) count++;
+      }
+    }
+    return count;
+  } catch {
+    return 0;
+  }
+}
+
+// Merge client-side roadmap solve count into the server-fetched heatmap data.
+// Only today's cell is patched; all other cells are unchanged.
+function mergeRoadmapSolves(base: HeatmapData, roadmapCount: number): HeatmapData {
+  if (roadmapCount === 0) return base;
+  const now = new Date();
+  const todayStr = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}-${String(now.getDate()).padStart(2, "0")}`;
+  return {
+    ...base,
+    months: base.months.map((month) => ({
+      ...month,
+      weeks: month.weeks.map((week) =>
+        week.map((cell) => {
+          if (!cell || cell.date !== todayStr) return cell;
+          const newCount = cell.newCount + roadmapCount;
+          // Conservatively: any roadmap activity bumps intensity to at least 1.
+          // Only the server can confirm intensity=2 (it checks due reviews).
+          const intensity: 0 | 1 | 2 = cell.intensity > 0 ? cell.intensity : 1;
+          return { ...cell, newCount, intensity };
+        })
+      ),
+    })),
+  };
+}
 
 const DAY_NAMES = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 const LABELED_DAYS = new Set([1, 3, 5]); // Mon, Wed, Fri
@@ -9,14 +58,23 @@ const MONTH_GAP = 12;   // px between months
 const LABEL_HEIGHT = 14;
 
 export function Heatmap({ data }: { data: HeatmapData }) {
+  const [merged, setMerged] = useState(data);
+
+  useEffect(() => {
+    const sync = () => setMerged(mergeRoadmapSolves(data, countRoadmapSolvesToday()));
+    sync();
+    window.addEventListener("roadmap-progress-changed", sync);
+    return () => window.removeEventListener("roadmap-progress-changed", sync);
+  }, [data]);
+
   return (
     <div className="card p-5 space-y-3">
       <div className="flex items-center justify-between flex-wrap gap-y-3">
         <div className="flex items-baseline gap-6">
-          <Stat label="Current streak" value={`${data.currentStreak}`} unit={data.currentStreak === 1 ? "day" : "days"} large />
-          <Stat label="Longest"        value={`${data.longestStreak}d`} />
-          <Stat label="Lit / Active"   value={`${data.greenDays} / ${data.activeDays}`} />
-          <Stat label="Year"           value={`${data.year}`} />
+          <Stat label="Current streak" value={`${merged.currentStreak}`} unit={merged.currentStreak === 1 ? "day" : "days"} large />
+          <Stat label="Longest"        value={`${merged.longestStreak}d`} />
+          <Stat label="Lit / Active"   value={`${merged.greenDays} / ${merged.activeDays}`} />
+          <Stat label="Year"           value={`${merged.year}`} />
         </div>
         <Legend />
       </div>
@@ -24,7 +82,7 @@ export function Heatmap({ data }: { data: HeatmapData }) {
       <div className="overflow-x-auto pb-1">
         <div className="inline-flex" style={{ gap: MONTH_GAP }}>
           <DayLabels />
-          {data.months.map((m) => (
+          {merged.months.map((m) => (
             <Month key={`${m.year}-${m.month}`} block={m} />
           ))}
         </div>
