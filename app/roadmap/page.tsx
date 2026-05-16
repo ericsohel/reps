@@ -693,7 +693,7 @@ export default function RoadmapPage() {
                   : state === "locked"
                   ? "cursor-pointer border-zinc-800/30 bg-zinc-900/10 hover:bg-zinc-900/20"
                   : isFullySolved
-                  ? "cursor-pointer border-emerald-400/80 bg-gradient-to-br from-emerald-950/40 to-emerald-900/30 ring-1 ring-emerald-500/30 hover:bg-emerald-900/35"
+                  ? "cursor-pointer border-violet-400/80 bg-gradient-to-br from-violet-950/40 to-violet-900/30 ring-1 ring-violet-500/30 hover:bg-violet-900/35"
                   : state === "completed"
                   ? "cursor-pointer border-emerald-900/50 bg-emerald-950/20 hover:bg-emerald-950/30"
                   : isUnlockedInProgress
@@ -706,7 +706,7 @@ export default function RoadmapPage() {
               {/* State icon — top-right corner */}
               <div className="absolute top-2 right-2 text-xs">
                 {isFullySolved ? (
-                  <span className="text-emerald-300 font-bold">✓✓</span>
+                  <span className="text-violet-300 font-bold">✓✓</span>
                 ) : state === "completed" ? (
                   <span className="text-emerald-400">✓</span>
                 ) : state === "locked" ? (
@@ -723,7 +723,7 @@ export default function RoadmapPage() {
                   className={[
                     "text-sm font-semibold leading-snug line-clamp-2",
                     isFullySolved
-                      ? "text-emerald-300"
+                      ? "text-violet-300"
                       : state === "completed"
                       ? "text-emerald-400"
                       : state === "locked"
