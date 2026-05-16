@@ -9,11 +9,11 @@ import type { Module } from "../types";
 
 export const shortestPaths: Module = {
   id: "shortest-paths",
-  num: 28,
+  num: 23,
   name: "Shortest Paths",
   section: "2c",
   tier: "core",
-  order: 28,
+  order: 23,
   prereqIds: ["graph-traversal", "heap"],
   isNew: true,
   resources: [

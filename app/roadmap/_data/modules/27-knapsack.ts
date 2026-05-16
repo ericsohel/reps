@@ -2,11 +2,11 @@ import type { Module } from "../types";
 
 export const knapsack: Module = {
   id: "knapsack",
-  num: 21,
+  num: 25,
   name: "Knapsack Family",
   section: "2b",
   tier: "core",
-  order: 21,
+  order: 25,
   prereqIds: ["dp-intro"],
   isNew: true,
   resources: [

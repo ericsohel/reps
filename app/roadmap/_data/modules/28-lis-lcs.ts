@@ -2,11 +2,11 @@ import type { Module } from "../types";
 
 export const lisLcs: Module = {
   id: "lis-lcs",
-  num: 22,
+  num: 26,
   name: "LIS / LCS",
   section: "2b",
   tier: "core",
-  order: 22,
+  order: 26,
   prereqIds: ["dp-intro"],
   isNew: true,
   resources: [

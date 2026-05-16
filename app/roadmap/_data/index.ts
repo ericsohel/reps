@@ -177,10 +177,16 @@ export const CHUNKS: readonly Chunk[] = [
     moduleIds: ["greedy", "intervals"],
   },
   {
-    id: "graphs",
-    label: "Graph Algorithms",
+    id: "graph-traversal",
+    label: "Graph Traversal",
     tier: "core",
-    moduleIds: ["graph-traversal", "topo-sort", "union-find", "shortest-paths"],
+    moduleIds: ["graph-traversal", "topo-sort"],
+  },
+  {
+    id: "graph-weights",
+    label: "Graph Weights",
+    tier: "core",
+    moduleIds: ["union-find", "shortest-paths"],
   },
   {
     id: "dynamic-programming",
@@ -189,10 +195,16 @@ export const CHUNKS: readonly Chunk[] = [
     moduleIds: ["dp-intro", "knapsack", "lis-lcs", "dp-2d"],
   },
   {
-    id: "dp-closing",
-    label: "DP & Closing",
+    id: "dp-strings",
+    label: "DP Trees & Strings",
     tier: "core",
-    moduleIds: ["dp-trees", "strings", "design"],
+    moduleIds: ["dp-trees", "strings"],
+  },
+  {
+    id: "system-design",
+    label: "System Design",
+    tier: "core",
+    moduleIds: ["design"],
   },
   // ── FAANG+ tier ──────────────────────────────────────────────────────────
   {

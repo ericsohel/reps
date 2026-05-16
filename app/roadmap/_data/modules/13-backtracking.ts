@@ -2,12 +2,12 @@ import type { Module } from "../types";
 
 export const backtracking: Module = {
   id: "backtracking",
-  num: 14,
+  num: 4,
   name: "Recursion & Backtracking",
   label: "Recursion &\nBacktracking",
   section: "1d",
   tier: "core",
-  order: 14,
+  order: 4,
   prereqIds: ["foundations"],
   resources: [
     { title: "USACO Guide — Complete Search with Recursion (Bronze)", url: "https://usaco.guide/bronze/complete-rec" },

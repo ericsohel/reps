@@ -2,11 +2,11 @@ import type { Module } from "../types";
 
 export const linkedList: Module = {
   id: "linked-list",
-  num: 11,
+  num: 9,
   name: "Linked List",
   section: "1a",
   tier: "core",
-  order: 11,
+  order: 9,
   prereqIds: ["arrays-hashing"],
   resources: [
     { title: "Wikipedia — Floyd's cycle detection, \"Tortoise and hare\" section", url: "https://en.wikipedia.org/wiki/Cycle_detection#Floyd's_tortoise_and_hare" },
