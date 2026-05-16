@@ -685,7 +685,7 @@ export default function RoadmapPage() {
                 }
               }}
               className={[
-                "relative flex items-center gap-3 px-3 py-2.5 rounded-lg border transition-all",
+                "relative flex flex-col items-center justify-center text-center px-3 py-3 rounded-lg border transition-all gap-1",
                 isReviewRec
                   ? "cursor-pointer border-cyan-500/60 bg-gradient-to-br from-cyan-950/30 via-zinc-900/40 to-zinc-900/30 shadow-[0_0_24px_rgba(34,211,238,0.18),inset_0_0_0_1px_rgba(34,211,238,0.12)] ring-1 ring-cyan-500/30 hover:shadow-[0_0_32px_rgba(34,211,238,0.28),inset_0_0_0_1px_rgba(34,211,238,0.2)]"
                   : isRecommended
@@ -703,16 +703,22 @@ export default function RoadmapPage() {
                   : "cursor-pointer border-zinc-800/80 bg-zinc-900/20 hover:bg-zinc-900/50 hover:border-zinc-700",
               ].join(" ")}
             >
-              <div
-                className="text-base font-extrabold min-w-[28px] text-center tabular-nums"
-                style={{ color: state === "locked" ? "#3f3f46" : isReviewRec ? "#22d3ee" : isRecommended ? "#fbbf24" : sectionColor }}
-              >
-                {num}
+              {/* State icon — top-right corner */}
+              <div className="absolute top-2 right-2 text-xs">
+                {isFullySolved ? (
+                  <span className="text-emerald-300 font-bold">✓✓</span>
+                ) : state === "completed" ? (
+                  <span className="text-emerald-400">✓</span>
+                ) : state === "locked" ? (
+                  <span className="text-zinc-700">🔒</span>
+                ) : isNext ? (
+                  <span className="text-emerald-400">→</span>
+                ) : (
+                  <span className="text-zinc-600">○</span>
+                )}
               </div>
 
-              <div className={`w-px h-7 flex-shrink-0 ${isReviewRec ? "bg-cyan-700/40" : isRecommended ? "bg-amber-700/40" : state === "locked" ? "bg-zinc-800/40" : "bg-zinc-800"}`} />
-
-              <div className="flex-1 min-w-0">
+              <div className="w-full min-w-0">
                 <div
                   className={[
                     "text-sm font-semibold leading-snug line-clamp-2",
@@ -731,22 +737,10 @@ export default function RoadmapPage() {
                   const isReview = recommendation.mode === "review";
                   const labelColor = isReview ? "text-cyan-300" : "text-amber-400";
                   const reasonColor = isReview ? "text-cyan-500/80" : "text-amber-600/80";
-                  const icon = isReview
-                    ? "↻"
-                    : recommendation.mode === "consolidate"
-                    ? "↻"
-                    : "★";
-                  const label = isReview
-                    ? "Review"
-                    : recommendation.mode === "consolidate"
-                    ? "Consolidate"
-                    : "Expand";
+                  const label = isReview ? "Review" : recommendation.mode === "consolidate" ? "Consolidate" : "Expand";
                   return (
-                    <div className="mt-1">
-                      <div className={`text-[10px] font-bold ${labelColor} uppercase tracking-wider flex items-center gap-1`}>
-                        <span>{icon}</span>
-                        <span>{label}</span>
-                      </div>
+                    <div className={`text-[9px] font-bold ${labelColor} uppercase tracking-wider mt-0.5`}>
+                      {label}
                     </div>
                   );
                 })()}
@@ -762,49 +756,16 @@ export default function RoadmapPage() {
                   const hitThreshold = solved >= Math.min(REQUIRED_PROBLEMS, total);
                   const allDone = solved === total;
                   return (
-                    <div className="mt-1.5 flex items-center gap-2">
-                      <span className="text-[10px] tabular-nums leading-none">
-                        <span className={allDone ? "text-emerald-400 font-semibold" : hitThreshold ? "text-emerald-500" : "text-zinc-300"}>
-                          {solved}
-                        </span>
-                        <span className="text-zinc-600"> / {total}</span>
-                      </span>
-                      <div className="flex-1 max-w-[72px] h-1 bg-zinc-800/70 rounded-full overflow-hidden">
-                        <div
-                          className={`h-full transition-all ${allDone ? "bg-emerald-500" : hitThreshold ? "bg-emerald-500/70" : "bg-zinc-500/50"}`}
-                          style={{ width: `${pct}%` }}
-                        />
-                      </div>
+                    <div className="mt-1.5 w-full h-1 bg-zinc-800/70 rounded-full overflow-hidden">
+                      <div
+                        className={`h-full transition-all ${allDone ? "bg-emerald-500" : hitThreshold ? "bg-emerald-500/70" : "bg-zinc-500/50"}`}
+                        style={{ width: `${pct}%` }}
+                      />
                     </div>
                   );
                 })()}
               </div>
 
-              <div className="flex items-center gap-2 flex-shrink-0">
-                {false && MODULE_PAGES[n.id] && (
-                  <Link
-                    href={MODULE_PAGES[n.id]}
-                    onClick={e => e.stopPropagation()}
-                    className="no-underline text-[11px] text-zinc-500 hover:text-emerald-400 transition-colors px-1.5 py-0.5 rounded border border-zinc-700/60 hover:border-emerald-900/50 bg-zinc-900/60"
-                    title="View module"
-                  >
-                    View
-                  </Link>
-                )}
-                <div className="w-5 text-center text-sm">
-                  {isFullySolved ? (
-                    <span className="text-emerald-300 text-xs font-bold">✓✓</span>
-                  ) : state === "completed" ? (
-                    <span className="text-emerald-400">✓</span>
-                  ) : state === "locked" ? (
-                    <span className="text-zinc-700 text-xs">🔒</span>
-                  ) : isNext ? (
-                    <span className="text-emerald-400">→</span>
-                  ) : (
-                    <span className="text-zinc-600">○</span>
-                  )}
-                </div>
-              </div>
             </div>
           );
                 })}
