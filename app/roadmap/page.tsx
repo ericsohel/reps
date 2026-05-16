@@ -693,7 +693,7 @@ export default function RoadmapPage() {
                   : state === "locked"
                   ? "border-zinc-800/25 bg-zinc-900/8"
                   : isFullySolved
-                  ? "border-violet-600/50 bg-violet-950/25 hover:bg-violet-950/35"
+                  ? "border-orange-500/50 bg-orange-950/20 hover:bg-orange-950/30"
                   : state === "completed"
                   ? "border-emerald-800/50 bg-emerald-950/20 hover:bg-emerald-950/28"
                   : isUnlockedInProgress
@@ -707,7 +707,7 @@ export default function RoadmapPage() {
                   className={[
                     "text-[13px] font-semibold leading-snug line-clamp-2",
                     isFullySolved
-                      ? "text-violet-300"
+                      ? "text-orange-300"
                       : state === "completed"
                       ? "text-emerald-400"
                       : state === "locked"
@@ -745,7 +745,7 @@ export default function RoadmapPage() {
                   <div className="h-[3px] w-full bg-zinc-800/60 flex-shrink-0">
                     <div
                       className={`h-full transition-all duration-300 ${
-                        isFullySolved || allDone ? "bg-violet-500" :
+                        isFullySolved || allDone ? "bg-orange-500" :
                         state === "completed" ? "bg-emerald-500" :
                         hitThreshold ? "bg-emerald-500/60" :
                         "bg-zinc-600/60"
