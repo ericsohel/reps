@@ -144,7 +144,7 @@ export const CHUNKS: readonly Chunk[] = [
     id: "primitives",
     label: "Primitives",
     tier: "core",
-    moduleIds: ["foundations", "arrays-hashing", "bit-manip"],
+    moduleIds: ["foundations", "arrays-hashing", "bit-manip", "backtracking"],
   },
   {
     id: "array-operations",
@@ -154,7 +154,7 @@ export const CHUNKS: readonly Chunk[] = [
   },
   {
     id: "linear-ds",
-    label: "Linear Data Structures",
+    label: "Linear DS",
     tier: "core",
     moduleIds: ["linked-list", "stack", "monotonic-stack", "monotonic-deque"],
   },
@@ -165,10 +165,10 @@ export const CHUNKS: readonly Chunk[] = [
     moduleIds: ["binary-search", "bs-answer"],
   },
   {
-    id: "trees-recursion",
-    label: "Trees & Recursion",
+    id: "trees",
+    label: "Trees",
     tier: "core",
-    moduleIds: ["backtracking", "trees", "tries", "heap"],
+    moduleIds: ["trees", "tries", "heap"],
   },
   {
     id: "greedy-intervals",
