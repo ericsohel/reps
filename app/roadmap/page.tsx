@@ -539,6 +539,14 @@ export default function RoadmapPage() {
             <span className="text-zinc-600"> / {visibleNodes.length}</span>
           </span>
 
+          <Link
+            href="/lab"
+            className="btn-ghost text-xs px-2 py-1 text-zinc-500 hover:text-emerald-400 no-underline"
+            title="Solving Lab — train transfer on fresh problems"
+          >
+            Lab →
+          </Link>
+
           <button onClick={reset} className="btn-ghost text-xs px-2 py-1 text-zinc-600 hover:text-zinc-400">
             Reset
           </button>
