@@ -2,11 +2,11 @@ import type { Module } from "../types";
 
 export const twoPointers: Module = {
   id: "two-pointers",
-  num: 10,
+  num: 5,
   name: "Two Pointers",
   section: "1b",
   tier: "core",
-  order: 10,
+  order: 5,
   prereqIds: ["arrays-hashing", "sorting"],
   resources: [
     { title: "USACO Guide — Two Pointers (Silver)", url: "https://usaco.guide/silver/two-pointers" },

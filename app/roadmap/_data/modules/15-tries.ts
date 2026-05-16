@@ -2,11 +2,11 @@ import type { Module } from "../types";
 
 export const tries: Module = {
   id: "tries",
-  num: 18,
+  num: 14,
   name: "Tries",
   section: "1d",
   tier: "core",
-  order: 18,
+  order: 14,
   prereqIds: ["trees"],
   resources: [
     { title: "USACO Guide — String Searching / Tries (Gold)", url: "https://usaco.guide/gold/string-search" },

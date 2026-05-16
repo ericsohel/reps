@@ -8,11 +8,11 @@ import type { Module } from "../types";
 // generalisation — composed-lazy (LC 1622) is the ceiling.
 export const segTree: Module = {
   id: "seg-tree",
-  num: 37,
+  num: 38,
   name: "Segment Tree",
   section: "2e",
   tier: "faang-plus",
-  order: 37,
+  order: 38,
   prereqIds: ["fenwick"],
   isNew: true,
   resources: [

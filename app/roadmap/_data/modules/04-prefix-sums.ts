@@ -2,11 +2,11 @@ import type { Module } from "../types";
 
 export const prefixSums: Module = {
   id: "prefix-sums",
-  num: 8,
+  num: 4,
   name: "Prefix Sums",
   section: "1a",
   tier: "core",
-  order: 8,
+  order: 4,
   prereqIds: ["arrays-hashing"],
   isNew: true,
   resources: [

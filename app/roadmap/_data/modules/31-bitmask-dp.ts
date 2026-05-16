@@ -6,11 +6,11 @@ import type { Module } from "../types";
 // row-by-row DP. Common Meta/Google hard (LC 847, 943, 1494, 1659).
 export const bitmaskDp: Module = {
   id: "bitmask-dp",
-  num: 36,
+  num: 35,
   name: "Bitmask DP",
   section: "2e",
   tier: "faang-plus",
-  order: 36,
+  order: 35,
   prereqIds: ["dp-intro", "bit-manip"],
   isNew: true,
   resources: [

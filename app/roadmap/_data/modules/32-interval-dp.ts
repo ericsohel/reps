@@ -6,11 +6,11 @@ import type { Module } from "../types";
 // Balloons, LC 1000 Merge Stones, LC 664 Strange Printer.
 export const intervalDp: Module = {
   id: "interval-dp",
-  num: 38,
+  num: 36,
   name: "Interval DP",
   section: "2e",
   tier: "faang-plus",
-  order: 38,
+  order: 36,
   prereqIds: ["dp-intro"],
   isNew: true,
   resources: [

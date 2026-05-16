@@ -2,11 +2,11 @@ import type { Module } from "../types";
 
 export const slidingWindow: Module = {
   id: "sliding-window",
-  num: 12,
+  num: 7,
   name: "Sliding Window",
   section: "1b",
   tier: "core",
-  order: 12,
+  order: 7,
   prereqIds: ["two-pointers"],
   resources: [
     { title: "USACO Guide — Sliding Window (Gold)", url: "https://usaco.guide/gold/sliding-window" },

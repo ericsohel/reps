@@ -2,11 +2,11 @@ import type { Module } from "../types";
 
 export const bitManip: Module = {
   id: "bit-manip",
-  num: 3,
+  num: 29,
   name: "Bit Manipulation",
   section: "1a",
   tier: "core",
-  order: 3,
+  order: 29,
   prereqIds: ["foundations"],
   isUtility: true,
   resources: [

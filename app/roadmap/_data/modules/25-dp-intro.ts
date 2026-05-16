@@ -2,11 +2,11 @@ import type { Module } from "../types";
 
 export const dpIntro: Module = {
   id: "dp-intro",
-  num: 20,
+  num: 18,
   name: "DP Intro / 1D",
   section: "2b",
   tier: "core",
-  order: 20,
+  order: 18,
   prereqIds: ["backtracking"],
   resources: [
     { title: "USACO Guide — Intro to DP (Gold)", url: "https://usaco.guide/gold/intro-dp" },

@@ -10,12 +10,12 @@ import type { Module } from "../types";
 
 export const trees: Module = {
   id: "trees",
-  num: 15,
+  num: 13,
   name: "Trees",
   section: "1d",
   tier: "core",
-  order: 15,
-  prereqIds: ["backtracking", "stack"],
+  order: 13,
+  prereqIds: ["stack", "binary-search"],
   resources: [
     { title: "USACO Guide — Introduction to Trees (Silver)", url: "https://usaco.guide/silver/intro-tree" },
     { title: "CPH Book Ch. 14 — Tree Algorithms", url: "https://cses.fi/book/book.pdf" },

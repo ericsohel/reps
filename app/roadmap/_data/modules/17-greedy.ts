@@ -2,11 +2,11 @@ import type { Module } from "../types";
 
 export const greedy: Module = {
   id: "greedy",
-  num: 11,
+  num: 26,
   name: "Greedy",
   section: "2a",
   tier: "core",
-  order: 11,
+  order: 26,
   prereqIds: ["arrays-hashing", "sorting"],
   resources: [
     { title: "USACO Guide — Intro to Greedy (Bronze)", url: "https://usaco.guide/bronze/intro-greedy" },

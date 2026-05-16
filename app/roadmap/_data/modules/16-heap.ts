@@ -2,11 +2,11 @@ import type { Module } from "../types";
 
 export const heap: Module = {
   id: "heap",
-  num: 17,
+  num: 15,
   name: "Heap / Priority Queue",
   section: "1d",
   tier: "core",
-  order: 17,
+  order: 15,
   prereqIds: ["trees", "linked-list"],
   resources: [
     { title: "USACO Guide — Priority Queues (Silver)", url: "https://usaco.guide/silver/priority-queues" },

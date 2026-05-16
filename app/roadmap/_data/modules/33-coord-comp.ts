@@ -7,12 +7,12 @@ import type { Module } from "../types";
 // teaches the *compression*, not the data structure.
 export const coordComp: Module = {
   id: "coord-comp",
-  num: 32,
+  num: 33,
   name: "Coordinate Compression",
   label: "Coordinate\nCompression",
   section: "2e",
   tier: "faang-plus",
-  order: 32,
+  order: 33,
   prereqIds: ["arrays-hashing"],
   isNew: true,
   isUtility: true,

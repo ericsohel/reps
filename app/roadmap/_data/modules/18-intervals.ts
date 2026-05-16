@@ -2,12 +2,12 @@ import type { Module } from "../types";
 
 export const intervals: Module = {
   id: "intervals",
-  num: 25,
+  num: 27,
   name: "Intervals & Sweep Line",
   label: "Intervals &\nSweep Line",
   section: "2a",
   tier: "core",
-  order: 25,
+  order: 27,
   prereqIds: ["greedy", "heap"],
   isNew: true,
   resources: [

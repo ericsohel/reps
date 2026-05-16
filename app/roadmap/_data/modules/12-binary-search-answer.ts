@@ -2,12 +2,12 @@ import type { Module } from "../types";
 
 export const bsAnswer: Module = {
   id: "bs-answer",
-  num: 16,
+  num: 11,
   name: "Binary Search on Answer",
   label: "Binary Search\non Answer",
   section: "1c",
   tier: "core",
-  order: 16,
+  order: 11,
   prereqIds: ["binary-search"],
   isNew: true,
   resources: [

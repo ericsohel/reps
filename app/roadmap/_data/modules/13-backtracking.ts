@@ -2,13 +2,13 @@ import type { Module } from "../types";
 
 export const backtracking: Module = {
   id: "backtracking",
-  num: 4,
+  num: 16,
   name: "Recursion & Backtracking",
   label: "Recursion &\nBacktracking",
   section: "1d",
   tier: "core",
-  order: 4,
-  prereqIds: ["foundations"],
+  order: 16,
+  prereqIds: ["trees"],
   resources: [
     { title: "USACO Guide — Complete Search with Recursion (Bronze)", url: "https://usaco.guide/bronze/complete-rec" },
     { title: "CP-Algorithms — Generating subsets / combinations", url: "https://cp-algorithms.com/combinatorics/generating_combinations.html" },

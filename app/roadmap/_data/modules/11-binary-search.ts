@@ -2,11 +2,11 @@ import type { Module } from "../types";
 
 export const binarySearch: Module = {
   id: "binary-search",
-  num: 14,
+  num: 8,
   name: "Binary Search",
   section: "1c",
   tier: "core",
-  order: 14,
+  order: 8,
   prereqIds: ["arrays-hashing", "sorting", "two-pointers"],
   resources: [
     { title: "USACO Guide — Binary Search on Sorted Array (Silver)", url: "https://usaco.guide/silver/binary-search-sorted-array" },
