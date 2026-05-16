@@ -685,87 +685,76 @@ export default function RoadmapPage() {
                 }
               }}
               className={[
-                "relative flex flex-col items-center justify-center text-center px-3 py-3 rounded-lg border transition-all gap-1",
+                "relative flex flex-col overflow-hidden rounded-xl border cursor-pointer transition-all min-h-[78px]",
                 isReviewRec
-                  ? "cursor-pointer border-cyan-500/60 bg-gradient-to-br from-cyan-950/30 via-zinc-900/40 to-zinc-900/30 shadow-[0_0_24px_rgba(34,211,238,0.18),inset_0_0_0_1px_rgba(34,211,238,0.12)] ring-1 ring-cyan-500/30 hover:shadow-[0_0_32px_rgba(34,211,238,0.28),inset_0_0_0_1px_rgba(34,211,238,0.2)]"
+                  ? "border-cyan-600/50 bg-cyan-950/20 shadow-[0_0_18px_rgba(34,211,238,0.10)] hover:shadow-[0_0_24px_rgba(34,211,238,0.18)]"
                   : isRecommended
-                  ? "cursor-pointer border-amber-500/60 bg-gradient-to-br from-amber-950/30 via-zinc-900/40 to-zinc-900/30 shadow-[0_0_24px_rgba(251,191,36,0.18),inset_0_0_0_1px_rgba(251,191,36,0.12)] ring-1 ring-amber-500/30 hover:shadow-[0_0_32px_rgba(251,191,36,0.28),inset_0_0_0_1px_rgba(251,191,36,0.2)]"
+                  ? "border-amber-500/50 bg-amber-950/20 shadow-[0_0_18px_rgba(251,191,36,0.10)] hover:shadow-[0_0_24px_rgba(251,191,36,0.18)]"
                   : state === "locked"
-                  ? "cursor-pointer border-zinc-800/30 bg-zinc-900/10 hover:bg-zinc-900/20"
+                  ? "border-zinc-800/25 bg-zinc-900/8"
                   : isFullySolved
-                  ? "cursor-pointer border-violet-400/80 bg-gradient-to-br from-violet-950/40 to-violet-900/30 ring-1 ring-violet-500/30 hover:bg-violet-900/35"
+                  ? "border-violet-600/50 bg-violet-950/25 hover:bg-violet-950/35"
                   : state === "completed"
-                  ? "cursor-pointer border-emerald-900/50 bg-emerald-950/20 hover:bg-emerald-950/30"
+                  ? "border-emerald-800/50 bg-emerald-950/20 hover:bg-emerald-950/28"
                   : isUnlockedInProgress
-                  ? "cursor-pointer border-emerald-800/50 bg-zinc-900/20 hover:bg-zinc-900/50 hover:border-emerald-700/40"
-                  : isNext
-                  ? "cursor-pointer border-emerald-500/30 bg-zinc-900/40 shadow-[0_0_0_1px_rgba(52,211,153,0.08)] hover:bg-zinc-900/60"
-                  : "cursor-pointer border-zinc-800/80 bg-zinc-900/20 hover:bg-zinc-900/50 hover:border-zinc-700",
+                  ? "border-emerald-700/35 bg-zinc-900/20 hover:border-emerald-600/50"
+                  : "border-zinc-700/40 bg-zinc-900/20 hover:border-zinc-600/60 hover:bg-zinc-900/35",
               ].join(" ")}
             >
-              {/* State icon — top-right corner */}
-              <div className="absolute top-2 right-2 text-xs">
-                {isFullySolved ? (
-                  <span className="text-violet-300 font-bold">✓✓</span>
-                ) : state === "completed" ? (
-                  <span className="text-emerald-400">✓</span>
-                ) : state === "locked" ? (
-                  <span className="text-zinc-700">🔒</span>
-                ) : isNext ? (
-                  <span className="text-emerald-400">→</span>
-                ) : (
-                  <span className="text-zinc-600">○</span>
-                )}
-              </div>
-
-              <div className="w-full min-w-0">
-                <div
+              {/* Card body */}
+              <div className="flex-1 flex flex-col justify-center px-4 py-3 gap-1">
+                <span
                   className={[
-                    "text-sm font-semibold leading-snug line-clamp-2",
+                    "text-[13px] font-semibold leading-snug line-clamp-2",
                     isFullySolved
                       ? "text-violet-300"
                       : state === "completed"
                       ? "text-emerald-400"
                       : state === "locked"
-                      ? "text-zinc-700"
-                      : "text-zinc-100",
+                      ? "text-zinc-600"
+                      : isReviewRec
+                      ? "text-cyan-200"
+                      : isRecommended
+                      ? "text-amber-200"
+                      : "text-zinc-200",
                   ].join(" ")}
                 >
                   {n.label}
-                </div>
+                </span>
                 {isRecommended && recommendation && (() => {
                   const isReview = recommendation.mode === "review";
-                  const labelColor = isReview ? "text-cyan-300" : "text-amber-400";
-                  const reasonColor = isReview ? "text-cyan-500/80" : "text-amber-600/80";
-                  const label = isReview ? "Review" : recommendation.mode === "consolidate" ? "Consolidate" : "Expand";
-                  return (
-                    <div className={`text-[9px] font-bold ${labelColor} uppercase tracking-wider mt-0.5`}>
-                      {label}
-                    </div>
-                  );
+                  const col = isReview ? "text-cyan-500" : "text-amber-500/80";
+                  const label = isReview ? "review" : recommendation.mode === "consolidate" ? "consolidate" : "expand";
+                  return <span className={`text-[10px] ${col} tracking-wide`}>{label}</span>;
                 })()}
                 {state === "locked" && missing.length > 0 && (
-                  <div className="text-[10px] text-rose-500 mt-0.5 truncate">
-                    needs: {missing.join(", ")}
-                  </div>
+                  <span className="text-[10px] text-zinc-600 truncate">
+                    after {missing[0]}
+                  </span>
                 )}
-                {state !== "locked" && PROBLEM_COUNTS[n.id] && (() => {
-                  const solved = problemsSolved[n.id]?.length ?? 0;
-                  const total = PROBLEM_COUNTS[n.id];
-                  const pct = Math.min(100, (solved / total) * 100);
-                  const hitThreshold = solved >= Math.min(REQUIRED_PROBLEMS, total);
-                  const allDone = solved === total;
-                  return (
-                    <div className="mt-1.5 w-full h-1 bg-zinc-800/70 rounded-full overflow-hidden">
-                      <div
-                        className={`h-full transition-all ${allDone ? "bg-emerald-500" : hitThreshold ? "bg-emerald-500/70" : "bg-zinc-500/50"}`}
-                        style={{ width: `${pct}%` }}
-                      />
-                    </div>
-                  );
-                })()}
               </div>
 
+              {/* Progress bar — flush to card bottom */}
+              {state !== "locked" && PROBLEM_COUNTS[n.id] && (() => {
+                const solved = problemsSolved[n.id]?.length ?? 0;
+                const total = PROBLEM_COUNTS[n.id];
+                const pct = Math.min(100, (solved / total) * 100);
+                const hitThreshold = solved >= Math.min(REQUIRED_PROBLEMS, total);
+                const allDone = solved === total;
+                return (
+                  <div className="h-[3px] w-full bg-zinc-800/60 flex-shrink-0">
+                    <div
+                      className={`h-full transition-all duration-300 ${
+                        isFullySolved || allDone ? "bg-violet-500" :
+                        state === "completed" ? "bg-emerald-500" :
+                        hitThreshold ? "bg-emerald-500/60" :
+                        "bg-zinc-600/60"
+                      }`}
+                      style={{ width: `${pct}%` }}
+                    />
+                  </div>
+                );
+              })()}
             </div>
           );
                 })}
