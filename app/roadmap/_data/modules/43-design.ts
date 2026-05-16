@@ -2,11 +2,11 @@ import type { Module } from "../types";
 
 export const design: Module = {
   id: "design",
-  num: 30,
+  num: 29,
   name: "Design & OOD",
   section: "2d",
   tier: "core",
-  order: 30,
+  order: 29,
   prereqIds: ["arrays-hashing", "linked-list", "heap"],
   isNew: true,
   resources: [

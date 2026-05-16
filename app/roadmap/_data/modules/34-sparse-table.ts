@@ -8,11 +8,11 @@ import type { Module } from "../types";
 // Euler tour + RMQ, the canonical synthesis.
 export const sparseTable: Module = {
   id: "sparse-table",
-  num: 36,
+  num: 34,
   name: "Sparse Table",
   section: "2e",
   tier: "faang-plus",
-  order: 36,
+  order: 34,
   prereqIds: ["binary-search", "prefix-sums"],
   isNew: true,
   resources: [

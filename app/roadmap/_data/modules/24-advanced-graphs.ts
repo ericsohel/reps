@@ -2,11 +2,11 @@ import type { Module } from "../types";
 
 export const advGraphs: Module = {
   id: "adv-graphs",
-  num: 32,
+  num: 33,
   name: "Advanced Graphs",
   section: "2e",
   tier: "faang-plus",
-  order: 32,
+  order: 33,
   prereqIds: ["topo-sort", "shortest-paths"],
   resources: [
     { title: "USACO Guide — SCC (Advanced)", url: "https://usaco.guide/adv/SCC" },

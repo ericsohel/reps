@@ -7,11 +7,11 @@ import type { Module } from "../types";
 // "point update + prefix query on values" via coord-comp + offline processing.
 export const fenwick: Module = {
   id: "fenwick",
-  num: 37,
+  num: 35,
   name: "Fenwick Tree (BIT)",
   section: "2e",
   tier: "faang-plus",
-  order: 37,
+  order: 35,
   prereqIds: ["prefix-sums", "coord-comp"],
   isNew: true,
   resources: [

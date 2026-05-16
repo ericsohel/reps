@@ -2,11 +2,11 @@ import type { Module } from "../types";
 
 export const monotonicDeque: Module = {
   id: "monotonic-deque",
-  num: 12,
+  num: 19,
   name: "Monotonic Deque",
   section: "1b",
   tier: "core",
-  order: 12,
+  order: 19,
   prereqIds: ["sliding-window", "monotonic-stack", "prefix-sums"],
   isNew: true,
   resources: [

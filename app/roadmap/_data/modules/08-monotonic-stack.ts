@@ -2,11 +2,11 @@ import type { Module } from "../types";
 
 export const monotonicStack: Module = {
   id: "monotonic-stack",
-  num: 11,
+  num: 13,
   name: "Monotonic Stack",
   section: "1b",
   tier: "core",
-  order: 11,
+  order: 13,
   prereqIds: ["stack", "two-pointers"],
   isNew: true,
   resources: [

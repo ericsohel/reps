@@ -2,11 +2,11 @@ import type { Module } from "../types";
 
 export const graphTraversal: Module = {
   id: "graph-traversal",
-  num: 20,
+  num: 27,
   name: "Graph Traversal",
   section: "2c",
   tier: "core",
-  order: 20,
+  order: 27,
   prereqIds: ["trees", "binary-search"],
   resources: [
     { title: "USACO Guide — Graph Traversal (Silver)", url: "https://usaco.guide/silver/graph-traversal" },

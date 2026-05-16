@@ -2,11 +2,11 @@ import type { Module } from "../types";
 
 export const stack: Module = {
   id: "stack",
-  num: 10,
+  num: 7,
   name: "Stack",
   section: "1b",
   tier: "core",
-  order: 10,
+  order: 7,
   prereqIds: ["arrays-hashing"],
   resources: [
     { title: "USACO Guide — Stacks (Gold)", url: "https://usaco.guide/gold/stacks" },

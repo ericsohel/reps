@@ -2,11 +2,11 @@ import type { Module } from "../types";
 
 export const dpTrees: Module = {
   id: "dp-trees",
-  num: 28,
+  num: 26,
   name: "DP on Trees",
   section: "2b",
   tier: "core",
-  order: 28,
+  order: 26,
   prereqIds: ["dp-intro", "trees"],
   isNew: true,
   resources: [

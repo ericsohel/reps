@@ -2,11 +2,11 @@ import type { Module } from "../types";
 
 export const topoSort: Module = {
   id: "topo-sort",
-  num: 21,
+  num: 28,
   name: "Topological Sort",
   section: "2c",
   tier: "core",
-  order: 21,
+  order: 28,
   prereqIds: ["graph-traversal"],
   isNew: true,
   resources: [

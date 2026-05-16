@@ -2,11 +2,11 @@ import type { Module } from "../types";
 
 export const sorting: Module = {
   id: "sorting",
-  num: 5,
+  num: 6,
   name: "Sorting",
   section: "1a",
   tier: "core",
-  order: 5,
+  order: 6,
   prereqIds: ["arrays-hashing"],
   isNew: true,
   resources: [
