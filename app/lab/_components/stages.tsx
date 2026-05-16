@@ -38,16 +38,22 @@ export function ProblemHeader({
         </span>
       </div>
       <h2 className="text-lg font-semibold text-zinc-100">{problem.title}</h2>
-      {/* Show URL only AFTER frame for algo problems. Puzzles and estimation can
-          show it from the start (no separate frame stage). */}
+      {/* Problem statement — shown for puzzle/estimation (always), algo (after frame) */}
+      {problem.problemStatement && (kind !== "algo" || stage !== "frame") && (
+        <p className="text-sm text-zinc-300 leading-relaxed mt-2 bg-zinc-800/40 rounded-md px-3 py-2.5 border border-zinc-700/50">
+          {problem.problemStatement}
+        </p>
+      )}
+
+      {/* External link — shown after frame for algo; always for puzzle/estimation */}
       {(kind !== "algo" || stage !== "frame") && (
         <a
           href={problem.url}
           target="_blank"
           rel="noopener noreferrer"
-          className="text-xs text-zinc-400 hover:text-zinc-100 break-all"
+          className="inline-flex items-center gap-1.5 text-xs text-zinc-400 hover:text-emerald-400 transition-colors mt-1"
         >
-          {problem.url}
+          <span>Open {kind === "algo" ? "problem" : "reference"} ↗</span>
         </a>
       )}
     </div>
@@ -67,7 +73,7 @@ export function FrameStage({
   return (
     <div className="space-y-3">
       <label className="!text-zinc-300 !normal-case !tracking-normal !text-xs !font-normal">
-        Before opening the link, restate this problem in your own words (1 sentence).
+        What&apos;s this problem asking? (Restate it in your own words before solving)
       </label>
       <textarea
         rows={3}

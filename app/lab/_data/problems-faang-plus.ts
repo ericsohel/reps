@@ -7,7 +7,7 @@ export const PROBLEMS_FAANG_PLUS: LabProblem[] = [
   {
     id: "cf-1245-d",
     source: "codeforces",
-    url: "https://codeforces.com/contest/1245/problem/D",
+    url: "https://codeforces.com/problemset/problem/1245/D",
     title: "Shichikuji and Power Grid",
     estMinutes: 60,
     requiredModules: ["mst"],
@@ -92,7 +92,7 @@ export const PROBLEMS_FAANG_PLUS: LabProblem[] = [
   {
     id: "cf-607-b",
     source: "codeforces",
-    url: "https://codeforces.com/contest/607/problem/B",
+    url: "https://codeforces.com/problemset/problem/607/B",
     title: "Zuma",
     estMinutes: 60,
     requiredModules: ["interval-dp"],
@@ -161,7 +161,7 @@ export const PROBLEMS_FAANG_PLUS: LabProblem[] = [
   {
     id: "cf-339-d",
     source: "codeforces",
-    url: "https://codeforces.com/contest/339/problem/D",
+    url: "https://codeforces.com/problemset/problem/339/D",
     title: "Xenia and Bit Operations",
     estMinutes: 30,
     requiredModules: ["seg-tree"],

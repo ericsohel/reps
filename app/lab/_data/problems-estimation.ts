@@ -19,8 +19,10 @@ export const PROBLEMS_ESTIMATION: LabProblem[] = [
   {
     id: "fermi-piano-tuners-chicago",
     source: "fermi",
-    url: "https://en.wikipedia.org/wiki/Fermi_problem#Examples",
+    url: "https://en.wikipedia.org/wiki/Fermi_problem",
     title: "How many piano tuners are there in Chicago?",
+    problemStatement:
+      "Estimate the number of piano tuners currently working in Chicago. Give your answer as an order of magnitude (e.g. 10^2, 10^3). Decompose into factors: population, fraction of households with a piano, tuning frequency, and tuner workload per year.",
     estMinutes: 5,
     kind: "estimation",
     requiredModules: [],
@@ -41,8 +43,10 @@ export const PROBLEMS_ESTIMATION: LabProblem[] = [
   {
     id: "fermi-cells-human-body",
     source: "fermi",
-    url: "https://en.wikipedia.org/wiki/Cell_(biology)#Number_of_cells_in_the_human_body",
+    url: "https://en.wikipedia.org/wiki/Human_body#Composition",
     title: "How many cells are in a human body?",
+    problemStatement:
+      "Estimate the total number of cells in an average adult human body. Give your answer as an order of magnitude (e.g. 10^13, 10^14). Start from body mass and typical cell size/mass.",
     estMinutes: 4,
     kind: "estimation",
     requiredModules: [],
@@ -65,6 +69,8 @@ export const PROBLEMS_ESTIMATION: LabProblem[] = [
     source: "fermi",
     url: "https://hypertextbook.com/facts/1998/StevenChen.shtml",
     title: "Total length of all DNA strands in your body, end-to-end?",
+    problemStatement:
+      "If you stretched out all the DNA from every cell in a human body end-to-end, how many meters long would the strand be? Give your answer as an order of magnitude. Chain your estimate from the number of cells and the length of DNA per cell.",
     estMinutes: 5,
     kind: "estimation",
     requiredModules: [],
@@ -87,6 +93,8 @@ export const PROBLEMS_ESTIMATION: LabProblem[] = [
     source: "fermi",
     url: "https://what-if.xkcd.com/166/",
     title: "How many minutes of music has humanity recorded?",
+    problemStatement:
+      "Estimate the total number of minutes of music humanity has ever recorded (commercial releases + user uploads). Give your answer as an order of magnitude. Consider both streaming-catalog tracks and platforms like YouTube/SoundCloud.",
     estMinutes: 6,
     kind: "estimation",
     requiredModules: [],
@@ -109,6 +117,8 @@ export const PROBLEMS_ESTIMATION: LabProblem[] = [
     source: "fermi",
     url: "https://www.iea.org/energy-system/buildings/data-centres-and-data-transmission-networks",
     title: "How much energy does the internet consume in a day?",
+    problemStatement:
+      "Estimate the total energy consumed by the global internet (data centers + transmission networks + end-user devices) in a single day. Express in joules or TWh. Give your answer as an order of magnitude.",
     estMinutes: 6,
     kind: "estimation",
     requiredModules: [],
@@ -129,8 +139,10 @@ export const PROBLEMS_ESTIMATION: LabProblem[] = [
   {
     id: "fermi-golf-balls-747",
     source: "fermi",
-    url: "https://www.glassdoor.com/Interview/Fermi-estimation-questions-i-e-how-many-golf-balls-fit-into-a-Boeing-747-etc-QTN_2433785.htm",
+    url: "https://en.wikipedia.org/wiki/Boeing_747#Specifications",
     title: "How many golf balls fit inside a Boeing 747?",
+    problemStatement:
+      "Estimate the number of golf balls that would fit inside the cabin of a Boeing 747 (assume seats removed). Give your answer as an order of magnitude. Approximate the cabin as a cylinder and account for packing efficiency.",
     estMinutes: 5,
     kind: "estimation",
     requiredModules: [],
@@ -151,8 +163,10 @@ export const PROBLEMS_ESTIMATION: LabProblem[] = [
   {
     id: "fermi-mms-swimming-pool",
     source: "fermi",
-    url: "https://www.prweb.com/releases/how_many_m_ms_fill_an_olympic_size_swimming_pool_/prweb12216653.htm",
+    url: "https://en.wikipedia.org/wiki/Olympic-size_swimming_pool",
     title: "How many M&Ms fit in a standard (Olympic) swimming pool?",
+    problemStatement:
+      "Estimate the number of M&M candies that would fit in an Olympic-size swimming pool (50 m × 25 m × 2 m). Give your answer as an order of magnitude. Model M&Ms as oblate spheroids and apply a packing efficiency factor.",
     estMinutes: 5,
     kind: "estimation",
     requiredModules: [],
@@ -179,6 +193,8 @@ export const PROBLEMS_ESTIMATION: LabProblem[] = [
     source: "custom",
     url: "https://en.wikipedia.org/wiki/Sorting_algorithm#Comparison_of_algorithms",
     title: "Rank by speed at n = 10^6: quicksort, mergesort, heapsort, bubble sort",
+    problemStatement:
+      "Rank these four sorting algorithms from fastest to slowest for n = 10^6 random elements: quicksort, mergesort, heapsort, bubble sort. Justify your ranking using both asymptotic complexity and constant-factor / cache effects.",
     estMinutes: 4,
     kind: "estimation",
     requiredModules: [],
@@ -198,8 +214,10 @@ export const PROBLEMS_ESTIMATION: LabProblem[] = [
   {
     id: "complexity-2n-vs-nfact-n20",
     source: "custom",
-    url: "https://www.bigocheatsheet.com/",
+    url: "https://en.wikipedia.org/wiki/Held%E2%80%93Karp_algorithm",
     title: "For n = 20: which is faster, 2^n DP or n! brute force?",
+    problemStatement:
+      "You have an algorithm with O(2^n) runtime and another with O(n!) runtime. For n = 20, which finishes first? Compute the actual values and determine whether either is feasible at ~10^8 operations per second.",
     estMinutes: 3,
     kind: "estimation",
     requiredModules: [],
@@ -222,6 +240,8 @@ export const PROBLEMS_ESTIMATION: LabProblem[] = [
     // CP reference on input-size → algorithm-budget mapping (distinct from the other bigocheatsheet entry above).
     url: "https://codeforces.com/blog/entry/21344",
     title: "Predict wall-clock runtime: n=10^8 simple loop, n=10^6 nested loop, n=10^4 cubic loop",
+    problemStatement:
+      "Estimate the wall-clock runtime of each of these three programs on a modern CPU (~10^8–10^9 simple ops/sec): (A) a single loop running n=10^8 iterations, (B) a nested loop running n^2=10^12 iterations with n=10^6, (C) a cubic loop running n^3=10^12 iterations with n=10^4. Which finish within a 1-second budget?",
     estMinutes: 4,
     kind: "estimation",
     requiredModules: [],
@@ -241,8 +261,10 @@ export const PROBLEMS_ESTIMATION: LabProblem[] = [
   {
     id: "complexity-crossover-n",
     source: "custom",
-    url: "https://en.wikipedia.org/wiki/Asymptotic_analysis",
+    url: "https://en.wikipedia.org/wiki/Analysis_of_algorithms#Empirical_analysis",
     title: "A is O(n^2) with constant 1, B is O(n log n) with constant 5. At what n does B beat A?",
+    problemStatement:
+      "Algorithm A has runtime exactly n^2 operations. Algorithm B has runtime exactly 5·n·log₂(n) operations. For small n, A is faster. Find the crossover point n* where B becomes faster than A, and explain why asymptotic analysis alone is misleading for small inputs.",
     estMinutes: 4,
     kind: "estimation",
     requiredModules: [],
@@ -263,8 +285,10 @@ export const PROBLEMS_ESTIMATION: LabProblem[] = [
   {
     id: "complexity-recursive-fib-space",
     source: "custom",
-    url: "https://en.wikipedia.org/wiki/Fibonacci_sequence#Computation",
+    url: "https://en.wikipedia.org/wiki/Call_stack",
     title: "Space complexity of naive recursive Fibonacci (no memoization)?",
+    problemStatement:
+      "A naive recursive implementation of Fibonacci — fib(n) calls fib(n-1) and fib(n-2) — has no memoization. What is its space complexity? Distinguish carefully between the space used by the call stack versus the total number of recursive calls made.",
     estMinutes: 3,
     kind: "estimation",
     requiredModules: [],
@@ -286,6 +310,8 @@ export const PROBLEMS_ESTIMATION: LabProblem[] = [
     source: "custom",
     url: "https://en.wikipedia.org/wiki/Quicksort#Average-case_analysis",
     title: "Expected # of comparisons for randomized quicksort, n = 1000?",
+    problemStatement:
+      "For randomized quicksort (random pivot selection) on an array of n = 1000 distinct elements, what is the expected number of element comparisons? Express as a numerical value (not just big-O). Use the formula E[comparisons] ≈ 2n·ln(n).",
     estMinutes: 4,
     kind: "estimation",
     requiredModules: [],
@@ -309,6 +335,8 @@ export const PROBLEMS_ESTIMATION: LabProblem[] = [
     // Wikipedia 3SUM article — distinct from the roadmap's leetcode/3sum entry.
     url: "https://en.wikipedia.org/wiki/3SUM",
     title: "Time complexity: two-sum (hash) vs three-sum (sort + two-pointer)?",
+    problemStatement:
+      "What is the optimal time complexity for (A) the two-sum problem solved with a hash map, and (B) the three-sum problem solved with sort + two-pointer scan? Identify the general k-sum pattern and explain why the hash trick only eliminates the cost of the final summand.",
     estMinutes: 3,
     kind: "estimation",
     requiredModules: [],
@@ -332,8 +360,10 @@ export const PROBLEMS_ESTIMATION: LabProblem[] = [
   {
     id: "prob-ev-fair-d6",
     source: "custom",
-    url: "https://en.wikipedia.org/wiki/Expected_value#Examples",
+    url: "https://en.wikipedia.org/wiki/Discrete_uniform_distribution",
     title: "Expected value of one roll of a fair d6?",
+    problemStatement:
+      "A fair six-sided die has faces labeled 1 through 6, each equally likely. What is the expected value of a single roll? State the general formula for a uniform distribution over {1, 2, ..., n}.",
     estMinutes: 2,
     kind: "estimation",
     requiredModules: [],
@@ -354,8 +384,10 @@ export const PROBLEMS_ESTIMATION: LabProblem[] = [
   {
     id: "prob-at-least-one-6-in-4-rolls",
     source: "custom",
-    url: "https://en.wikipedia.org/wiki/Probability#Independence",
+    url: "https://en.wikipedia.org/wiki/Complementary_event",
     title: "P(at least one 6 in 4 rolls of a fair d6)?",
+    problemStatement:
+      "You roll a fair six-sided die 4 times independently. What is the probability that at least one roll shows a 6? Express as a decimal rounded to three places. Use the complement rule.",
     estMinutes: 3,
     kind: "estimation",
     requiredModules: [],
@@ -376,8 +408,10 @@ export const PROBLEMS_ESTIMATION: LabProblem[] = [
   {
     id: "prob-expected-distance-unit-interval",
     source: "custom",
-    url: "https://www.landonlehman.com/post/mean-distances-in-uniform-distributions/",
+    url: "https://en.wikipedia.org/wiki/Order_statistic",
     title: "Two uniform random points in [0,1] — expected distance?",
+    problemStatement:
+      "Pick two points X and Y independently and uniformly at random from the interval [0, 1]. What is E[|X − Y|], the expected absolute distance between them? Compute exactly (not just an approximation).",
     estMinutes: 4,
     kind: "estimation",
     requiredModules: [],
@@ -400,6 +434,8 @@ export const PROBLEMS_ESTIMATION: LabProblem[] = [
     source: "custom",
     url: "https://en.wikipedia.org/wiki/Geometric_distribution",
     title: "Expected # of draws (with replacement) from a 52-card deck until you draw an ace?",
+    problemStatement:
+      "You draw cards one at a time from a standard 52-card deck, replacing the card and reshuffling after each draw. What is the expected number of draws until you first draw an ace? Apply the geometric distribution formula.",
     estMinutes: 3,
     kind: "estimation",
     requiredModules: [],
@@ -422,6 +458,8 @@ export const PROBLEMS_ESTIMATION: LabProblem[] = [
     source: "custom",
     url: "https://en.wikipedia.org/wiki/Birthday_problem",
     title: "P(at least 2 people share a birthday in a room of 23)?",
+    problemStatement:
+      "There are 23 people in a room. Assuming birthdays are uniformly distributed across 365 days and independent, what is the probability that at least two people share the same birthday? Most people's intuition is far off — what is the actual answer?",
     estMinutes: 4,
     kind: "estimation",
     requiredModules: [],
@@ -444,6 +482,8 @@ export const PROBLEMS_ESTIMATION: LabProblem[] = [
     source: "custom",
     url: "https://en.wikipedia.org/wiki/Bernoulli_distribution",
     title: "Variance of a single fair coin flip (X=1 if heads, 0 if tails)?",
+    problemStatement:
+      "Define X = 1 if a fair coin flip lands heads, and X = 0 if tails. What is Var(X)? Use the formula Var(X) = E[X²] − E[X]², and identify at what value of p the variance of a Bernoulli(p) random variable is maximized.",
     estMinutes: 2,
     kind: "estimation",
     requiredModules: [],
@@ -464,8 +504,10 @@ export const PROBLEMS_ESTIMATION: LabProblem[] = [
   {
     id: "prob-flips-until-hth",
     source: "custom",
-    url: "https://data140.org/sp17/textbook/ch13/Waiting_Till_a_Pattern_Appears.html",
+    url: "https://en.wikipedia.org/wiki/Markov_chain#Absorbing_Markov_chains",
     title: "Expected # of fair coin flips to first see the pattern HTH?",
+    problemStatement:
+      "You flip a fair coin repeatedly until you see the pattern H-T-H (heads, tails, heads) in three consecutive flips. What is the expected number of total flips required? Set up states based on how much of the pattern you have matched so far.",
     estMinutes: 5,
     kind: "estimation",
     requiredModules: [],

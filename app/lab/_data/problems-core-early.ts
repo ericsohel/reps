@@ -25,7 +25,7 @@ export const PROBLEMS_CORE_EARLY: LabProblem[] = [
   {
     id: "usaco-1060",
     source: "usaco",
-    url: "https://usaco.org/index.php?page=viewproblem2&cpid=1060",
+    url: "http://www.usaco.org/index.php?page=viewproblem2&cpid=1060",
     title: "Daisy Chains (Bronze)",
     estMinutes: 25,
     requiredModules: ["arrays-hashing"],

@@ -45,7 +45,7 @@ export const PROBLEMS_CORE_LATE: LabProblem[] = [
   {
     id: "cf-1304-d",
     source: "codeforces",
-    url: "https://codeforces.com/contest/1304/problem/D",
+    url: "https://codeforces.com/problemset/problem/1304/D",
     title: "Shortest and Longest LIS",
     estMinutes: 50,
     requiredModules: ["greedy", "lis-lcs"],
@@ -321,7 +321,7 @@ export const PROBLEMS_CORE_LATE: LabProblem[] = [
   {
     id: "cf-977-d",
     source: "codeforces",
-    url: "https://codeforces.com/contest/977/problem/D",
+    url: "https://codeforces.com/problemset/problem/977/D",
     title: "Divide by Three, Multiply by Two",
     estMinutes: 30,
     requiredModules: ["strings", "greedy"],

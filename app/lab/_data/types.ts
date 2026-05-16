@@ -50,6 +50,14 @@ export interface LabProblem {
   // "what's the inverse problem?", "what if you sort first?").
   stuckHints: string[];
 
+  // ── Problem statement ────────────────────────────────────────────────────
+  // Inline problem text shown in the card BEFORE the user starts solving.
+  // Required for puzzle and estimation kinds (users shouldn't need to click
+  // away to know what the problem is). Optional for algo (the judge URL has
+  // the full statement). Keep to 1-4 sentences — just enough to understand
+  // the task; the URL is the authoritative source.
+  problemStatement?: string;
+
   // ── Insight-SR linkage ───────────────────────────────────────────────────
   // Tags from the central insight registry (see ./insights.ts). When an
   // insight comes due for spaced-repetition review, the system picks a fresh
