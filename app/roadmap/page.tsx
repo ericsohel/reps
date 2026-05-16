@@ -10,6 +10,7 @@ import {
   PROBLEM_COUNTS,
   SECTION_NAMES,
   SECTION_COLORS as COLORS,
+  CHUNKS,
   type DagNode,
 } from "./_data";
 
@@ -208,11 +209,15 @@ export default function RoadmapPage() {
   const nextId = visibleNodes.find(n => nodeState(n.id) === "available")?.id;
   const doneCount = visibleNodes.filter(n => isModuleDone(n.id)).length;
 
-  // Group visible modules by section, preserving SECTION_NAMES order.
-  const sectionGroups = Object.keys(SECTION_NAMES)
-    .map(section => ({
-      section,
-      modules: visibleNodes.filter(n => n.section === section),
+  // Group visible modules by chunk, filtering out chunks with no visible modules.
+  const visibleNodeIds = new Set(visibleNodes.map(n => n.id));
+  const chunkGroups = CHUNKS
+    .map(chunk => ({
+      chunk,
+      modules: chunk.moduleIds
+        .filter(id => visibleNodeIds.has(id))
+        .map(id => NODES.find(n => n.id === id)!)
+        .filter(Boolean),
     }))
     .filter(g => g.modules.length > 0);
 
@@ -574,40 +579,41 @@ export default function RoadmapPage() {
       <div className="divider" />
 
       <div className="space-y-6">
-        {sectionGroups.map(group => {
-          const sectionDone = group.modules.filter(m => isModuleDone(m.id)).length;
-          const sectionTotal = group.modules.length;
-          const sectionPct = sectionTotal > 0 ? (sectionDone / sectionTotal) * 100 : 0;
-          const sectionComplete = sectionDone === sectionTotal && sectionTotal > 0;
-          const sectionHeaderColor = COLORS[group.section] || "#3f3f46";
+        {chunkGroups.map((group, groupIdx) => {
+          const chunkDone = group.modules.filter(m => isModuleDone(m.id)).length;
+          const chunkTotal = group.modules.length;
+
+          // Insert tier dividers between tiers
+          const prevChunk = groupIdx > 0 ? chunkGroups[groupIdx - 1].chunk : null;
+          const showFaangDivider = group.chunk.tier === "faang-plus" && prevChunk?.tier === "core";
+          const showQuantDivider = group.chunk.tier === "quant" && prevChunk?.tier !== "quant";
+
+          const gridCols = chunkTotal <= 2
+            ? "grid-cols-1 sm:grid-cols-2"
+            : "grid-cols-1 sm:grid-cols-2 lg:grid-cols-4";
 
           return (
-            <div key={group.section}>
-              <div className="flex items-baseline justify-between gap-3 mb-2">
-                <h2
-                  className="text-xs font-bold uppercase tracking-widest"
-                  style={{ color: sectionComplete ? "#34d399" : sectionHeaderColor }}
-                >
-                  {SECTION_NAMES[group.section]}
-                </h2>
-                <span className="text-[11px] tabular-nums">
-                  <span className={sectionComplete ? "text-emerald-400 font-semibold" : "text-zinc-400"}>
-                    {sectionDone}
-                  </span>
-                  <span className="text-zinc-600"> / {sectionTotal}</span>
-                </span>
+            <div key={group.chunk.id}>
+              {showFaangDivider && (
+                <div className="flex items-center gap-3 mb-6">
+                  <div className="h-px flex-1 bg-zinc-800" />
+                  <span className="text-[10px] uppercase tracking-widest text-zinc-600">FAANG+ Algorithms</span>
+                  <div className="h-px flex-1 bg-zinc-800" />
+                </div>
+              )}
+              {showQuantDivider && (
+                <div className="flex items-center gap-3 mb-6">
+                  <div className="h-px flex-1 bg-zinc-800" />
+                  <span className="text-[10px] uppercase tracking-widest text-zinc-600">Quant Mathematics</span>
+                  <div className="h-px flex-1 bg-zinc-800" />
+                </div>
+              )}
+              <div className="flex items-center justify-between gap-3 mb-2">
+                <span className="text-sm font-semibold text-zinc-300">{group.chunk.label}</span>
+                <span className="text-xs text-zinc-500 tabular-nums">{chunkDone} / {chunkTotal} mastered</span>
               </div>
-              <div className="h-1 bg-zinc-800/70 rounded-full overflow-hidden mb-3">
-                <div
-                  className="h-full transition-all"
-                  style={{
-                    width: `${sectionPct}%`,
-                    backgroundColor: sectionComplete ? "#34d399" : sectionHeaderColor,
-                    opacity: sectionComplete ? 1 : 0.7,
-                  }}
-                />
-              </div>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-1.5">
+              <div className="h-px bg-zinc-800/50 mb-3" />
+              <div className={`grid ${gridCols} gap-1.5`}>
                 {group.modules.map(n => {
                   const state = nodeState(n.id);
           const num = ORDER[n.id];

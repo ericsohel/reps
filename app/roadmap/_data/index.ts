@@ -130,3 +130,106 @@ export const SECTION_COLORS: Readonly<Record<string, string>> = {
   "2e": "#7048e8",
   "2f": "#c2255c",
 };
+
+export interface Chunk {
+  id: string;
+  label: string;
+  moduleIds: string[];        // ordered; at most 4
+  tier: "core" | "faang-plus" | "quant";
+}
+
+export const CHUNKS: readonly Chunk[] = [
+  // ── Core tier ────────────────────────────────────────────────────────────
+  {
+    id: "primitives",
+    label: "Primitives",
+    tier: "core",
+    moduleIds: ["foundations", "arrays-hashing", "sorting", "bit-manip"],
+  },
+  {
+    id: "linear-techniques",
+    label: "Linear Techniques",
+    tier: "core",
+    moduleIds: ["prefix-sums", "two-pointers", "sliding-window", "linked-list"],
+  },
+  {
+    id: "stack-family",
+    label: "Stack Family",
+    tier: "core",
+    moduleIds: ["stack", "monotonic-stack", "monotonic-deque"],
+  },
+  {
+    id: "binary-search",
+    label: "Binary Search",
+    tier: "core",
+    moduleIds: ["binary-search", "bs-answer"],
+  },
+  {
+    id: "trees-recursion",
+    label: "Trees & Recursion",
+    tier: "core",
+    moduleIds: ["backtracking", "trees", "tries", "heap"],
+  },
+  {
+    id: "greedy-intervals",
+    label: "Greedy & Intervals",
+    tier: "core",
+    moduleIds: ["greedy", "intervals"],
+  },
+  {
+    id: "graphs",
+    label: "Graph Algorithms",
+    tier: "core",
+    moduleIds: ["graph-traversal", "topo-sort", "union-find", "shortest-paths"],
+  },
+  {
+    id: "dynamic-programming",
+    label: "Dynamic Programming",
+    tier: "core",
+    moduleIds: ["dp-intro", "knapsack", "lis-lcs", "dp-2d"],
+  },
+  {
+    id: "dp-closing",
+    label: "DP & Closing",
+    tier: "core",
+    moduleIds: ["dp-trees", "strings", "design"],
+  },
+  // ── FAANG+ tier ──────────────────────────────────────────────────────────
+  {
+    id: "advanced-graphs",
+    label: "Advanced Graphs",
+    tier: "faang-plus",
+    moduleIds: ["mst", "adv-graphs"],
+  },
+  {
+    id: "advanced-dp",
+    label: "Advanced DP",
+    tier: "faang-plus",
+    moduleIds: ["bitmask-dp", "interval-dp"],
+  },
+  {
+    id: "range-queries",
+    label: "Range Queries",
+    tier: "faang-plus",
+    moduleIds: ["coord-comp", "sparse-table", "fenwick", "seg-tree"],
+  },
+  {
+    id: "geometry",
+    label: "Geometry",
+    tier: "faang-plus",
+    moduleIds: ["geometry"],
+  },
+  // ── Quant tier ────────────────────────────────────────────────────────────
+  {
+    id: "number-theory",
+    label: "Number Theory & Combinatorics",
+    tier: "quant",
+    moduleIds: ["number-theory", "combinatorics"],
+  },
+  {
+    id: "probability-games",
+    label: "Probability & Games",
+    tier: "quant",
+    moduleIds: ["probability", "game-theory"],
+  },
+];
