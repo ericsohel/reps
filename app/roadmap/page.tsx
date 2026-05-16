@@ -528,7 +528,6 @@ export default function RoadmapPage() {
       <header className="flex items-center gap-3 flex-wrap">
         <div>
           <h1 className="text-2xl font-semibold tracking-tight">DSA Roadmap</h1>
-          <p className="text-sm text-zinc-500 mt-0.5">43 modules · prerequisite-locked learning path</p>
         </div>
 
         <div className="ml-auto flex items-center gap-3 flex-wrap">
@@ -728,7 +727,6 @@ export default function RoadmapPage() {
                 >
                   {n.label}
                 </div>
-                <div className={`text-[11px] mt-0.5 ${state === "locked" ? "text-zinc-700" : "text-zinc-600"}`}>{SECTION_NAMES[n.section]?.replace(/^Section \d+[A-Za-z]+ — /, "") ?? ""}</div>
                 {isRecommended && recommendation && (() => {
                   const isReview = recommendation.mode === "review";
                   const labelColor = isReview ? "text-cyan-300" : "text-amber-400";
@@ -749,37 +747,12 @@ export default function RoadmapPage() {
                         <span>{icon}</span>
                         <span>{label}</span>
                       </div>
-                      <div className={`text-[9px] ${reasonColor} mt-0.5 truncate`}>
-                        {recommendation.reasons.join(" · ")}
-                      </div>
                     </div>
                   );
                 })()}
-                {isNext && !isRecommended && (
-                  <div className="text-[10px] font-bold text-emerald-400 uppercase tracking-wider mt-0.5">
-                    up next
-                  </div>
-                )}
-                {n.isNew && (
-                  <div className="text-[10px] text-amber-500 font-semibold mt-0.5">
-                    ★ not in NeetCode
-                  </div>
-                )}
-                {n.kind === "utility" && (
-                  <div className="text-[10px] text-zinc-500 font-semibold uppercase tracking-wide mt-0.5">
-                    ⚙ utility
-                  </div>
-                )}
                 {state === "locked" && missing.length > 0 && (
                   <div className="text-[10px] text-rose-500 mt-0.5 truncate">
                     needs: {missing.join(", ")}
-                  </div>
-                )}
-                {state !== "locked" && unlocks > 0 && (
-                  <div className="text-[10px] text-zinc-600 mt-0.5">
-                    unlocks{" "}
-                    <span className="text-zinc-500">{unlocks}</span>{" "}
-                    {unlocks === 1 ? "module" : "modules"}
                   </div>
                 )}
                 {state !== "locked" && PROBLEM_COUNTS[n.id] && (() => {
@@ -795,7 +768,6 @@ export default function RoadmapPage() {
                           {solved}
                         </span>
                         <span className="text-zinc-600"> / {total}</span>
-                        <span className="text-zinc-700"> solved</span>
                       </span>
                       <div className="flex-1 max-w-[72px] h-1 bg-zinc-800/70 rounded-full overflow-hidden">
                         <div
@@ -842,16 +814,6 @@ export default function RoadmapPage() {
         })}
       </div>
 
-      <div className="divider" />
-
-      <div className="flex flex-wrap gap-x-6 gap-y-1 text-xs text-zinc-600">
-        <span><span className="text-emerald-300 font-bold">✓✓</span> all solved</span>
-        <span><span className="text-emerald-400">✓</span> mastered</span>
-        <span><span className="text-emerald-400">→</span> up next</span>
-        <span><span className="text-zinc-500">○</span> available</span>
-        <span><span className="text-zinc-700">🔒</span> locked</span>
-        <span><span className="text-amber-500">★</span> not in NeetCode</span>
-      </div>
 
       {activeModule && (
         <ModuleModal
