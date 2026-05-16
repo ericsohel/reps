@@ -137,7 +137,7 @@ function Cell({ cell }: { cell: DayCell }) {
     : cell.intensity === 2
     ? "bg-orange-500 hover:bg-orange-400 shadow-[0_0_4px_rgba(249,115,22,0.45)]"
     : cell.intensity === 1
-    ? "bg-orange-900/55 hover:bg-orange-800"
+    ? "bg-orange-600/70 hover:bg-orange-500/80"
     : "bg-zinc-800/60 hover:bg-zinc-700";
   const tip = cell.isFuture
     ? `${cell.date} · upcoming`
@@ -162,7 +162,7 @@ function Legend() {
     <div className="flex items-center gap-1.5 text-[10px] text-zinc-500">
       <span>cold</span>
       <div className="w-[10px] h-[10px] rounded-[2px] bg-zinc-800/60" />
-      <div className="w-[10px] h-[10px] rounded-[2px] bg-orange-900/55" />
+      <div className="w-[10px] h-[10px] rounded-[2px] bg-orange-600/70" />
       <div className="w-[10px] h-[10px] rounded-[2px] bg-orange-500" />
       <span>fire</span>
     </div>
