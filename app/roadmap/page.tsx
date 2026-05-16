@@ -588,9 +588,7 @@ export default function RoadmapPage() {
           const showFaangDivider = group.chunk.tier === "faang-plus" && prevChunk?.tier === "core";
           const showQuantDivider = group.chunk.tier === "quant" && prevChunk?.tier !== "quant";
 
-          const gridCols = chunkTotal <= 2
-            ? "grid-cols-1 sm:grid-cols-2"
-            : "grid-cols-1 sm:grid-cols-2 lg:grid-cols-4";
+          const gridCols = "grid-cols-1 sm:grid-cols-2";
 
           return (
             <div key={group.chunk.id}>
@@ -687,7 +685,7 @@ export default function RoadmapPage() {
               <div className="flex-1 min-w-0">
                 <div
                   className={[
-                    "text-sm font-semibold truncate",
+                    "text-sm font-semibold leading-snug line-clamp-2",
                     isFullySolved
                       ? "text-emerald-300"
                       : state === "completed"
@@ -699,7 +697,7 @@ export default function RoadmapPage() {
                 >
                   {n.label}
                 </div>
-                <div className={`text-[11px] mt-0.5 ${state === "locked" ? "text-zinc-700" : "text-zinc-600"}`}>{SECTION_NAMES[n.section]}</div>
+                <div className={`text-[11px] mt-0.5 ${state === "locked" ? "text-zinc-700" : "text-zinc-600"}`}>{SECTION_NAMES[n.section]?.replace(/^Section \d+[A-Za-z]+ — /, "") ?? ""}</div>
                 {isRecommended && recommendation && (() => {
                   const isReview = recommendation.mode === "review";
                   const labelColor = isReview ? "text-cyan-300" : "text-amber-400";
